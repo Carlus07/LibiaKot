@@ -1,0 +1,129 @@
+body {
+	font-family:"Open Sans",sans-serif;
+	font-size:12px;
+	line-height:18px;
+	color:#808285;
+	background-color:#edeee9;
+	font-weight:400;
+}
+p {
+	font-size:15px;
+	color:#808285;
+	font-weight:400;
+	line-height:18px;
+}
+h1,h2,h3,h4,h5 {
+	font-family:"Open Sans",sans-serif;
+	color:#808285;
+	margin-top:0;
+	font-weight:bold;
+}
+h4 {
+	font-size:16px;
+	font-weight:700;
+	margin-bottom:25px;
+}
+h5 {
+	font-size:14px;
+	font-weight:700;
+	margin-bottom:25px;
+}
+a {
+	-webkit-transition:all 0.3s ease;
+	-moz-transition:all 0.3s ease;
+	-ms-transition:all 0.3s ease;
+	-o-transition:all 0.3s ease;
+	transition:all 0.3s ease;
+	color: currentColor;
+	text-decoration:none!important;
+	cursor:pointer;
+}
+a > span {
+	top: 10px;
+    position: relative;
+}
+.click:hover,.click:focus {
+	color:#808285;
+	outline:0;
+}
+.main{
+	font-family: "Open Sans",sans-serif;
+}
+.topBar{
+	width: 100%;
+	min-height: 30px;
+	height: auto;
+}
+.navTop{
+	background-color:#f4f5f2;
+}
+.redirection{
+	color : #9a9c9e;
+	font-size:12px;
+	margin-top:4px;
+}
+.pictureTitle{
+	margin-top:25px;
+	border-top-right-radius: 6px;
+	border-top-left-radius: 6px;
+}
+.mail{
+	background-color:white;
+	border-bottom: 8px solid #55ab26;
+}
+.content{
+	background-color:#f4f5f2;
+}
+.confirmation{
+	border-radius: 6px;
+	color: #fff;
+	font-size: 16px;
+	line-height: 24px;
+	background-color: #55ab26;
+	padding: 15px 60px;
+}
+.btn.btn-signin {
+    background-color: #55ab26;
+    background-image: none;
+    padding: 0px;
+    font-weight: 700;
+    font-size: 16px;
+    height: 45px;
+    border-radius: 3px;
+    transition: all 0.218s;
+    cursor:pointer;
+    margin-top : 25px;
+	margin-bottom : 40px;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+.btn.btn-signin:hover,
+.btn.btn-signin:active,
+.btn.btn-signin:focus {
+    background-color: #42861E;
+}
+.footer {
+    display: block;
+    width: 100%;
+    height : auto;
+}
+.address{
+	margin-top:40px;
+	font-size:12px;
+}
+.facebook{
+	margin-top:40px;
+}
+.link{
+	cursor:pointer;
+}
+.linkPicture{
+	 height:30px;
+	 float:left;
+}
+.textPicture{
+	position: relative;
+    top: 6px;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+}

@@ -1,0 +1,10 @@
+{
+	"name": "projet/app",
+	"description": "Projet sur le gestion des logements a Namur",
+	"type": "project",
+	"license": "2017",
+	"authors": [ { "name": "Carlus", "email": "carlmath@hotmail.com" } ],
+	"minimum-stability": "dev",
+	"require": { "doctrine/orm": "2.4.*" },
+	"autoload": { "psr-4": { "": "src/" } }
+}
