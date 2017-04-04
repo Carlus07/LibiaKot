@@ -1,3 +1,4 @@
+ModuleManager.loadModule("web/js/tools/Validation.js");
 ModuleManager.loadModule("web/js/tools/Notification.js");
 
 UserProfile = (function() {
@@ -7,7 +8,11 @@ UserProfile = (function() {
         fileUploadAvatar : $('#fileUploadAvatar'),
         maxW : 600,
         maxH : 600,
-        qualiteCompression : 0.8
+        qualiteCompression : 0.8,
+        buttonEdition : $('.buttonEdition'),
+        buttonUpdatePassword : $('.buttonUpdatePassword'),
+        table : $('.tableProfile'),
+        caseTable : $('.tableProfile td')
     };
 
     var init = function() {
@@ -20,6 +25,9 @@ UserProfile = (function() {
         s.updateAvatar.on('mouseover', decreaseOpacity);
         s.updateAvatar.on('click', click);
         s.fileUploadAvatar.on('change', function(event){ compression(event); });
+        s.buttonEdition.on('click', editTable);
+        s.buttonUpdatePassword.on('click', editPassword);
+        s.caseTable.on("change", validation);
     };
     var decreaseOpacity = function()
     {
@@ -146,6 +154,63 @@ UserProfile = (function() {
             }
         }
         return { width: finalSizeW, height: finalSizeH };
+    };
+    var editTable = function()
+    {
+        s.table.editableTableWidget({editor: $('<textarea>')});
+    };
+    var editPassword = function()
+    {
+
+    };
+    var validation = function() 
+    {
+        s.selection = $(this);
+        value = $(this).attr("value");
+        switch(value)
+        {
+            case "text" :
+            {
+                result = Validation.validationText(s.selection.text());
+                break;
+            }
+            case "number" :
+            {
+                result = Validation.validationNumber(s.selection.text());
+                break;
+            }
+            case "phone" :
+            {
+                result = Validation.validationPhone(s.selection.text());
+                break;
+            }
+        }
+        if (result == "") 
+        {
+            var column = s.selection.attr("data-column");
+            updateProfil(column, s.selection.text());
+        }
+        else 
+        {
+            Translator.translation(result).done(function(data){
+                Notification.notification("warning", data);
+            });
+            return false;
+        }
+    };
+    var updateProfil = function(column, value)
+    {
+        $.post("?w=user.updateProfil",
+            {text: value, field : column},
+            function(result)
+            {
+                var str = result.split('+');
+                Translator.translation(str[1]).done(function(data){
+                    Notification.notification(str[0], data);
+                    return (str[0] == "success") ? true : false;
+                });
+            }
+        );
     };
     return {
         init: init

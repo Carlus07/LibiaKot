@@ -19,13 +19,21 @@ class UserController extends Controller {
             $user = $this->getConnection()->getRepository('User')->findOneBy(array('mail' => $mail, 'password' => Security::cryptage($_POST['password'])));
             if (!empty($user)) 
             {
-                $user->setNbConnection($user->getNbConnection()+1);
-                $this->getConnection()->flush();
-                Session::set('idUser', $user->getId());
-                Session::set('Role', $user->getIdRole()->getId());
-                Session::set('FirstNameUser', $user->getFirstName());
-                Router::setRefreshInterface(true);
-                $this->render('home.index');
+                if ($user->getConfirmed() == 1)
+                {
+                    $user->setNbConnection($user->getNbConnection()+1);
+                    $this->getConnection()->flush();
+                    Session::set('idUser', $user->getId());
+                    Session::set('Role', $user->getIdRole()->getId());
+                    Session::set('FirstNameUser', $user->getFirstName());
+                    Router::setRefreshInterface(true);
+                    $this->render('home.index');
+                }
+                else 
+                {
+                    $error = 'notConfirmed';
+                    $this->render('user.login', compact('error', 'mail'));
+                }
             }
             else 
             {
@@ -154,5 +162,19 @@ class UserController extends Controller {
             echo "success+successUploadAvatar";
         }
         else echo "warning+errorUploadAvatar";
+    }
+
+    public function updateProfil()
+    {
+        $user = $this->getConnection()->getRepository('User')->find(Session::get('idUser')); 
+        if (!empty($user)) 
+        {
+            $method = "set".ucfirst($_POST['field']);
+            $user->$method($_POST['text']);
+            $this->getConnection()->persist($user);
+            $this->getConnection()->flush();
+            echo "success+successUploadProfil";
+        }
+        else echo "warning+errorUploadProfil";
     }
 }

@@ -342,11 +342,10 @@ a:hover,a:focus {
 	font-size: 15px;
 	cursor: pointer;
 }
-
 .dragged {
-  position: absolute;
-  opacity: 0.5;
-  z-index: 2000;
+  	position: absolute;
+  	opacity: 0.5;
+  	z-index: 2000;
 }
 .avatar {
 	border-radius: 5%;
