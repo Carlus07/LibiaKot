@@ -9,22 +9,42 @@ class Housing
     protected $idHousing;
     /**
      * Une logement possède un idSubType
-     * @OneToOne(targetEntity="subType")
-     * @JoinColumn(name="idSubType", referencedColumnName="idSubType")
+     * @ManyToOne(targetEntity="subType")
+     * @JoinColumn(name="idSubType", referencedColumnName="idSubType", nullable=true)
     */
     protected $idSubType;
-    /** @Column(type="float") **/
-    protected $charges;
-    /** @Column(type="float") **/
-    protected $rent;
+    /**
+     * Une logement possède un idType
+     * @ManyToOne(targetEntity="Type")
+     * @JoinColumn(name="idType", referencedColumnName="idType")
+    */
+    protected $idType;
+    /** @Column(type="datetime") **/
+    protected $availability;
+    /** @Column(type="integer", nullable=true) **/
+    protected $capacity;
+    /** @Column(type="integer", nullable=true) **/
+    protected $spaceAvailable;
     /** @Column(type="integer") **/
-    protected $contractTerm;
-    /** @Column(type="float", nullable=true) **/
     protected $area;
     /** @Column(type="integer") **/
-    protected $numberPeople;
+    protected $floor;
     /** @Column(type="integer") **/
-    protected $occupation;
+    protected $bathroom;
+    /** @Column(type="integer") **/
+    protected $kitchen;
+    /** @Column(type="integer") **/
+    protected $heating;
+    /** @Column(type="integer") **/
+    protected $charge;
+    /** @Column(type="integer") **/
+    protected $rent;
+    /** @Column(type="integer") **/
+    protected $deposit;
+     /** @Column(type="integer") **/
+    protected $rentalDuration;
+     /** @Column(type="text", nullable=true) **/
+    protected $rentComment;
     /** @Column(type="integer") **/
     protected $state;
     /**
@@ -33,6 +53,8 @@ class Housing
      * @JoinColumn(name="idProperty", referencedColumnName="idProperty")
     */
     protected $idProperty;
+    /** @Column(type="integer") **/
+    protected $reference;
 
     public function getId(){
         return $this->idHousing;
@@ -46,28 +68,36 @@ class Housing
         $this->idSubType = $idSubType;
     }
 
-    public function getCharges(){
-        return $this->charges;
+    public function getIdType(){
+        return $this->idType;
     }
  
-    public function setCharges($charges){
-        $this->charges = $charges;
+    public function setIdType($idType){
+        $this->idType = $idType;
     }
 
-    public function getRent(){
-        return $this->rent;
+    public function getAvailability(){
+        return $this->availability;
     }
  
-    public function setRent($rent){
-        $this->rent = $rent;
+    public function setAvailability($availability){
+        $this->availability = $availability;
     }
 
-    public function getContratTerm(){
-        return $this->contractTerm;
+    public function getCapacity(){
+        return $this->capacity;
     }
  
-    public function setContractTerm($contractTerm){
-        $this->contractTerm = $contractTerm;
+    public function setCapacity($capacity){
+        $this->capacity = $capacity;
+    }
+
+    public function getSpaceAvailable(){
+        return $this->spaceAvailable;
+    }
+ 
+    public function setSpaceAvailable($spaceAvailable){
+        $this->spaceAvailable = $spaceAvailable;
     }
 
     public function getArea(){
@@ -78,20 +108,77 @@ class Housing
         $this->area = $area;
     }
 
-    public function getNumberPeople(){
-        return $this->numberPeople;
+    public function getFloor(){
+        return $this->floor;
     }
  
-    public function setNumberPeople($numberPeople){
-        $this->numberPeople = $numberPeople;
+    public function setFloor($floor){
+        $this->floor = $floor;
     }
 
-    public function getOccupation(){
-        return $this->occupation;
+    public function getBathroom(){
+        return $this->bathroom;
     }
  
-    public function setOccupation($occupation){
-        $this->occupation = $occupation;
+    public function setBathroom($bathroom){
+        $this->bathroom = $bathroom;
+    }
+
+    public function getKitchen(){
+        return $this->kitchen;
+    }
+ 
+    public function setKitchen($kitchen){
+        $this->kitchen = $kitchen;
+    }
+
+    public function getHeating(){
+        return $this->heating;
+    }
+ 
+    public function setHeating($heating){
+        $this->heating = $heating;
+    }
+
+
+    public function getCharge(){
+        return $this->charge;
+    }
+ 
+    public function setCharge($charge){
+        $this->charge = $charge;
+    }
+
+    public function getRent(){
+        return $this->rent;
+    }
+ 
+    public function setRent($rent){
+        $this->rent = $rent;
+    }
+
+    public function getDeposit(){
+        return $this->deposit;
+    }
+ 
+    public function setDeposit($deposit){
+        $this->deposit = $deposit;
+    }
+
+    public function getrentalDuration(){
+        return $this->rentalDuration;
+    }
+ 
+    public function setrentalDuration($rentalDuration){
+        $this->rentalDuration = $rentalDuration;
+    }
+
+    public function getRentComment(){
+        return $this->rentComment;
+    }
+ 
+    public function setRentComment($rentComment){
+        $this->rentComment = $rentComment;
     }
 
     public function getState(){
@@ -108,5 +195,13 @@ class Housing
  
     public function setIdProperty($idProperty){
         $this->idProperty = $idProperty;
+    }
+
+    public function getReference(){
+        return $this->reference;
+    }
+ 
+    public function setReference($reference){
+        $this->reference = $reference;
     }
 }

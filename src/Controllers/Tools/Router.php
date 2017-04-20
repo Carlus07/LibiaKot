@@ -91,7 +91,8 @@ class Router
     {
         unset($_GET);
         unset($_POST);
-        static::switchView($address);
+        if (strlen($type) > 2) $_POST['page'] = $type;
+        static::switchView($address, $type);
     }
 
     /**

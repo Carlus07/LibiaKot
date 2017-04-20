@@ -306,7 +306,25 @@
                 translation : translation
             }
         })();
-
+        LoaderScript = (function() {
+            var s = {
+                scripts : []
+            };
+            var loadScript = function(script) {
+                if (s.scripts.indexOf(script) == -1)
+                {
+                    var DSLScript  = document.createElement("script");
+                    DSLScript.src = (script.match("http")) ? script : "web/js/libs/"+script+".js";
+                    DSLScript.stype = "text/javascript";
+                    s.scripts.push(script);
+                    document.body.appendChild(DSLScript);
+                    document.body.removeChild(DSLScript);
+                }
+            };
+            return {
+                loadScript : loadScript,
+            }
+        })();
         ModuleManager.init();
         Main.init();
         PageManager.init();

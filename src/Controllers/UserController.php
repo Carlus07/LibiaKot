@@ -99,14 +99,15 @@ class UserController extends Controller {
                 $this->getConnection()->flush();
                 $translation = Language::translation("mail");
                 $redirection = Navi::getRedirection($translation, true, "http://localhost/Projet/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=register&t=".$user->getToken());
-                $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "register", "http://localhost/Projet/index.php?p=user.confirmation&t=".$user->getToken());
+                $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "register", "http://localhost/Projet/index.php?p=user.confirmation&t=".$user->getToken()."&m=register");
                 Mail::sendMail($translation["subjectRegister"], $user->getMail(), $redirection, $contentMessage);
-                Router::redirect('user.confirmation');
+                Router::redirect('user.confirmation', 'register');
             }
         }
     }
 
     public function confirmation() {
+        $page = (isset($_POST['page'])) ? $_POST['page'] : $_GET['m'];
         $finalization = 0;
         if (isset($_GET['t']))
         {
@@ -118,7 +119,7 @@ class UserController extends Controller {
                 $finalization = 1;
             }
         }
-        $this->render('user.confirmation', compact("finalization"));
+        $this->render('user.confirmation', compact("page", "finalization"));
     }
 
     public function logout() {
@@ -176,5 +177,70 @@ class UserController extends Controller {
             echo "success+successUploadProfil";
         }
         else echo "warning+errorUploadProfil";
+    }
+
+    public function changePassword()
+    {
+        if (empty($_POST)) 
+        {
+            $this->render("user.changePassword");
+        } 
+        else 
+        {
+            $user = $this->getConnection()->getRepository('User')->find(Session::get('idUser')); 
+            if (!empty($user)) 
+            {
+                $validation = new Validation;
+                $validation->password($_POST['password'], $_POST['confirmPassword']);
+
+                if ($validation->isErrors()) {
+                    $errors = $validation->getErrors();
+                }
+                else
+                {
+                    if ($user->getPassword() == Security::cryptage($_POST['oldPassword']))
+                    {
+                        $user->setPassword(Security::cryptage($_POST['password']));
+                        $this->getConnection()->persist($user);
+                        $this->getConnection()->flush();
+                    }
+                    else $errors = "errorOldPasswordWrong";
+                }
+            }
+            else $errors = "errorUpdatePassword";
+            if (isset($errors)) $this->render('user.changePassword', compact('errors'));
+            else $this->render("user.profile", compact('user'));
+        }
+    }
+    public function reset()
+    {
+        if (empty($_POST)) 
+        {
+            $this->render("user.reset");
+        } 
+        else 
+        {
+            $user = $this->getConnection()->getRepository('User')->findByMail($_POST['mail']); 
+            if (!empty($user[0])) 
+            {
+                $newPassword = Security::createPassword(12);
+                $user[0]->setConfirmed(false);
+                $user[0]->setTimeToken(new \DateTime("now"));
+                $user[0]->setToken(Security::generateToken());
+                $user[0]->setPassword(Security::cryptage($newPassword));
+
+                $this->getConnection()->persist($user[0]);
+                $this->getConnection()->flush();
+                $translation = Language::translation("mail");
+                $redirection = Navi::getRedirection($translation, true, "http://localhost/Projet/mail.php?fn=".$user[0]->getFirstName()."&l=".Session::get("Language")."&m=changepassword&t=".$user[0]->getToken().'&p='.Security::encrypt($newPassword));
+                $contentMessage = Navi::getContentMail($translation, true, $user[0]->getFirstName(), "changepassword", "http://localhost/Projet/index.php?p=user.confirmation&t=".$user[0]->getToken()."&m=changepassword", $newPassword);
+                Mail::sendMail($translation["subjectChangePassword"], $user[0]->getMail(), $redirection, $contentMessage);
+                Router::redirect('user.confirmation', 'changepassword');
+            }
+            else
+            {
+                //A terminer
+            }
+        }
     }
 }

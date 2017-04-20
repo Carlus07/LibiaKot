@@ -74,13 +74,16 @@ class Validation
      */
     public function text($text, $size = 255, $empty = false)
     {
-        if (strlen($text) > $size) {
-            $this->setErr('textTooLong');
-        } elseif (!preg_match('/^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._\s-]{3,255}$/', $text)) {
-            $this->setErr('textNotString');
-        } elseif (!$empty) {
-            if (!$text) {
-                $this->setErr('textEmpty');
+        if (strlen($text) != 0)
+        {
+            if (strlen($text) > $size) {
+                $this->setErr('textTooLong');
+            } elseif (!preg_match('/^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._\s-]{3,255}$/', $text)) {
+                $this->setErr('textNotString');
+            } elseif (!$empty) {
+                if (!$text) {
+                    $this->setErr('textEmpty');
+                }
             }
         }
     }
@@ -93,6 +96,7 @@ class Validation
      */
     public function number($int, $size = 99999, $empty = false)
     {
+        $int = intval($int);
         if (strlen($int) > $size) {
             $this->setErr('numberTooLong');
         } elseif (!$empty) {

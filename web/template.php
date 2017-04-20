@@ -16,6 +16,7 @@ use Models\Session;
 		<link rel="stylesheet" href="web/css/owl.carousel.css">
 		<link rel="stylesheet" href="web/css/jquery-ui.css">
 		<link rel="stylesheet" href="web/css/owl.theme.css">
+		<link rel="stylesheet" href="web/css/bootstrap-datetimepicker.min.css" />
 		<link rel="stylesheet" href="web/css/main.css" />
 		<link rel="stylesheet" href="web/css/user.css" />
 	</head>
@@ -96,6 +97,8 @@ use Models\Session;
       	<script type="text/javascript" src="web/js/libs/bootstrap-notify.min.js"></script>
       	<script type="text/javascript" src="web/js/libs/mindmup-editabletable.js"></script>
       	<script type="text/javascript" src="web/js/libs/jquery-ui.min.js"></script>
+      	<script type="text/javascript" src="web/js/libs/moment.min.js"></script>
+      	<script type="text/javascript" src="web/js/libs/bootstrap-datetimepicker.min.js"></script>
       	<script type="text/javascript" src="web/js/Main.js"></script>
 		<?php
 			echo $moduleJs;

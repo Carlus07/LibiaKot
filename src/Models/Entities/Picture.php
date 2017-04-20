@@ -9,11 +9,7 @@ class Picture
     protected $idPicture;
     /** @Column(type="string", length=100) **/
     protected $name;
-    /** @Column(type="string", length=200) **/
-    protected $repertory;
-    /** @Column(type="boolean") **/
-    protected $priority;
-    /** @Column(type="datetime") **/
+    /** @Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"}) **/
     protected $dateUpload;
     /**
      * Plusieurs images sont référencés par un logement
@@ -32,22 +28,6 @@ class Picture
  
     public function setName($name){
         $this->name = $name;
-    }
-
-    public function getRepertory(){
-        return $this->repertory;
-    }
- 
-    public function setRepertory($repertory){
-        $this->repertory = $repertory;
-    }
-
-    public function getPriority(){
-        return $this->priority;
-    }
- 
-    public function setPriority($priority){
-        $this->priority = $priority;
     }
 
     public function getDateUpload(){

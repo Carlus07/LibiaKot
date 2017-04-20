@@ -1,5 +1,12 @@
 <?php
 
-$phone = "0470.04.92.85";
+$test = "00011";
 
-if (!preg_match('#^0[1-68]([-. ]?[0-9]{2}){4}$#', $phone)) echo "echec";
+$test = intval($test);
+echo $test;
+echo floor(log10($test) + 1);
+for ($i = 0; $i < 5-floor(log10($test) + 1); $i++)
+{
+	$test = '0'.$test;
+}
+echo $test;

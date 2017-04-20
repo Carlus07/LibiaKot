@@ -1,6 +1,6 @@
 Validation = (function() {
     var s = {
-        textWithoutNumber : /^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ'._\s-]{3,255}$/,
+        textWithoutNumber : /^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ'!?:._()\s-]{2,255}$/,
         mail : /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         phone : /^0[1-9]([-. ]?[0-9]{2}){4}$/,
         password : /^[a-zA-Z0-9_-]{6,16}$/
@@ -8,7 +8,7 @@ Validation = (function() {
     var validationText = function(text)
     {
         if (text == "") return "textEmpty";
-        else if (text.length < 3) return "textTooShort";
+        else if (text.length < 2) return "textTooShort";
         else if (text.length > 255) return "textTooLong";
         else if (!s.textWithoutNumber.test(text)) return "textNotString";
         else return "";

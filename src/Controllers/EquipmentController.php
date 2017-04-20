@@ -21,16 +21,16 @@ class EquipmentController extends Controller {
        		$associativeArray[$category->getId()]["category"] = $category->getIdLabel()->getLabel();
        	}
        	foreach ($equipments as $key => $equipment) {
-         		if ($equipment->getIdCategory() != null)
-         		{
-         			  $associativeArray[$equipment->getIdCategory()->getId()]['equipment'][$equipment->getId()]["name"] = $equipment->getIdLabel()->getLabel();
+     		if ($equipment->getIdCategory() != null)
+     		{
+     			$associativeArray[$equipment->getIdCategory()->getId()]['equipment'][$equipment->getId()]["name"] = $equipment->getIdLabel()->getLabel();
                 if ($equipment->getIcon() != null) $associativeArray[$equipment->getIdCategory()->getId()]['equipment'][$equipment->getId()]["icon"] = $equipment->getIcon();
-         		}
-         		else 
-         		{
-         			  $notAssociatedEquipment[$equipment->getId()]["name"] = $equipment->getIdLabel()->getLabel();
+     		}
+     		else 
+     		{
+     			$notAssociatedEquipment[$equipment->getId()]["name"] = $equipment->getIdLabel()->getLabel();
                 $notAssociatedEquipment[$equipment->getId()]["picture"] = $equipment->getIcon();
-         		}
+     		}
        	}
         $this->render('equipment.index.category', compact('associativeArray', 'notAssociatedEquipment', 'error'));
     }

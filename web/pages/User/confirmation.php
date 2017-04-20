@@ -1,7 +1,42 @@
 <?php
-
-$title = (!$finalization) ? $translation['confirmationRegister'] : $translation['finalizationRegister'];
-$message = (!$finalization) ? $translation['textRegister'] : $translation['textFinalization'];
+$title = "";
+$message = "";
+if (!$finalization)
+{
+	switch($page)
+	{
+		case 'register' :
+		{
+			$title = $translation['confirmationRegister'];
+			$message = $translation['textRegister'];
+			break;
+		}
+		case 'changepassword' :
+		{
+			$title = $translation['confirmationCP'];
+			$message = $translation['textRegister'];
+			break;
+		}
+	};
+}
+else
+{
+	switch($page)
+	{
+		case 'register' :
+		{
+			$title = $translation['finalizationRegister'];
+			$message = $translation['textFinalizationRegister'];
+			break;
+		}
+		case 'changepassword' :
+		{
+			$title = $translation['finalizationCP'];
+			$message = $translation['textFinalizationCP'];
+			break;
+		}
+	};
+}
 
 echo '
 <div class="container">

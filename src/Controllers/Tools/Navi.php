@@ -68,8 +68,8 @@ class Navi
 	  		<ul class="nav navbar-nav">';
 	  			foreach($menus as $key => $menu)
 	  			{
-                    $href = (is_int($key)) ? "#" : $key;
-	  				echo '<li class="dropdown dropdownMenu"><a href="'.$href.'" class="dropdown-toggle dropdownMenuCat" data-toggle="dropdown">'.key($menu);
+                    $href = ((is_int($key)) || (!empty(current($menu)))) ? "#" : $key;
+	  				echo '<li class="dropdown dropdownMenu"><a href='.$href.' class="dropdown-toggle dropdownMenuCat" data-toggle="dropdown">'.key($menu);
                     echo (!empty(current($menu))) ? '<span class="caret"></span></a>' : '</a>';
                     if (!empty(current($menu)))
                     {
@@ -162,7 +162,7 @@ class Navi
      * @link $link lien pour pouvoir utiliser un bouton
      * @return string contenu du mail en html
      */
-    public static function getContentMail($translation, $variableReturn = false, $pseudo, $type = "register", $link = " ")
+    public static function getContentMail($translation, $variableReturn = false, $pseudo, $type = "register", $link = " ", $password = "")
     {
         if ($variableReturn) ob_start();
         switch ($type)
@@ -187,6 +187,34 @@ class Navi
                                <td class= "padded" style= "padding: 0;vertical-align: top;padding-left: 40px;padding-right: 40px;text-align: left">
                                   <div class= "btn" style="Margin-bottom: 20px;text-align: center">
                                      <a href="'.$link.'" style= "display: inline-block;text-align: center;text-decoration: none;border-radius: 6px;-moz-border-radius: 6px;color: #fff;font-size: 16px;line-height: 24px;font-family: sans-serif;background-color: #55ab26;padding: 15px 60px">'.$translation['buttonRegister'].'</a>
+                                  </div>
+                               </td>
+                            </tr>
+                         </tbody>
+                      </table>';
+                break;
+            }
+            case "changepassword" :
+            {
+                echo '<table style= "border-collapse: collapse;border-spacing: 0;width: 100%" width="100%">
+                         <tbody>
+                            <tr>
+                               <td class= "padded" style= "padding: 0;vertical-align: top;padding-left: 40px;padding-right: 40px;text-align: left">
+                               
+                                  <h1 style= "Margin-top: 0;font-weight: normal;color: #808285;font-family: sans-serif;font-size: 19px;Margin-bottom: 20px;text-align : center;line-height: 22px"> <strong style="font-weight: bold">'.$translation['welcome'].' '.$pseudo.'</strong> </h1>
+                                  <p style= "Margin-top: 0;font-weight: normal;color: #808285;font-family: sans-serif;font-size: 14px;Margin-bottom: 20px;text-align:center;line-height: 22px">'.$translation['contentChangePassword'].'</p>
+                                  <p style= "Margin-top: 0;font-weight: normal;color: #808285;font-family: sans-serif;font-size: 14px;Margin-bottom: 20px;text-align:center;line-height: 22px">'.$translation['yourPassword'].'<strong>'.$password.'</strong></p>
+                                  <p style= "Margin-top: 0;font-weight: normal;color: #808285;font-family: sans-serif;font-size: 14px;Margin-bottom: 20px;text-align:center;line-height: 22px">'.$translation['recallOption'].'</p>
+                               </td>
+                            </tr>
+                         </tbody>
+                      </table>
+                      <table style= "border-collapse: collapse;border-spacing: 0;width: 100%" width="100%">
+                         <tbody>
+                            <tr>
+                               <td class= "padded" style= "padding: 0;vertical-align: top;padding-left: 40px;padding-right: 40px;text-align: left">
+                                  <div class= "btn" style="Margin-bottom: 20px;text-align: center">
+                                     <a href="'.$link.'" style= "display: inline-block;text-align: center;text-decoration: none;border-radius: 6px;-moz-border-radius: 6px;color: #fff;font-size: 16px;line-height: 24px;font-family: sans-serif;background-color: #55ab26;padding: 15px 60px">'.$translation['buttonChangePassword'].'</a>
                                   </div>
                                </td>
                             </tr>

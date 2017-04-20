@@ -11,7 +11,6 @@ Notification = (function() {
         
         $.notify({
             icon: icon,
-           // title: title,
             message: message
         },{
             type: type,
@@ -19,7 +18,7 @@ Notification = (function() {
                 from: "bottom",
                 align: "center"
             },
-            timer: 1500,
+            timer: 500,
             template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
                 '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
                 '<span class="logoNotication" data-notify="icon"></span> ' +

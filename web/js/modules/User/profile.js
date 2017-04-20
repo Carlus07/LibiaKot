@@ -10,7 +10,6 @@ UserProfile = (function() {
         maxH : 600,
         qualiteCompression : 0.8,
         buttonEdition : $('.buttonEdition'),
-        buttonUpdatePassword : $('.buttonUpdatePassword'),
         table : $('.tableProfile'),
         caseTable : $('.tableProfile td')
     };
@@ -26,7 +25,6 @@ UserProfile = (function() {
         s.updateAvatar.on('click', click);
         s.fileUploadAvatar.on('change', function(event){ compression(event); });
         s.buttonEdition.on('click', editTable);
-        s.buttonUpdatePassword.on('click', editPassword);
         s.caseTable.on("change", validation);
     };
     var decreaseOpacity = function()
@@ -157,11 +155,27 @@ UserProfile = (function() {
     };
     var editTable = function()
     {
-        s.table.editableTableWidget({editor: $('<textarea>')});
-    };
-    var editPassword = function()
-    {
-
+        var button = $(this);
+        if (button.attr("data-option") == "edit")
+        {
+            s.table.editableTableWidget({editor: $('<textarea>')});
+            button.attr("data-option", "endOfEdit");
+            Translator.translation("endOfEdition").done(function(data){
+                button.text(data);
+            });
+            Translator.translation("infoEditable").done(function(data){
+                Notification.notification("info", data);
+            });
+        }
+        else 
+        {
+            s.table.off();
+            s.table.css('cursor','context-menu')
+            button.attr("data-option", "edit");
+            Translator.translation("editAccount").done(function(data){
+                button.text(data);
+            });
+        }        
     };
     var validation = function() 
     {

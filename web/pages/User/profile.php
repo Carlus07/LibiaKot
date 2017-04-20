@@ -54,8 +54,8 @@
 			</div>
 		</div>
 		<div class="col-sm-offset-4 col-sm-8 text-center">
-			<button class="btn btn-lg btn-success btn-signin buttonUpdatePassword" type="submit"><?php echo $translation['editPassword']; ?></button>
-			<button class="btn btn-lg btn-success btn-signin buttonEdition" type="submit"><?php echo $translation['editAccount']; ?></button>
+			<a href="?p=user.changepassword"><button class="btn btn-lg btn-success btn-signin buttonUpdatePassword" type="submit"><?php echo $translation['editPassword']; ?></button></a>
+			<button class="btn btn-lg btn-success btn-signin buttonEdition" data-option="edit" type="submit"><?php echo $translation['editAccount']; ?></button>
 		</div>
 	</div>
 </div>
