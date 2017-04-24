@@ -18,7 +18,7 @@ Validation = (function() {
         if (number == "") return "textEmpty";
         number = parseInt(number);
         if (isNaN(number)) return "numberNotInteger"
-        else if (number < 1) return "numberNotNull"
+        else if (number < 0) return "numberNotNull"
         else if (number > 99999) return "numberTooLong";
         else return "";
     };

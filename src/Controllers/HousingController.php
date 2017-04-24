@@ -21,7 +21,20 @@ class HousingController extends Controller {
     public function addHousing($errors = "") 
     {
         if (empty($_POST)) 
-        {
+        {   
+            if (isset($_GET['m']) && ($_GET['m'] == "updateHousing")) $accomodation = $this->getConnection()->getRepository("Housing")->find($_GET['id']);
+            else if (isset($_GET['m']) && ($_GET['m'] == "updateProperty")) $accomodation = $this->getConnection()->getRepository("Property")->find($_GET['id']);
+            else $accomodation = null;
+
+            if (isset($_GET['m']) && ($_GET['m'] == "updateHousing"))
+            {
+                $equipments = $this->getConnection()->getRepository("HousingEquipment")->findByIdHousing($_GET['id']);
+                $housingEquipment = [];
+                foreach ($equipments as $equipment) {
+                    $housingEquipment[$equipment->getIdEquipment()->getIdLabel()->getLabel()] = true;
+                }
+                $pictures = $this->getConnection()->getRepository("Picture")->findByIdHousing($_GET['id']);
+            }
             $menus = array();
             $typeRepo = static::getConnection()->getRepository("Type");
             $types = $typeRepo->findAll();
@@ -30,11 +43,11 @@ class HousingController extends Controller {
 
             foreach($types as $type)
             {
-                $menus[Language::getLabelTranslation($type->getIdLabel())][$type->getId()] = array();
+                $menus[$type->getIdLabel()->getLabel()][Language::getLabelTranslation($type->getIdLabel())][$type->getId()] = array();
             }
             foreach($subTypes as $subType)
             {
-                $menus[Language::getLabelTranslation($subType->getIdType()->getIdLabel()->getId())][$subType->getIdType()->getId()][$subType->getId()] = Language::getLabelTranslation($subType->getIdLabel());
+                $menus[$subType->getIdType()->getIdLabel()->getLabel()][Language::getLabelTranslation($subType->getIdType()->getIdLabel()->getId())][$subType->getIdType()->getId()][$subType->getId()] = Language::getLabelTranslation($subType->getIdLabel());
             }
 
             $zipCodes = $this->getZipCode(true);
@@ -52,60 +65,66 @@ class HousingController extends Controller {
                     if ($equipment->getIcon() != null) $associativeArray[$equipment->getIdCategory()->getId()]['equipment'][$equipment->getId()]["icon"] = $equipment->getIcon();
                 }
             }
-            $this->render('housing.add.equipment', compact("zipCodes", "associativeArray", "menus", "errors"));
+            $this->render('housing.add.equipment', compact("zipCodes", "associativeArray", "menus", "errors", "accomodation", "housingEquipment", "pictures"));
         } 
         else 
         {
-            $property = new Property;
-            $housing = new Housing;
+            $property = ($_POST['method'] == "updateProperty") ? $this->getConnection()->getRepository('Property')->find($_POST['id']) : new Property;
+            $housing = ($_POST['method'] == "updateHousing") ? $this->getConnection()->getRepository('Housing')->find($_POST['id']) : new Housing;
             $validation = new Validation;
-            $property->setZipCode(htmlspecialchars($_POST['zipCode']));
-            $property->setCity(htmlspecialchars($_POST['city']));
-            $property->setStreet(htmlspecialchars($_POST['street']));
-            $property->setNumber(htmlspecialchars($_POST['number']));
-            $property->setGPSPosition(htmlspecialchars($_POST['GPSPosition']));
-            $property->setEaseNearby(htmlspecialchars($_POST['easeNearby']));
-            $property->setDomiciliation(htmlspecialchars($_POST['domiciliation']));
-            $property->setTargetAudience(htmlspecialchars($_POST['targetAudience']));
-
-            if (isset($_POST['garden'])) $property->setGarden(true);
-            else $property->setGarden(false);
-            if (isset($_POST['terrace'])) $property->setTerrace(true);
-            else $property->setTerrace(false);
-            if (isset($_POST['bicycleParking'])) $property->setBicycleParking(true);
-            else $property->setBicycleParking(false);
-            if (isset($_POST['carParking'])) $property->setCarParking(true);
-            else $property->setCarParking(false);
-            if (isset($_POST['disabledAccess'])) $property->setDisabledAccess(true);
-            else $property->setDisabledAccess(false);
-            if (isset($_POST['smoker'])) $property->setSmoker(true);
-            else $property->setSmoker(false);
-            if (isset($_POST['realizedPEB'])) $property->setPEB(true);
-            else $property->setPEB(false);
-            if (isset($_POST['animal'])) $property->setAnimal(true);
-            else $property->setAnimal(false);
-
-
-            $validation->number($property->getZipCode());
-            $validation->text($property->getCity());
-            $validation->text($property->getStreet());
-            $validation->number($property->getNumber());
-            $validation->text($property->getEaseNearby());
-
-            if ($validation->isErrors()) {
-                $errors = $validation->getErrors();
-                unset($_POST);
-                $this->addHousing($errors);
-            }
-            else
+            if ($_POST['method'] != "updateHousing")
             {
-                $user = $this->getConnection()->getRepository("User")->find(Session::get('idUser'));
-                $property->setIdUser($user);
-                if (Session::get('Role') == 2) $property->setState(0);
-                if (Session::get('Role') == 3) $property->setState(1);
-                $this->getConnection()->persist($property);
-                $this->getConnection()->flush();
+                $property->setZipCode(htmlspecialchars($_POST['zipCode']));
+                $property->setCity(htmlspecialchars($_POST['city']));
+                $property->setStreet(htmlspecialchars($_POST['street']));
+                $property->setNumber(htmlspecialchars($_POST['number']));
+                $property->setGPSPosition(htmlspecialchars($_POST['GPSPosition']));
+                $property->setEaseNearby(htmlspecialchars($_POST['easeNearby']));
+                $property->setDomiciliation(htmlspecialchars($_POST['domiciliation']));
+                $property->setTargetAudience(htmlspecialchars($_POST['targetAudience']));
 
+                if (isset($_POST['garden'])) $property->setGarden(true);
+                else $property->setGarden(false);
+                if (isset($_POST['terrace'])) $property->setTerrace(true);
+                else $property->setTerrace(false);
+                if (isset($_POST['bicycleParking'])) $property->setBicycleParking(true);
+                else $property->setBicycleParking(false);
+                if (isset($_POST['carParking'])) $property->setCarParking(true);
+                else $property->setCarParking(false);
+                if (isset($_POST['disabledAccess'])) $property->setDisabledAccess(true);
+                else $property->setDisabledAccess(false);
+                if (isset($_POST['smoker'])) $property->setSmoker(true);
+                else $property->setSmoker(false);
+                if (isset($_POST['realizedPEB'])) $property->setPEB(true);
+                else $property->setPEB(false);
+                if (isset($_POST['animal'])) $property->setAnimal(true);
+                else $property->setAnimal(false);
+
+
+                $validation->number($property->getZipCode());
+                $validation->text($property->getCity());
+                $validation->text($property->getStreet());
+                $validation->number($property->getNumber());
+                $validation->text($property->getEaseNearby());
+
+                if ($validation->isErrors()) {
+                    $errors = $validation->getErrors();
+                    unset($_POST);
+                    $this->addHousing($errors);
+                }
+                else
+                {
+                    $user = $this->getConnection()->getRepository("User")->find(Session::get('idUser'));
+                    $property->setIdUser($user);
+                    if (Session::get('Role') == 2) $property->setState(0);
+                    if (Session::get('Role') == 3) $property->setState(1);
+                    if ($_POST['method'] == "updateProperty") $property->setState(2);
+                    $this->getConnection()->persist($property);
+                    $this->getConnection()->flush();
+                }
+            }
+            if ($_POST['method'] != "updateProperty")
+            {
                 $result = explode('+',$_POST['housingType']);
                 $type = $this->getConnection()->getRepository("Type")->find($result[0]);
                 $housing->setIdType($type);
@@ -147,19 +166,32 @@ class HousingController extends Controller {
                 else
                 {    
                     if (Session::get('Role') == 2) $housing->setState(0);
-                    if (Session::get('Role') == 3) $housing->setState(1);      
-                    $housing->setIdProperty($property);
-                    $housingReference = $this->getConnection()->getRepository('Housing')->findOneBy(array(), array('reference' => 'DESC'));
-                    if (!empty($housingReference))
+                    if (Session::get('Role') == 3) $housing->setState(1);   
+                    if ($_POST['method'] == "updateHousing") $property->setState(2);
+                    if ($_POST['id'] == "") 
                     {
-                        $reference = $housingReference->getReference()+1;
-                        $housing->setReference($reference);
+                        $property = $this->getConnection()->getRepository("Property")->find($_POST['idProperty']);
+                        $housing->setIdProperty($property);
+                        $housingReference = $this->getConnection()->getRepository('Housing')->findOneBy(array(), array('reference' => 'DESC'));
+                        if (!empty($housingReference))
+                        {
+                            $reference = $housingReference->getReference()+1;
+                            $housing->setReference($reference);
+                        }
+                        else $housing->setReference(1);
                     }
-                    else $housing->setReference(1);
                     $this->getConnection()->persist($housing);
                     $this->getConnection()->flush();   
-
+                    if ($_POST['method'] == "updateHousing")
+                    {
+                        $housingEquipments = $this->getConnection()->getRepository('HousingEquipment')->findByIdHousing($_POST['id']);
+                        foreach ($housingEquipments as $housingEquipment) {
+                            $this->getConnection()->remove($housingEquipment);
+                        }
+                        $this->getConnection()->flush();
+                    }
                     $equipments = $this->getConnection()->getRepository('Equipment')->findAll();
+
                     foreach ($equipments as $equipment) {
                         if (isset($_POST[$equipment->getIdLabel()->getLabel()])) 
                         {
@@ -175,6 +207,7 @@ class HousingController extends Controller {
                         if (strstr($pictureCache, $_POST['code']))
                         {
                             $repertory = "web/pictures/Housing/";
+                            $namePicture = explode("-",$pictureCache);
                             if (strstr($pictureCache,'-miniature')) rename('web/pictures/Housing/cache/'.$pictureCache, "web/pictures/Housing/miniature/".$pictureCache);
                             else 
                             {
@@ -182,7 +215,7 @@ class HousingController extends Controller {
                                 //$paysage = ($width > $height) ? true : false;
                                 rename('web/pictures/Housing/cache/'.$pictureCache, "web/pictures/Housing/original/".$pictureCache);
                                 $picture = new Picture;
-                                $picture->setName($pictureCache);
+                                $picture->setName($namePicture[0].".png");
                                 $picture->setDateUpload(new \DateTime("now"));
                                 $picture->setIdHousing($housing);
                                 $this->getConnection()->persist($picture);
@@ -190,15 +223,13 @@ class HousingController extends Controller {
                             }
                         }
                     }
-
                 }
-
+            }
                 /*$translation = Language::translation("mail");
                 $redirection = Navi::getRedirection($translation, true, "http://localhost/Projet/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=register&t=".$user->getToken());
                 $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "register", "http://localhost/Projet/index.php?p=user.confirmation&t=".$user->getToken()."&m=register");
                 Mail::sendMail($translation["subjectRegister"], $user->getMail(), $redirection, $contentMessage);
                 Router::redirect('user.confirmation', 'register');*/
-            }
         }
     }
     public function getZipCode($return = false)
@@ -255,9 +286,30 @@ class HousingController extends Controller {
     }
     public function deletePicture()
     {
-        $repertory = "web/pictures/Housing/cache/";
-        $error = unlink($repertory.$_POST['picture'].'-original.png');
-        $error = unlink($repertory.$_POST['picture'].'-miniature.png');
+        $error = true;
+        if ($_POST['status'] == "new")
+        {
+            $repertory = "web/pictures/Housing/cache/";
+            $error = unlink($repertory.$_POST['picture'].'-original.png');
+            $error = unlink($repertory.$_POST['picture'].'-miniature.png');
+        }
+        else
+        {
+            $error = unlink('web/pictures/Housing/original/'.$_POST['picture'].'-original.png');
+            $error = unlink('web/pictures/Housing/miniature/'.$_POST['picture'].'-miniature.png');
+            if ($error)
+            {
+                $query = $this->getConnection()->createQuery("
+                    SELECT p FROM Picture p
+                    WHERE p.name LIKE '".$_POST['picture']."%'
+                ");
+                $pictures = $query->getResult();
+                foreach ($pictures as $picture) {
+                    $this->getConnection()->remove($picture);
+                }
+                $this->getConnection()->flush();
+            }
+        }
         echo ($error) ? "success+successDeleteFile" : "warning+errorDeleteFile";
     }
     public function myHousing()
@@ -271,19 +323,128 @@ class HousingController extends Controller {
             $pendingHousing[$key]['housing'] = [];
             $validatedHousing[$key]['housing'] = [];
             foreach ($results as $housing) {
+                $pictures = $this->getConnection()->getRepository('Picture')->findByIdHousing($housing->getId());
+                if (!empty($pictures))
+                {
+                    $namePicture = explode('.',$pictures[0]->getName());
+                    $picture = "web/pictures/Housing/miniature/".$namePicture[0]."-miniature.".$namePicture[1];
+                }
+                else $picture =  "web/pictures/iconLarge.png";
+                
                 if ($housing->getState() == 0)
                 {
+                    $pendingHousing[$key]['picture'] = $picture;
                     $pendingHousing[$key]['property'] = $property;
                     array_push($pendingHousing[$key]['housing'], $housing);
                 }
                 else
                 {
+                    $validatedHousing[$key]['picture'] = $picture;
                     $validatedHousing[$key]['property'] = $property;
                     array_push($validatedHousing[$key]['housing'], $housing);
                 }
             }
-            
         }  
-        $this->render('housing.myHousing', compact("pendingHousing", "validatedHousing"));
+        $query = static::getConnection()->createQuery("
+            SELECT p 
+            FROM Property p
+            WHERE p.idProperty NOT IN (SELECT IDENTITY(h.idProperty) FROM Housing h)
+        ");
+        $properties = $query->getResult();
+
+        $pendingHousing['title'] = "waitingValidation";
+        $validatedHousing['title'] = "valid";
+        $pendingHousing['icon'] = "refresh";
+        $validatedHousing['icon'] = "check";
+        $accomodations['validatedHousing'] = $validatedHousing;
+        $accomodations['pendingHousing'] = $pendingHousing;
+        $this->render('housing.myHousing', compact("accomodations", "properties"));
+    }
+    public function deleteHousing($idHousing = null)
+    {
+        $errorDelete = false;
+        $idHousing = (isset($_POST['idHousing'])) ? $_POST['idHousing'] : $idHousing; 
+        $housing = $this->getConnection()->getRepository('Housing')->find($idHousing);
+        $housingEquipments = $this->getConnection()->getRepository('HousingEquipment')->findByIdHousing($idHousing);
+        $pictures = $this->getConnection()->getRepository('Picture')->findByIdHousing($idHousing);
+
+        foreach($housingEquipments as $housingEquipment)
+        {
+            if (!empty($housingEquipment)) 
+            {
+                $this->getConnection()->remove($housingEquipment);
+                $this->getConnection()->flush();
+            }
+            else
+            {
+                $errorDelete = true;
+                echo "warning+errorDelete";
+                break;
+            }
+        }
+        foreach($pictures as $picture)
+        {
+            if (!empty($picture)) 
+            {
+                $namePicture = explode('.', $picture->getName());
+                $error = unlink('web/pictures/Housing/miniature/'.$namePicture[0].'-miniature.'.$namePicture[1]);
+                $error = unlink('web/pictures/Housing/original/'.$namePicture[0].'-original.'.$namePicture[1]);
+                $errorDelete = ($error) ? false : true;
+                $this->getConnection()->remove($picture);
+                $this->getConnection()->flush();
+            }
+            else
+            {
+                $errorDelete = true;
+                echo "warning+errorDelete+picture";
+                break;
+            }
+        }
+        if (!$errorDelete)
+        {
+            if (!empty($housing)) 
+            {
+                
+                $this->getConnection()->remove($housing);
+                $this->getConnection()->flush();
+                if (isset($_POST['idHousing'])) echo "success+successDeleteHousing";
+            }
+            else
+            {
+                echo "warning+errorDelete";
+            }
+        }
+    }
+    public function deleteProperty()
+    {
+        $errorDelete = false;
+        $property = $this->getConnection()->getRepository('Property')->find($_POST['idProperty']);
+        $results = $this->getConnection()->getRepository('Housing')->findByIdProperty($_POST['idProperty']);
+        foreach ($results as $housing) {
+            if (!empty($housing))
+            {
+                $this->deleteHousing($housing->getId());
+            }
+            else
+            {
+                $errorDelete = true;
+                echo "warning+errorDelete";
+                break;
+            }
+        }
+        if (!$errorDelete)
+        {
+            if (!empty($property)) 
+            {
+                
+                $this->getConnection()->remove($property);
+                $this->getConnection()->flush();
+                echo "success+successDeleteProperty";
+            }
+            else
+            {
+                echo "warning+errorDelete";
+            }
+        }
     }
 }

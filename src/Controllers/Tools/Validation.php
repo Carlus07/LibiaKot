@@ -100,9 +100,7 @@ class Validation
         if (strlen($int) > $size) {
             $this->setErr('numberTooLong');
         } elseif (!$empty) {
-            if (!$int) {
-                $this->setErr('textEmpty');
-            } elseif (!is_int($int) && $int != "") {
+            if (!is_int($int) && $int != "") {
                 $this->setErr('numberNotInteger');
             }
         }

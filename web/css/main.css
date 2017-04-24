@@ -371,8 +371,18 @@ a:hover,a:focus {
 }
 .frameHousing {
     max-width: 650px;
-    padding: 40px 40px;
     background-color: #F7F7F7;
+    padding: 20px 25px 30px;
+    margin: 0 auto 25px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+.frameHousingView{
+	background-color: #F7F7F7;
     padding: 20px 25px 30px;
     margin: 0 auto 25px;
     -moz-border-radius: 2px;
@@ -428,7 +438,7 @@ legend > span{
     overflow: hidden;
 }
 .mapMyHousing{
-	height: 150px;
+	height: 195px;
     width: 100%;
     position: relative;
     overflow: hidden;
@@ -471,7 +481,7 @@ legend > span{
 	display: inline-grid;
     align-items: center;
     justify-content: center;
-    height: 150px;
+    height: 195px;
     font-size: 18px;
     flex-grow: 1;
 }
@@ -481,4 +491,19 @@ legend > span{
 .divChange{
 	display: flex;
     flex-direction: row;
+}
+.tableProperty{
+	margin-bottom: 0px;
+}
+.pencil:hover,.remove:hover, .eye:hover{
+	opacity: 0.7;
+}
+.pencil, .remove, .eye{
+	font-size: 20px;
+	cursor:pointer;
+	position: relative;
+	top:15px;
+}
+.titleHousing{
+	margin-top:10px;
 }

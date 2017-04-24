@@ -4,10 +4,6 @@ ModuleManager.loadModule("web/js/tools/Notification.js");
 HousingAdd = (function() {
     var s = {
         checkBox : $('.checkBox'),
-        selectZipCode : $('#zipCode'),
-        selectCity : $('#city'),
-        inputStreet : $("#street"),
-        inputNumber : $("#number"),
         availability : $("#availability"),
         inputCapacity : $("#capacity"),
         inputSpace : $("#spaceAvailable"),
@@ -19,9 +15,6 @@ HousingAdd = (function() {
         deposit : $("#deposit"),
         rentComment : $("#rentComment"),
         codeInput : $('#code'),
-        geoCoder : null,
-        map : null,
-        marker : null,
         maxW : 1280,
         maxH : 1024,
         //Taille de la miniature affichée
@@ -30,8 +23,6 @@ HousingAdd = (function() {
         maxHMiniature : 500,
         maxWMiniature : 500,
         qualiteCompression : 0.8,
-        divMap : $("#map-canvas"),
-        GPSPosition : $('.GPSPosition'),
         infoHousing : $('.infoHousing'),
         housingType : $('#housingType'),
         capacity : $('.infoCapacity'),
@@ -40,26 +31,54 @@ HousingAdd = (function() {
         fileUploadPictures : $('#fileUploadPictures'),
         divUploadPictures : $(".divUploadPictures"),
         errors : $("#errorAddHousing"),
+        id : $("#id").val(),
+        method : $('#method').val(),
         //Code unique par page utilisé lors de l'upload dans le nom de l'image
-        code : (new Date().getTime() + Math.floor((Math.random()*10000)+1)).toString(16)
+        code : (new Date().getTime() + Math.floor((Math.random()*10000)+1)).toString(16),
+        divMap : $("#map-canvas"),
+        selectZipCode : $('#zipCode'),
+        selectCity : $('#city'),
+        inputStreet : $("#street"),
+        inputNumber : $("#number"),
+        GPSPosition : $('.GPSPosition'),
+        geoCoder : null,
+        map : null,
+        marker : null,
+        cancelUpload : $('.cancelUploadHousing'),
+        divUpload : $('.carre')
     };
 
     var init = function() {
         bindUIActions();
+        if (s.divUpload[0] != null) uploadUIActions();
         if (s.errors.val() != "") notification();
-        Translator.translation('textEmpty').done(function(data){
-            if (s.selectZipCode.val() == "null") s.selectZipCode[0].setCustomValidity(data);
-            if (s.inputStreet.val() == "") s.inputStreet[0].setCustomValidity(data);
-            if (s.inputNumber.val() == "") s.inputNumber[0].setCustomValidity(data);
-            if (s.availability.val() == "") s.availability[0].setCustomValidity(data);
-            if (s.area.val() == "") s.area[0].setCustomValidity(data);
-            if (s.floor.val() == "") s.floor[0].setCustomValidity(data);
-            if (s.rent.val() == "") s.rent[0].setCustomValidity(data);
-            if (s.charge.val() == "") s.charge[0].setCustomValidity(data);
-            if (s.deposit.val() == "") s.deposit[0].setCustomValidity(data);
-        });
-        LoaderScript.loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyCvRAuFQQ04OVRXeimrBPdMMHRnpMXYw8Q&language=fr");
-        setTimeout(function(){ initializeMap(); }, 3000);
+        if ((s.method == "addHousing") || (s.method == "updateHousing"))
+        {
+            Translator.translation('textEmpty').done(function(data){
+                if (s.availability.val() == "") s.availability[0].setCustomValidity(data);
+                if (s.area.val() == "") s.area[0].setCustomValidity(data);
+                if (s.floor.val() == "") s.floor[0].setCustomValidity(data);
+                if (s.rent.val() == "") s.rent[0].setCustomValidity(data);
+                if (s.charge.val() == "") s.charge[0].setCustomValidity(data);
+                if (s.deposit.val() == "") s.deposit[0].setCustomValidity(data);
+            });
+        }
+        else
+        {
+            Translator.translation('textEmpty').done(function(data){
+                if (s.selectZipCode.val() == "null") s.selectZipCode[0].setCustomValidity(data);
+                if (s.inputStreet.val() == "") s.inputStreet[0].setCustomValidity(data);
+                if (s.inputNumber.val() == "") s.inputNumber[0].setCustomValidity(data);
+                if (s.availability.val() == "") s.availability[0].setCustomValidity(data);
+                if (s.area.val() == "") s.area[0].setCustomValidity(data);
+                if (s.floor.val() == "") s.floor[0].setCustomValidity(data);
+                if (s.rent.val() == "") s.rent[0].setCustomValidity(data);
+                if (s.charge.val() == "") s.charge[0].setCustomValidity(data);
+                if (s.deposit.val() == "") s.deposit[0].setCustomValidity(data);
+            });
+            LoaderScript.loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyCvRAuFQQ04OVRXeimrBPdMMHRnpMXYw8Q&language=fr");
+            setTimeout(function(){ initializeMap(); }, 3000);
+        }
         s.codeInput.attr('value', s.code);
     };
     var bindUIActions = function() {
@@ -69,17 +88,20 @@ HousingAdd = (function() {
         $('#datetimepicker').datetimepicker({
             viewMode: 'years',
             format: 'YYYY-MM-DD',
-            minDate : 'now'
+            minDate: new Date()
         });
-        s.selectZipCode.on('change', selectZipCode);
-        s.selectCity.on('change', emptyField);
-        s.inputNumber.on('change', createAddress);
+        if ((s.method != "addHousing") && (s.method != "updateHousing"))
+        {
+            s.selectZipCode.on('change', selectZipCode);
+            s.selectCity.on('change', emptyField);
+            s.inputNumber.on('change', createAddress);
+            s.inputStreet.on('change', function(){validation(this,"text");});
+        }
         s.checkBox.on('click', changeState);
         s.housingType.on('change', loadHousing);
         s.buttonAddPicture.on('click', click);
         s.availability.on('blur', selectAvailability);
         s.fileUploadPictures.on('change', function(event){ compression(event); });
-        s.inputStreet.on('change', function(){validation(this,"text");});
         s.inputCapacity.on('change', function(){validation(this,"number");});
         s.inputSpace.on('change', function(){validation(this,"number");});
         s.area.on('change', function(){validation(this,"number");});
@@ -205,7 +227,7 @@ HousingAdd = (function() {
                         canvasDataUpload = canvasUpload.toDataURL('image/png', s.qualiteCompression)
                         
                         s.divUploadPictures.append(
-                            '<div value="'+img.name+'" class="carre">'+
+                            '<div value="'+img.name+'" alt="new" class="carre">'+
                                 '<img class="vignette" src="'+canvasDataUpload+'" style="max-width:'+s.tailleVignette+'px;">'+
                                 '<i class="fa fa-times-circle cancelUploadHousing" aria-hidden="true"></i>'+
                             '</div>');
@@ -236,6 +258,8 @@ HousingAdd = (function() {
                         delete taille;    
                         if (j == test)
                         {
+                            s.cancelUpload.off();
+                            s.divUpload.off();
                             s.cancelUpload = $('.cancelUploadHousing');
                             s.divUpload = $('.carre');
                             uploadUIActions();
@@ -295,7 +319,7 @@ HousingAdd = (function() {
     {
         var selection = $(this).parent();
         $.post("index.php?r=housing.deletePicture",
-            {picture : selection.attr("value")},
+            {picture : selection.attr("value"), status : selection.attr("alt")},
             function (result)
             {
                 var str = result.split('+');
@@ -359,14 +383,30 @@ HousingAdd = (function() {
     };
     var initializeMap = function()
     {
-        if (window['google'] == undefined) setTimeout(initializeMap, 1000);
-        s.geoCoder = new google.maps.Geocoder();
-        var latlng = new google.maps.LatLng(50.466667,4.867222);
-        var mapOptions = {
-            zoom      : 14,
-            center    : latlng
+        if (s.GPSPosition.val() != "")
+        {
+            var coordinated = s.GPSPosition.val().split(',');
+            var latlng = {lat: parseFloat(coordinated[0]), lng: parseFloat(coordinated[1])};
+            var map = new google.maps.Map(s.divMap[0], {
+                zoom: 15,
+                center: latlng
+            });
+            var marker = new google.maps.Marker({
+                position: latlng,
+                map: map
+            }); 
         }
-        s.map = new google.maps.Map(s.divMap[0], mapOptions);
+        else
+        {
+            if (window['google'] == undefined) setTimeout(initializeMap, 1000);
+            s.geoCoder = new google.maps.Geocoder();
+            var latlng = new google.maps.LatLng(50.466667,4.867222);
+            var mapOptions = {
+                zoom      : 14,
+                center    : latlng
+            }
+            s.map = new google.maps.Map(s.divMap[0], mapOptions);
+        }
     };
     var createAddress = function()
     {
@@ -425,9 +465,9 @@ HousingAdd = (function() {
     };
     var loadHousing = function()
     {
-        switch(s.housingType.val())
+        switch($("#housingType option:selected").attr("data-type"))
         {
-            case "0" :
+            case "kot" :
             {
                 s.capacity.addClass("fade");
                 s.infoHousing.addClass("fade");
@@ -436,17 +476,7 @@ HousingAdd = (function() {
                 s.inputSpace[0].setCustomValidity('');
                 break;
             }
-            case "1" :
-            case "2" :
-            {
-                s.capacity.addClass("fade");
-                s.infoHousing.addClass("fade");
-                s.space.addClass("fade");
-                s.inputCapacity[0].setCustomValidity('');
-                s.inputSpace[0].setCustomValidity('');
-                break;
-            }
-            case "3" :
+            case "studio" :
             {
                 s.capacity.removeClass("fade");
                 Translator.translation('textEmpty').done(function(data){
@@ -457,8 +487,8 @@ HousingAdd = (function() {
                 s.inputSpace[0].setCustomValidity('');
                 break;
             }
-            case "4" :
-            case "5" : 
+            case "appartment" :
+            case "house" : 
             {
                 s.capacity.removeClass("fade");
                 s.infoHousing.removeClass("fade");
@@ -469,7 +499,7 @@ HousingAdd = (function() {
                 });
                 break;
             }
-            case "6" :
+            case "flatsharing" :
             {
                 s.capacity.removeClass("fade");
                 s.infoHousing.removeClass("fade");

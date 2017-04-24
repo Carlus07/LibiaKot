@@ -140,7 +140,7 @@ class Property
         $this->bicycleParking = $bicycleParking;
     }
 
-    public function getCarParking($carParking){
+    public function getCarParking(){
         return $this->carParking;
     }
 
