@@ -10,6 +10,31 @@
       <?php 
       $i = 1;
       $initialized = false;
+      if($_SESSION['Role'] == 3)
+      {
+      ?>
+        <fieldset>
+          <legend><span><?php echo $i;?></span><?php echo $translation['infoUser']; ?></legend>
+          <?php $i++; ?>
+            <div class="ui-widget">
+            <label><?php echo $translation['selectUser']; ?></label>
+            <select class="test" id="combobox">
+              <option value=""></option>
+              <?php
+                foreach ($users as $user) {
+                  echo '<option value="'.$user->getId().'">'.$user->getFirstName().' '.$user->getName().'</option>';
+                }
+              ?>
+            </select>
+          </div>
+          <div class="row">
+            <div class="infoUser text-center">
+            </div>
+            <input type="hidden" class="idUser" value="" name="idUser"/>
+          </div>
+        </fieldset>
+      <?php
+      }
       if (!isset($_GET['m']) || ((isset($_GET['m']) && ($_GET['m'] == 'updateProperty'))))
       {
         $initialized = (isset($_GET['m']) && ($_GET['m'] == 'updateProperty'));
@@ -428,7 +453,7 @@
                 <label for="rentalDuration">*<?php echo $translation['rentalDuration']; ?></label>
                 <select class="form-control" id="rentalDuration" name="rentalDuration">
                   <option value="1" <?php echo (($initialized) && ($accomodation->getRentalDuration() == 1)) ? "selected" : ""; ?>><?php echo '12 '.$translation['month']; ?></option>
-                  <option value="2" <?php echo (($initialized) && ($accomodation->getRentalDuration() == 2)) ? "selected" : ""; ?>><?php echo '10 '.$translation['month']; ?></optio
+                  <option value="2" <?php echo (($initialized) && ($accomodation->getRentalDuration() == 2)) ? "selected" : ""; ?>><?php echo '10 '.$translation['month']; ?></option>
                   <option value="3" <?php echo (($initialized) && ($accomodation->getRentalDuration() == 3)) ? "selected" : ""; ?>><?php echo $translation['firstSemester']; ?></option>
                   <option value="4" <?php echo (($initialized) && ($accomodation->getRentalDuration() == 4)) ? "selected" : ""; ?>><?php echo $translation['secondSemester']; ?></option>
                   <option value="5" <?php echo (($initialized) && ($accomodation->getRentalDuration() == 5)) ? "selected" : ""; ?>><?php echo $translation['summerHoliday']; ?></option>

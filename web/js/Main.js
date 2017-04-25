@@ -191,10 +191,13 @@
                 return GETS;
             };
             var followLink = function(url) {
-                if (url[0] == '?') {
-                    loadPage(url);
+                if (undefined != url)
+                {
+                    if (url[0] == '?') {
+                        loadPage(url);
+                    }
+                    else if (url[0] != '#') document.location.href=url;
                 }
-                else if (url[0] != '#') document.location.href=url;
             };
             var loadPage = function(url, dataToAdd, back) {
                 s.url = url || getUrl();

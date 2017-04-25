@@ -45,11 +45,15 @@ HousingAdd = (function() {
         map : null,
         marker : null,
         cancelUpload : $('.cancelUploadHousing'),
-        divUpload : $('.carre')
+        divUpload : $('.carre'),
+        combobox : $("#combobox"),
+        infoUser : $('.infoUser'),
+        idUser : $('.idUser')
     };
 
     var init = function() {
         bindUIActions();
+        combobox();
         if (s.divUpload[0] != null) uploadUIActions();
         if (s.errors.val() != "") notification();
         if ((s.method == "addHousing") || (s.method == "updateHousing"))
@@ -82,6 +86,7 @@ HousingAdd = (function() {
         s.codeInput.attr('value', s.code);
     };
     var bindUIActions = function() {
+
         s.checkBox.checkboxradio({
             icon: false
         });
@@ -116,6 +121,196 @@ HousingAdd = (function() {
         s.cancelUpload.on('click', cancelUpload);
         s.divUpload.on('mouseover', showButtonCancel);
         s.divUpload.on('mouseout', disappearButtonCancel);
+    };
+    var infoUser = function()
+    {
+        var idUser = s.combobox.val();
+        if (idUser != "")
+        {
+            s.idUser.attr("value", idUser);
+            $.post("index.php?r=user.infoUser",
+                {id : idUser},
+                function (result)
+                {
+                    s.infoUser.empty();
+                    var parsed = JSON.parse(result);          
+                    var avatar = (parsed.picture != null) ? parsed.picture : "web/pictures/avatar.png";
+                    s.infoUser.append(
+                        '<div class="col-sm-4 text-center" style="margin-top: 45px;margin-left: 20px;">'+
+                            '<div class="row text-center">'+
+                                '<img class="avatar" src="'+avatar+'">'+
+                            '</div>'+
+                        '</div>'+
+                        '<div class="col-sm-offset-1 col-sm-6">'+
+                            '<div class="row" style="margin-top:40px;">'+
+                                '<div class="panel panel-default">'+
+                                    '<table class="table tableProfile">'+
+                                        '<tr>'+
+                                            '<th><i class="fa fa-map-signs" aria-hidden="true"></i></i></th>'+
+                                            '<td value="text" data-column="street">'+parsed.street+'</td>'+
+                                        '</tr>'+
+                                        '<tr>'+
+                                            '<th><i class="fa fa-home" aria-hidden="true"></i></i></th>'+
+                                            '<td value="number" data-column="number">'+parsed.number+'</td>'+
+                                        '</tr>'+
+                                        '<tr>'+
+                                            '<th><i class="fa fa-address-card" aria-hidden="true"></i></th>'+
+                                            '<td value="text" data-column="city">'+parsed.city+'</td>'+
+                                        '</tr>'+
+                                        '<tr>'+
+                                            '<th><i class="fa fa-map-marker" aria-hidden="true"></i></th>'+
+                                            '<td value="number" data-column="zipCode">'+parsed.zipCode+'</td>'+
+                                        '</tr>'+
+                                        '<tr>'+
+                                            '<th><i class="fa fa-phone" aria-hidden="true"></i></th>'+
+                                            '<td value="phone" data-column="phone">'+parsed.phone+'</td>'+
+                                        '</tr>'+
+                                        '<tr>'+
+                                            '<th><i class="fa fa-envelope" aria-hidden="true"></i></th>'+
+                                            '<td value="mail">'+parsed.mail+'</td>'+
+                                        '</tr>'+
+                                    '</table>'+
+                                '</div>'+
+                            '</div>'+
+                        '</div>');
+                }
+            ); 
+        }
+        
+    };
+    var combobox = function() 
+    {
+        $.widget( "custom.combobox", {
+              _create: function() {
+                this.wrapper = $( "<span>" )
+                .addClass( "custom-combobox" )
+                .insertAfter( this.element );
+
+                this.element.hide();
+                this._createAutocomplete();
+                this._createShowAllButton();
+            },
+
+            _createAutocomplete: function() {
+                var selected = this.element.children( ":selected" ),
+                value = selected.val() ? selected.text() : "";
+
+                this.input = $( "<input>" )
+                .appendTo( this.wrapper )
+                .val( value )
+                .attr( "title", "" )
+                .addClass( "custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left" )
+                .autocomplete({
+                    delay: 0,
+                    minLength: 0,
+                    source: $.proxy( this, "_source" )
+                })
+                .tooltip({
+                    classes: {
+                      "ui-tooltip": "ui-state-highlight"
+                  }
+              });
+
+                this._on( this.input, {
+                  autocompleteselect: function( event, ui ) {
+                    ui.item.option.selected = true;
+                    this._trigger( "select", event, {
+                      item: ui.item.option
+                  });
+                },
+
+                autocompletechange: "_removeIfInvalid"
+            });
+            },
+
+            _createShowAllButton: function() {
+                var input = this.input,
+                wasOpen = false;
+
+                $( "<a>" )
+                .attr( "tabIndex", -1 )
+                .attr( "title", "Show All Items" )
+                .tooltip()
+                .appendTo( this.wrapper )
+                .button({
+                    icons: {
+                      primary: "ui-icon-triangle-1-s"
+                  },
+                  text: false
+              })
+                .removeClass( "ui-corner-all" )
+                .addClass( "custom-combobox-toggle ui-corner-right" )
+                .on( "mousedown", function() {
+                    wasOpen = input.autocomplete( "widget" ).is( ":visible" );
+                })
+                .on( "click", function() {
+                    input.trigger( "focus" );
+
+                // Close if already visible
+                if ( wasOpen ) {
+                  return;
+              }
+
+                // Pass empty string as value to search for, displaying all results
+                input.autocomplete( "search", "" );
+            });
+            },
+
+            _source: function( request, response ) {
+                var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
+                response( this.element.children( "option" ).map(function() {
+                  var text = $( this ).text();
+                  if ( this.value && ( !request.term || matcher.test(text) ) )
+                    return {
+                      label: text,
+                      value: text,
+                      option: this
+                  };
+              }) );
+            },
+
+            _removeIfInvalid: function( event, ui ) {
+
+            // Selected an item, nothing to do
+            if ( ui.item ) {
+              return;
+            }
+
+            // Search for a match (case-insensitive)
+            var value = this.input.val(),
+            valueLowerCase = value.toLowerCase(),
+            valid = false;
+            this.element.children( "option" ).each(function() {
+                  if ( $( this ).text().toLowerCase() === valueLowerCase ) {
+                    this.selected = valid = true;
+                    return false;
+                }
+            });
+
+            // Found a match, nothing to do
+            if ( valid ) {
+              return;
+            }
+
+            // Remove invalid value
+            this.input
+            .val( "" )
+            .attr( "title", value + " didn't match any item" )
+            .tooltip( "open" );
+            this.element.val( "" );
+            this._delay(function() {
+              this.input.tooltip( "close" ).attr( "title", "" );
+            }, 2500 );
+            this.input.autocomplete( "instance" ).term = "";
+            },
+
+            _destroy: function() {
+                this.wrapper.remove();
+                this.element.show();
+            }
+        });
+        s.combobox.combobox();
+        $('.custom-combobox-input').on('blur', infoUser);
     };
     var selectZipCode = function() 
     {
@@ -487,7 +682,7 @@ HousingAdd = (function() {
                 s.inputSpace[0].setCustomValidity('');
                 break;
             }
-            case "appartment" :
+            case "apartment" :
             case "house" : 
             {
                 s.capacity.removeClass("fade");

@@ -15,7 +15,8 @@ UserRegister = (function() {
         phone : $("#phone"),
         secondPhone : $("#secondPhone"),
         button : $(".buttonRegister"),
-        errors : $("#errorRegister")
+        errors : $("#errorRegister"),
+        admin : $('.admin')
     };
 
     var init = function() {
@@ -24,29 +25,37 @@ UserRegister = (function() {
         Translator.translation('textEmpty').done(function(data){
             if (s.lastName.val() == "") s.lastName[0].setCustomValidity(data);
             if (s.firstName.val() == "") s.firstName[0].setCustomValidity(data);
-            if (s.mail.val() == "") s.mail[0].setCustomValidity(data);
-            if (s.password.val() == "") s.password[0].setCustomValidity(data);
-            if (s.confirmPassword.val() == "") s.confirmPassword[0].setCustomValidity(data);
             if (s.street.val() == "") s.street[0].setCustomValidity(data);
             if (s.number.val() == "") s.number[0].setCustomValidity(data);
             if (s.city.val() == "") s.city[0].setCustomValidity(data);
             if (s.zipCode.val() == "") s.zipCode[0].setCustomValidity(data);
             if (s.phone.val() == "") s.phone[0].setCustomValidity(data);
         });
+        if (s.admin.val() == "false")
+        {
+            Translator.translation('textEmpty').done(function(data){
+                if (s.mail.val() == "") s.mail[0].setCustomValidity(data);
+                if (s.password.val() == "") s.password[0].setCustomValidity(data);
+                if (s.confirmPassword.val() == "") s.confirmPassword[0].setCustomValidity(data);
+            });
+        }
     };
 
     var bindUIActions = function() {
         s.lastName.on("change", function(){validation(this,"text");});
         s.firstName.on("change", function(){validation(this,"text");});
         s.mail.on("change", function(){validation(this,"mail");});
-        s.password.on("change", function(){validation(this,"password");});
-        s.confirmPassword.on("change", function(){validation(this,"passwordBis");});
         s.street.on("change", function(){validation(this,"text");});
         s.number.on("change", function(){validation(this,"number");});
         s.city.on("change", function(){validation(this,"text");});
         s.zipCode.on("change", function(){validation(this,"number");});
         s.phone.on("change", function(){validation(this,"phone");});
         s.secondPhone.on("change", function(){validation(this,"phone");});
+        if (s.admin.val() == "false")
+        {
+            s.password.on("change", function(){validation(this,"password");});
+            s.confirmPassword.on("change", function(){validation(this,"passwordBis");});
+        }
     };
     var validation = function(element, type) {
         switch(type)

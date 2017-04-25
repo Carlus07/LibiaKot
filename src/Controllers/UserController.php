@@ -243,4 +243,75 @@ class UserController extends Controller {
             }
         }
     }
+    public function add()
+    {
+        if (empty($_POST)) 
+        {
+            $admin = true;
+            $this->render("user.register", compact('admin'));
+        } 
+        else 
+        {
+            $user = new User;
+            $validation = new Validation;
+
+            $user->setName(htmlspecialchars($_POST['lastName']));
+            $user->setFirstName(htmlspecialchars($_POST['firstName']));
+            $user->setGender(htmlspecialchars($_POST['gender']));
+            $user->setMail(htmlspecialchars($_POST['mail']));
+            $user->setStreet(htmlspecialchars($_POST['street']));
+            $user->setNumber(intval(htmlspecialchars($_POST['number'])));
+            $user->setCity(htmlspecialchars($_POST['city']));
+            $user->setZipCode(intval(htmlspecialchars($_POST['zipCode'])));
+            $user->setPhone(htmlspecialchars($_POST['phone']));
+            $user->setSecondPhone(htmlspecialchars($_POST['secondPhone']));
+
+            $validation->text($user->getName());
+            $validation->text($user->getFirstName());
+            if (!empty($_POST['mail'])) $validation->email($user->getMail());
+            $validation->text($user->getStreet());
+            $validation->number($user->getNumber());    
+            $validation->text($user->getCity());
+            $validation->number($user->getZipCode());
+            $validation->phone($user->getPhone());
+            $validation->phone($user->getSecondPhone(), true);
+
+            if ($validation->isErrors()) {
+                $errors = $validation->getErrors();
+                $admin = true;
+                $this->render('user.register', compact('user', 'admin', 'errors'));
+            }
+            else
+            {
+                $role = $this->getConnection()->getRepository('Role')->find(2);
+                $user->setIdRole($role);
+                $user->setNbConnection(0);
+                $user->setConfirmed(true);
+                $user->setTimeToken(new \DateTime("now"));
+                $user->setIp(Session::get("ip"));
+                $user->setToken(Security::generateToken());
+                $newPassword = Security::createPassword(12);
+                $user->setPassword(Security::cryptage($newPassword));
+                $this->getConnection()->persist($user);
+                $this->getConnection()->flush();
+                /*$translation = Language::translation("mail");
+                $redirection = Navi::getRedirection($translation, true, "http://localhost/Projet/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=register&t=".$user->getToken());
+                $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "register", "http://localhost/Projet/index.php?p=user.confirmation&t=".$user->getToken()."&m=register");
+                Mail::sendMail($translation["subjectRegister"], $user->getMail(), $redirection, $contentMessage);
+                Router::redirect('user.confirmation', 'register');*/
+            }
+        }
+    }
+    public function infoUser()
+    {
+        $user = $this->getConnection()->getRepository('User')->find($_POST['id']);
+        $result['picture'] = $user->getPicture();
+        $result['mail'] = $user->getMail();
+        $result['street'] = $user->getStreet();
+        $result['number'] = $user->getNumber();
+        $result['city'] = $user->getCity();
+        $result['zipCode'] = $user->getZipCode();
+        $result['phone'] = $user->getPhone();
+        echo json_encode($result);
+    }
 }

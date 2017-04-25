@@ -35,6 +35,12 @@ class HousingController extends Controller {
                 }
                 $pictures = $this->getConnection()->getRepository("Picture")->findByIdHousing($_GET['id']);
             }
+            $users = null;
+            if (Session::get('Role') == 3)
+            {
+                $role = $this->getConnection()->getRepository("Role")->findByDescription("owner");
+                $users = $this->getConnection()->getRepository("User")->findByIdRole($role[0]);
+            }
             $menus = array();
             $typeRepo = static::getConnection()->getRepository("Type");
             $types = $typeRepo->findAll();
@@ -65,7 +71,7 @@ class HousingController extends Controller {
                     if ($equipment->getIcon() != null) $associativeArray[$equipment->getIdCategory()->getId()]['equipment'][$equipment->getId()]["icon"] = $equipment->getIcon();
                 }
             }
-            $this->render('housing.add.equipment', compact("zipCodes", "associativeArray", "menus", "errors", "accomodation", "housingEquipment", "pictures"));
+            $this->render('housing.add.equipment', compact("zipCodes", "associativeArray", "menus", "errors", "accomodation", "housingEquipment", "pictures", "users"));
         } 
         else 
         {
@@ -114,7 +120,7 @@ class HousingController extends Controller {
                 }
                 else
                 {
-                    $user = $this->getConnection()->getRepository("User")->find(Session::get('idUser'));
+                    $user = (Session::get('Role') == 3) ? $this->getConnection()->getRepository("User")->find($_POST['idUser']) : $this->getConnection()->getRepository("User")->find(Session::get('idUser'));
                     $property->setIdUser($user);
                     if (Session::get('Role') == 2) $property->setState(0);
                     if (Session::get('Role') == 3) $property->setState(1);
@@ -225,6 +231,7 @@ class HousingController extends Controller {
                     }
                 }
             }
+            $this->myHousing();
                 /*$translation = Language::translation("mail");
                 $redirection = Navi::getRedirection($translation, true, "http://localhost/Projet/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=register&t=".$user->getToken());
                 $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "register", "http://localhost/Projet/index.php?p=user.confirmation&t=".$user->getToken()."&m=register");
