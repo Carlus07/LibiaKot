@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/annotations.git",
-                "reference": "d116e276bc676c7048e3d6b65daa5e713b4f16e6"
+                "reference": "54cacc9b81758b14e3ce750f205a393d52339e97"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/annotations/zipball/d116e276bc676c7048e3d6b65daa5e713b4f16e6",
-                "reference": "d116e276bc676c7048e3d6b65daa5e713b4f16e6",
+                "url": "https://api.github.com/repos/doctrine/annotations/zipball/54cacc9b81758b14e3ce750f205a393d52339e97",
+                "reference": "54cacc9b81758b14e3ce750f205a393d52339e97",
                 "shasum": ""
             },
             "require": {
@@ -72,7 +72,7 @@
                 "docblock",
                 "parser"
             ],
-            "time": "2017-02-10 00:02:43"
+            "time": "2017-02-24 16:22:25"
         },
         {
             "name": "doctrine/cache",
@@ -80,12 +80,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/cache.git",
-                "reference": "e64d917c29fd8bb4ac13e122ec6de9721c4cf0e7"
+                "reference": "0da649fce4838f7a6121c501c9a86d4b8921b648"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/e64d917c29fd8bb4ac13e122ec6de9721c4cf0e7",
-                "reference": "e64d917c29fd8bb4ac13e122ec6de9721c4cf0e7",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/0da649fce4838f7a6121c501c9a86d4b8921b648",
+                "reference": "0da649fce4838f7a6121c501c9a86d4b8921b648",
                 "shasum": ""
             },
             "require": {
@@ -141,7 +141,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2017-01-20 09:27:09"
+            "time": "2017-03-06 14:38:51"
         },
         {
             "name": "doctrine/collections",
@@ -289,12 +289,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "a8447cb8571cd06172db3eddf9de62ab49bf0738"
+                "reference": "c41cc5a6f03081ea5139050cb20901c0d663cd0c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/a8447cb8571cd06172db3eddf9de62ab49bf0738",
-                "reference": "a8447cb8571cd06172db3eddf9de62ab49bf0738",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/c41cc5a6f03081ea5139050cb20901c0d663cd0c",
+                "reference": "c41cc5a6f03081ea5139050cb20901c0d663cd0c",
                 "shasum": ""
             },
             "require": {
@@ -352,7 +352,7 @@
                 "persistence",
                 "queryobject"
             ],
-            "time": "2017-02-10 18:30:02"
+            "time": "2017-04-26 07:27:54"
         },
         {
             "name": "doctrine/inflector",
@@ -601,17 +601,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "f3c234cd8db9f7e520a91d695db7d8bb5daeb7a4"
+                "reference": "2cfcbced8e39e2313ed4da8896fc8c59a56c0d7e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/f3c234cd8db9f7e520a91d695db7d8bb5daeb7a4",
-                "reference": "f3c234cd8db9f7e520a91d695db7d8bb5daeb7a4",
+                "url": "https://api.github.com/repos/symfony/console/zipball/2cfcbced8e39e2313ed4da8896fc8c59a56c0d7e",
+                "reference": "2cfcbced8e39e2313ed4da8896fc8c59a56c0d7e",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.9",
-                "symfony/debug": "~2.7,>=2.7.2|~3.0.0",
+                "symfony/debug": "^2.7.2|~3.0.0",
                 "symfony/polyfill-mbstring": "~1.0"
             },
             "require-dev": {
@@ -654,7 +654,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2017-02-06 12:04:06"
+            "time": "2017-04-26 01:38:53"
         },
         {
             "name": "symfony/debug",
