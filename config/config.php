@@ -1,9 +1,9 @@
 <?php
 $dbParams = array(
     'driver'   => 'pdo_mysql',
-    'user'     => 'root',
-    'password' => '',
-    'dbname'   => 'doctrine',
+    'user'     => 'Carlus',
+    'password' => 'password!libia',
+    'dbname'   => 'libiakot',
     'host'     => 'localhost',
     'port'     => '3306',
 );
