@@ -1,5 +1,4 @@
 <?php
-
 namespace Models;
 
 class Session {
@@ -17,7 +16,7 @@ class Session {
     
     public static function push($key,$value){
         $trimDir = trim(static::get($key));
-        if(!empty($trimDir)) $_SESSION[$key] = [];
+        if(empty($trimDir)) $_SESSION[$key] = [];
         array_push($_SESSION[$key],$value);
     }
 
