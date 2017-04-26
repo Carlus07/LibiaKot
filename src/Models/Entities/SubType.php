@@ -1,6 +1,6 @@
 <?php
 /**
- * @Entity @Table(name="subType")
+ * @Entity @Table(name="subtype")
  **/
 class SubType
 {
