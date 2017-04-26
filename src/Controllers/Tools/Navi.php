@@ -68,10 +68,11 @@ class Navi
 	  		<ul class="nav navbar-nav">';
 	  			foreach($menus as $key => $menu)
 	  			{
-                    $href = ((is_int($key)) || (!empty(current($menu)))) ? "#" : $key;
+					$trimDir = trim(current($menu));
+                    $href = ((is_int($key)) || (!empty($trimDir))) ? "#" : $key;
 	  				echo '<li class="dropdown dropdownMenu"><a href='.$href.' class="dropdown-toggle dropdownMenuCat" data-toggle="dropdown">'.key($menu);
-                    echo (!empty(current($menu))) ? '<span class="caret"></span></a>' : '</a>';
-                    if (!empty(current($menu)))
+                    echo (!empty($trimDir)) ? '<span class="caret"></span></a>' : '</a>';
+                    if (!empty($trimDir))
                     {
                         echo '<ul class="dropdown-menu pull-left">';
 			        	foreach($menu as $key=> $subMenu)
@@ -248,8 +249,9 @@ class Navi
         $preKey = "?p=housing.view&id=";
         foreach($types as $type)
         {
-            if (($role != 1) && empty($type->getLink())) $preKey = "";
-            $key = (($role != 1) && !empty($type->getLink())) ? $type->getLink() : $preKey.$type->getId();
+			$trimDir = trim($type->getLink());
+            if (($role != 1) && empty($trimDir)) $preKey = "";
+            $key = (($role != 1) && !empty($trimDir)) ? $type->getLink() : $preKey.$type->getId();
             $association[$key] = Language::getLabelTranslation($type->getIdLabel());
             $menus[$key][static::getTraduction($type->getIdLabel())] = array();
         }
