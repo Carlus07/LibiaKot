@@ -16,7 +16,8 @@ class Session {
     }
     
     public static function push($key,$value){
-        if (empty(static::get($key))) $_SESSION[$key] = [];
+        $trimDir = trim(static::get($key));
+        if(!empty($trimDir)) $_SESSION[$key] = [];
         array_push($_SESSION[$key],$value);
     }
 
