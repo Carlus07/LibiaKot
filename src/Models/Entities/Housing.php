@@ -9,7 +9,7 @@ class Housing
     protected $idHousing;
     /**
      * Une logement possède un idSubType
-     * @ManyToOne(targetEntity="subtype")
+     * @ManyToOne(targetEntity="SubType")
      * @JoinColumn(name="idSubType", referencedColumnName="idSubType", nullable=true)
     */
     protected $idSubType;

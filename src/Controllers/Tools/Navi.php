@@ -131,7 +131,7 @@ class Navi
                     <ul class="list-inline">
                         <li><a href="https://twitter.com/unamur"><i class="fa fa-twitter"></i></a></li>
                         <li><a href="https://www.facebook.com/UniversitedeNamur/?fref=ts"><i class="fa fa-facebook"></i></a></li>
-                        <li><a href="https://www.unamur.be"><img class="unamur" src="web/pictures/unamur"/></a></li>
+                        <li><a href="https://www.unamur.be"><img class="unamur" src="web/pictures/unamur.png"/></a></li>
                     </ul>
                 </div>
             </div>';
