@@ -54,6 +54,8 @@ class Navi
     public static function navBar($translation, $variableReturn = false)
     {
     	$menus = static::getMenus();
+        $test = static::getConnection()->getRepository("User")->findAll();
+        var_dump($test);
     	if ($variableReturn) ob_start();
     	echo '<div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">

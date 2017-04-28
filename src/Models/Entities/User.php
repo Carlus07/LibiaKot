@@ -43,7 +43,7 @@ class User
     protected $nbConnection;
     /** @Column(type="boolean", options={"default" : 0}) **/
     protected $confirmed;
-    /** @Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"}) **/
+    /** @Column(type="datetime") **/
     protected $timeToken;
     /** @Column(type="string", length=15) **/
     protected $ip;

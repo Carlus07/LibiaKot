@@ -9,7 +9,7 @@ class Picture
     protected $idPicture;
     /** @Column(type="string", length=100) **/
     protected $name;
-    /** @Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"}) **/
+    /** @Column(type="datetime") **/
     protected $dateUpload;
     /**
      * Plusieurs images sont référencés par un logement
