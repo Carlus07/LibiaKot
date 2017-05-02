@@ -382,12 +382,6 @@ class HousingController extends Controller {
                 $this->getConnection()->remove($housingEquipment);
                 $this->getConnection()->flush();
             }
-            else
-            {
-                $errorDelete = true;
-                echo "warning+errorDelete";
-                break;
-            }
         }
         foreach($pictures as $picture)
         {
@@ -399,12 +393,6 @@ class HousingController extends Controller {
                 $errorDelete = ($error) ? false : true;
                 $this->getConnection()->remove($picture);
                 $this->getConnection()->flush();
-            }
-            else
-            {
-                $errorDelete = true;
-                echo "warning+errorDelete+picture";
-                break;
             }
         }
         if (!$errorDelete)
@@ -422,21 +410,16 @@ class HousingController extends Controller {
             }
         }
     }
-    public function deleteProperty()
+    public function deleteProperty($id)
     {
         $errorDelete = false;
-        $property = $this->getConnection()->getRepository('Property')->find($_POST['idProperty']);
-        $results = $this->getConnection()->getRepository('Housing')->findByIdProperty($_POST['idProperty']);
+        $idProperty = (isset($_POST['idProperty'])) ? $_POST['idProperty'] : $id;
+        $property = $this->getConnection()->getRepository('Property')->find($idProperty);
+        $results = $this->getConnection()->getRepository('Housing')->findByIdProperty($idProperty);
         foreach ($results as $housing) {
             if (!empty($housing))
             {
                 $this->deleteHousing($housing->getId());
-            }
-            else
-            {
-                $errorDelete = true;
-                echo "warning+errorDelete";
-                break;
             }
         }
         if (!$errorDelete)
@@ -452,6 +435,48 @@ class HousingController extends Controller {
             {
                 echo "warning+errorDelete";
             }
+        }
+    }
+    public function listHousings()
+    {
+        if (isset($_GET['l']) && (($_GET['l'] % 12) == 0))
+        {
+            $housings = $this->getConnection()->getRepository('Housing')->findByState(0); 
+            $size = sizeof($housings);
+
+            $offset = (isset($_GET['l'])) ? $_GET['l'] : 12;
+            $limit = $offset - 12;
+            $dql = "SELECT h FROM Housing h WHERE h.state = 0 ORDER BY h.reference ASC";
+            $query = $this->getConnection()->createQuery($dql)
+                           ->setFirstResult($limit)
+                           ->setMaxResults($offset);
+
+            $results = $query->getResult();
+            $housings = [];
+            foreach ($results as $key => $housing) {
+                $pictures = $this->getConnection()->getRepository('Picture')->findByIdHousing($housing->getId());
+                if (!empty($pictures))
+                {
+                    $namePicture = explode('.',$pictures[0]->getName());
+                    $picture = "web/pictures/Housing/miniature/".$namePicture[0]."-miniature.".$namePicture[1];
+                }
+                else $picture =  "web/pictures/iconLarge.png";
+                $housings[$key]['picture'] = $picture;
+
+                $reference = $housing->getReference();
+                for ($i = 0; $i < 5-floor(log10($reference) + 1); $i++)
+                {
+                    $reference = '0'.$reference;
+                }
+                $reference = "LK ".$reference;
+                $housings[$key]['reference'] = $reference;
+                $housings[$key]["id"] = $housing->getId();
+            }
+            $this->render('housing.list', compact('housings', 'size'));
+        }
+        else
+        {
+            $this->render('error.index');
         }
     }
 }

@@ -2,10 +2,10 @@
   <div class="card">
     <p id="profile-name" class="profile-name-card"><?php echo $translation['titleRegister']; ?></p>
     <p id="profile-name" class="profile-name-card"></p>
-    <input type="hidden" class="admin" value="<?php echo (!$admin) ? "false" : "true"; ?>"/>
+    <input type="hidden" class="admin" value="<?php echo (!isset($admin)) ? "false" : "true"; ?>"/>
     <p class="inputNeeded">* <?php echo $translation['requiredField']; ?></p>
     <input type="hidden" id="errorRegister" value="<?php echo (!empty($errors)) ? $errors : ""; ?>"/>
-    <form class="form-signin" action="<?php echo (!$admin) ? "?w=user.register" : "?w=user.add"; ?>" method="POST">
+    <form class="form-signin" action="<?php echo (!isset($admin)) ? "?w=user.register" : "?w=user.add"; ?>" method="POST">
       <input type="text" name="lastName" id="lastName" class="form-control" placeholder="*<?php echo $translation['lastName']; ?>" value="<?php echo (!empty($user)) ? $user->getName() : ""; ?>" required autofocus>
       <input type="text" name="firstName" id="firstName" class="form-control" placeholder="*<?php echo $translation['firstName']; ?>" value="<?php echo (!empty($user)) ? $user->getFirstName() : ""; ?>" required autofocus>
       <div class="text-center">
@@ -16,9 +16,9 @@
           <input name="gender" <?php echo (!empty($user) && $user->getGender() == false) ? 'checked="true"' : ""; ?>" value="0" type="radio"><?php echo $translation['woman']; ?>
         </label>
       </div><br>
-      <input type="email" name="mail" id="mail" class="form-control" placeholder="*<?php echo $translation['mail']; ?>" value="<?php echo (!empty($user)) ? $user->getMail() : ""; ?>"  <?php echo (!$admin) ? "required" : ""; ?> autofocus>
+      <input type="email" name="mail" id="mail" class="form-control" placeholder="*<?php echo $translation['mail']; ?>" value="<?php echo (!empty($user)) ? $user->getMail() : ""; ?>"  <?php echo (!isset($admin)) ? "required" : ""; ?> autofocus>
     <?php 
-      if(!$admin)
+      if (!isset($admin))
       {
     ?>
       <input type="password" name="password" id="password" class="form-control" placeholder="*<?php echo $translation['password']; ?>" required>

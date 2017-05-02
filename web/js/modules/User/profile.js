@@ -11,7 +11,8 @@ UserProfile = (function() {
         qualiteCompression : 0.8,
         buttonEdition : $('.buttonEdition'),
         table : $('.tableProfile'),
-        caseTable : $('.tableProfile td')
+        caseTable : $('.tableProfile td'),
+        idUser : $('#idUser')
     };
 
     var init = function() {
@@ -121,7 +122,7 @@ UserProfile = (function() {
     var uploadFile = function(f, ext, n)
     {
         $.post("index.php?w=user.addAvatar",
-            {file: f, extension : ext, name : n},
+            {file: f, extension : ext, name : n, id : s.idUser.val()},
             function (result)
             {
                 var str = result.split('+');
@@ -215,7 +216,7 @@ UserProfile = (function() {
     var updateProfil = function(column, value)
     {
         $.post("?w=user.updateProfil",
-            {text: value, field : column},
+            {text: value, field : column, id : s.idUser.val()},
             function(result)
             {
                 var str = result.split('+');

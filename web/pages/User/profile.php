@@ -1,6 +1,8 @@
 <div class="container">
 	<div class="row col-md-offset-1 col-md-10 col-md-offset-1"> 
 		<input type="file" name="fileUploadAvatar" id="fileUploadAvatar" style="display:none;">
+		<?php $idUser = (isset($_GET['id'])) ? $_GET['id'] : $_SESSION['idUser']; ?>
+		<input type="hidden" name="idUser" id="idUser" value="<?php echo $idUser; ?>"/>
 		<div class="col-sm-4 text-center" style="margin-top:90px;">
 			<div class="row text-center">
 				<img class="avatar" src="<?php echo ($user->getPicture() != null) ? $user->getPicture() : "web/pictures/avatar.png"; ?>" />
@@ -54,7 +56,11 @@
 			</div>
 		</div>
 		<div class="col-sm-offset-4 col-sm-8 text-center">
-			<a href="?p=user.changepassword"><button class="btn btn-lg btn-success btn-signin buttonUpdatePassword" type="submit"><?php echo $translation['editPassword']; ?></button></a>
+			<?php if (!isset($_GET['id']))
+			{
+				echo '<a href="?p=user.changepassword"><button class="btn btn-lg btn-success btn-signin buttonUpdatePassword" type="submit"><?php echo $translation["editPassword"]; ?></button></a>';
+			}
+			?>
 			<button class="btn btn-lg btn-success btn-signin buttonEdition" data-option="edit" type="submit"><?php echo $translation['editAccount']; ?></button>
 		</div>
 	</div>

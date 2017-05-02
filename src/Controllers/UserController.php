@@ -51,8 +51,7 @@ class UserController extends Controller {
     public function register() {
     	if (empty($_POST)) 
         {
-            if (Session::get("Role") != 1) $this->render('home.index');
-            else $this->render('user.register');
+            $this->render('user.register', compact('user'));
         } 
         else 
         {
@@ -133,7 +132,11 @@ class UserController extends Controller {
 
     public function profile()
     {
-        $user = $this->getConnection()->getRepository('User')->find(Session::get('idUser'));
+        if(isset($_GET['id']))
+        {
+            $user = $this->getConnection()->getRepository('User')->find($_GET['id']);
+        }
+        else $user = $this->getConnection()->getRepository('User')->find(Session::get('idUser'));
         $this->render("user.profile", compact('user'));
     }
 
@@ -152,8 +155,8 @@ class UserController extends Controller {
         fwrite( $fp, $unencodedData);
         fclose( $fp );
 
-        $user = $this->getConnection()->getRepository('User')->find(Session::get('idUser'));
-        
+        $user = $this->getConnection()->getRepository('User')->find($_POST['id']);
+
         if (!empty($user)) 
         {
             if ($user->getPicture() != null) unlink($user->getPicture());
@@ -167,7 +170,7 @@ class UserController extends Controller {
 
     public function updateProfil()
     {
-        $user = $this->getConnection()->getRepository('User')->find(Session::get('idUser')); 
+        $user = $this->getConnection()->getRepository('User')->find($_POST['id']);
         if (!empty($user)) 
         {
             $method = "set".ucfirst($_POST['field']);
@@ -316,7 +319,7 @@ class UserController extends Controller {
     }
     public function listUsers()
     {
-        if (isset($_GET['l']))
+        if (isset($_GET['l']) && (($_GET['l'] % 12) == 0))
         {
             $role = $this->getConnection()->getRepository('Role')->find(2);
             $users = $this->getConnection()->getRepository('User')->findByIdRole($role); 
@@ -336,5 +339,21 @@ class UserController extends Controller {
         {
             $this->render('error.index');
         }
+    }
+    public function delete()
+    {
+        $housingController = new housingController;
+        $user = $this->getConnection()->getRepository('User')->find($_POST['idUser']);
+        if (!empty($user)) 
+        {
+            $properties = $this->getConnection()->getRepository('Property')->findByIdUser($user->getId());
+            foreach ($properties as $property) {
+                $housingController->deleteProperty($property->getId());
+            }
+            $this->getConnection()->remove($user);
+            $this->getConnection()->flush();
+            echo "success+successDeleteUser";
+        }
+        else echo "warning+errorDelete";
     }
 }

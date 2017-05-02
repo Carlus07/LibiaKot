@@ -2,25 +2,28 @@
 	<div class="row col-md-offset-1 col-md-10 col-md-offset-1"> 
 		<div class="col-sm-12 text-center">
 <?php
-	foreach ($users as $user) {
+	foreach ($housings as $housing) {
 		?>
 			<div class="frameUser col-sm-4">
 				<div class="row">
 			    	<div class="col-sm-12 text-center">
-			    	    <img class="img-responsive pictureUserList" src="<?php echo ($user->getPicture() != "") ? $user->getPicture() : "web/pictures/avatar.png" ?>"/>
+			    	    <img class="img-responsive pictureUserList" src="<?php echo $housing['picture'] ?>"/>
 			    	</div>
 			    </div>
 			    <div class="row">
 			    	<div class="col-sm-12">
-						<h4 class="text-center titleHousing"><?php echo $user->getName().' '.$user->getFirstName() ?></h4>
+						<h4 class="text-center titleHousing"><?php echo $housing['reference'] ?></h4>
 					</div>
 				</div>
 				<div class="row text-center">
-					<div class="col-xs-6 text-center">
-						<a class="viewUser" style="color:black" href="?p=user.profile&id=<?php echo $user->getId();?>"><i class="fa fa-eye eye" aria-hidden="true"></i></a>
+					<div class="col-xs-4">
+						<a style="color:black" href="?p=user.register&m=updateUser&id=<?php echo $housing['id']; ?>"><i class="fa fa-pencil-square-o pencil" aria-hidden="true"></i></a>
 					</div>
-					<div class="col-xs-6 text-center">
-						<a class="deleteUser" style="color:black" href="#" value="<?php echo  $user->getId(); ?>"><i class="fa fa-times remove" aria-hidden="true"></i></a>
+					<div class="col-xs-4 text-center">
+						<a class="viewProperty" style="color:black" href="#" value="<?php echo $housing['id']; ?>"><i class="fa fa-eye eye" aria-hidden="true"></i></a>
+					</div>
+					<div class="col-xs-4 text-center">
+						<a class="removeHousing" style="color:black" href="#" value="<?php echo $housing['id']; ?>"><i class="fa fa-times remove" aria-hidden="true"></i></a>
 					</div>
 				</div>
 			</div>
@@ -57,5 +60,4 @@
 			</nav>
 		</div>
 	</div>
-	<div id="dialog-confirm">
 </div>
