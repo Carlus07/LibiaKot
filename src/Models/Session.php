@@ -15,7 +15,7 @@ class Session {
     }
     
     public static function push($key,$value){
-        if(!array_key_exists($key, $_SESSION)) $_SESSION[$key] = [];
+        if (empty(static::get($key))) $_SESSION[$key] = [];
         array_push($_SESSION[$key],$value);
     }
 

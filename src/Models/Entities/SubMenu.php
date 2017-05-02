@@ -1,6 +1,6 @@
 <?php
 /**
- * @Entity @Table(name="subMenu")
+ * @Entity @Table(name="submenu")
  **/
 class SubMenu
 {

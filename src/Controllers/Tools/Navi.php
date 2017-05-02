@@ -54,8 +54,6 @@ class Navi
     public static function navBar($translation, $variableReturn = false)
     {
     	$menus = static::getMenus();
-        $test = static::getConnection()->getRepository("User")->findAll();
-        var_dump($test);
     	if ($variableReturn) ob_start();
     	echo '<div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -70,11 +68,10 @@ class Navi
 	  		<ul class="nav navbar-nav">';
 	  			foreach($menus as $key => $menu)
 	  			{
-					//$trimDir = trim(current($menu));
-                    $href = ((is_int($key)) || (count(current($menu) > 0))) ? "#" : $key;
-	  				echo '<li class="dropdown dropdownMenu"><a href='.$href.' class="dropdown-toggle dropdownMenuCat" data-toggle="dropdown">'.key($menu);
-                    echo (count(current($menu) > 0)) ? '<span class="caret"></span></a>' : '</a>';
-                    if (count(current($menu) > 0))
+                    $href = ((is_int($key)) || (!empty(current($menu)))) ? "#" : $key;
+	  				echo '<li class="dropdown dropdownMenu"><a href="'.$href.'" class="dropdown-toggle dropdownMenuCat" data-toggle="dropdown">'.key($menu);
+                    echo (!empty(current($menu))) ? '<span class="caret"></span></a>' : '</a>';
+                    if (!empty(current($menu)))
                     {
                         echo '<ul class="dropdown-menu pull-left">';
 			        	foreach($menu as $key=> $subMenu)
@@ -252,7 +249,7 @@ class Navi
         foreach($types as $type)
         {
             if (($role != 1) && method_exists($type, 'getLink')) $preKey = "";
-            $key = (($role != 1) && !method_exists($type, 'getLink')) ? $type->getLink() : $preKey.$type->getId();
+            $key = (($role != 1) && method_exists($type, 'getLink') && ($type->getLink() != "")) ? $type->getLink() : $preKey.$type->getId();
             $association[$key] = Language::getLabelTranslation($type->getIdLabel());
             $menus[$key][static::getTraduction($type->getIdLabel())] = array();
         }
