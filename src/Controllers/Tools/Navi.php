@@ -68,11 +68,10 @@ class Navi
 	  		<ul class="nav navbar-nav">';
 	  			foreach($menus as $key => $menu)
 	  			{
-					//$trimDir = trim(current($menu));
-                    $href = ((is_int($key)) || (count(current($menu) > 0))) ? "#" : $key;
-	  				echo '<li class="dropdown dropdownMenu"><a href='.$href.' class="dropdown-toggle dropdownMenuCat" data-toggle="dropdown">'.key($menu);
-                    echo (count(current($menu) > 0)) ? '<span class="caret"></span></a>' : '</a>';
-                    if (count(current($menu) > 0))
+                    $href = ((is_int($key)) || (!empty(current($menu)))) ? "#" : $key;
+	  				echo '<li class="dropdown dropdownMenu"><a href="'.$href.'" class="dropdown-toggle dropdownMenuCat" data-toggle="dropdown">'.key($menu);
+                    echo (!empty(current($menu))) ? '<span class="caret"></span></a>' : '</a>';
+                    if (!empty(current($menu)))
                     {
                         echo '<ul class="dropdown-menu pull-left">';
 			        	foreach($menu as $key=> $subMenu)
@@ -131,7 +130,7 @@ class Navi
                     <ul class="list-inline">
                         <li><a href="https://twitter.com/unamur"><i class="fa fa-twitter"></i></a></li>
                         <li><a href="https://www.facebook.com/UniversitedeNamur/?fref=ts"><i class="fa fa-facebook"></i></a></li>
-                        <li><a href="https://www.unamur.be"><img class="unamur" src="web/pictures/unamur"/></a></li>
+                        <li><a href="https://www.unamur.be"><img class="unamur" src="web/pictures/unamur.png"/></a></li>
                     </ul>
                 </div>
             </div>';
@@ -250,7 +249,7 @@ class Navi
         foreach($types as $type)
         {
             if (($role != 1) && method_exists($type, 'getLink')) $preKey = "";
-            $key = (($role != 1) && !method_exists($type, 'getLink')) ? $type->getLink() : $preKey.$type->getId();
+            $key = (($role != 1) && method_exists($type, 'getLink') && ($type->getLink() != "")) ? $type->getLink() : $preKey.$type->getId();
             $association[$key] = Language::getLabelTranslation($type->getIdLabel());
             $menus[$key][static::getTraduction($type->getIdLabel())] = array();
         }

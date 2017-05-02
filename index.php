@@ -1,18 +1,24 @@
 <?php
 
 require_once "src/bootstrap.php";
-require_once "src/Models/Entities/Language.php";
-require_once "src/Models/Entities/User.php";
-require_once "src/Models/Entities/Role.php";
-require_once "src/Models/Entities/Translation.php";
-require_once "src/Models/Entities/Label.php";
 require_once "src/Models/Entities/Activity.php";
-require_once "src/Models/Entities/SubType.php";
-require_once "src/Models/Entities/Type.php";
-require_once "src/Models/Entities/Locality.php";
 require_once "src/Models/Entities/Address.php";
+require_once "src/Models/Entities/Category.php";
+require_once "src/Models/Entities/Equipment.php";
 require_once "src/Models/Entities/Housing.php";
+require_once "src/Models/Entities/HousingEquipment.php";
+require_once "src/Models/Entities/Label.php";
+require_once "src/Models/Entities/Language.php";
+require_once "src/Models/Entities/Locality.php";
+require_once "src/Models/Entities/Menu.php";
+require_once "src/Models/Entities/Picture.php";
 require_once "src/Models/Entities/Property.php";
+require_once "src/Models/Entities/Role.php";
+require_once "src/Models/Entities/SubMenu.php";
+require_once "src/Models/Entities/SubType.php";
+require_once "src/Models/Entities/Translation.php";
+require_once "src/Models/Entities/Type.php";
+require_once "src/Models/Entities/User.php";
 
 use Controllers\Tools\Router;
 use Controllers\Tools\Language;
