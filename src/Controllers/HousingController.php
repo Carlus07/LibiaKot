@@ -176,7 +176,6 @@ class HousingController extends Controller {
                     if ($_POST['method'] == "updateHousing") $housing->setState(2);
                     if ($_POST['id'] == "") 
                     {
-                        $property = $this->getConnection()->getRepository("Property")->find($_POST['idProperty']);
                         $housing->setIdProperty($property);
                         $housingReference = $this->getConnection()->getRepository('Housing')->findOneBy(array(), array('reference' => 'DESC'));
                         if (!empty($housingReference))
