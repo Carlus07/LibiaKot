@@ -502,12 +502,12 @@ legend > span{
     flex-direction: row;
 }
 .tableProperty{
-	margin-bottom: 0px;
+	margin-bottom: 10px;
 }
-.pencil:hover,.remove:hover, .eye:hover{
+.pencil:hover,.remove:hover, .eye:hover, .updateProperty:hover{
 	opacity: 0.7;
 }
-.pencil, .remove, .eye{
+.pencil, .remove, .eye, .updateProperty{
 	font-size: 20px;
 	cursor:pointer;
 	position: relative;

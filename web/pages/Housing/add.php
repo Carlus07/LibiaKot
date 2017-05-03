@@ -10,8 +10,9 @@
       <?php 
       $i = 1;
       $initialized = false;
-      if($_SESSION['Role'] == 3)
+      if((($_SESSION['Role'] == 3) && (!isset($_GET['m']))) || (($_SESSION['Role'] == 3) && (isset($_GET['m']) && ($_GET['m'] == 'updateProperty'))))
       {
+        if ((isset($_GET['m']) && ($_GET['m'] == 'updateProperty'))) $idUser = $accomodation->getIdUser()->getId();
       ?>
         <fieldset>
           <legend><span><?php echo $i;?></span><?php echo $translation['infoUser']; ?></legend>
@@ -22,7 +23,7 @@
               <option value=""></option>
               <?php
                 foreach ($users as $user) {
-                  echo '<option value="'.$user->getId().'">'.$user->getFirstName().' '.$user->getName().'</option>';
+                  echo (isset($_GET['m']) && ($idUser == $user->getId())) ? '<option selected value="'.$user->getId().'">'.$user->getFirstName().' '.$user->getName().'</option>' : '<option value="'.$user->getId().'">'.$user->getFirstName().' '.$user->getName().'</option>';
                 }
               ?>
             </select>

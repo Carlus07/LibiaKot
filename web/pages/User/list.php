@@ -27,14 +27,14 @@
 		<?php
 	}
 	$pagination = ceil($size / 12);
-	$active = $_GET['l'] / 12;
+	$active = $_GET['r'] / 12;
 ?>
 		</div>
 		<div class="col-sm-12 text-center">
 			<nav aria-label="Page navigation example">
 			  <ul class="pagination">
 			    <li class="page-item">
-			      <a class="page-link" href="?p=user.listusers&l=<?php echo ($active == 1) ? 12 : (($active-1)*12); ?>" aria-label="Previous">
+			      <a class="page-link" href="?p=user.listusers&r=<?php echo ($active == 1) ? 12 : (($active-1)*12); ?>" aria-label="Previous">
 			        <span aria-hidden="true">&laquo;</span>
 			        <span class="sr-only">Previous</span>
 			      </a>
@@ -44,11 +44,11 @@
 			    	{
 			    		$class = ($active != $i) ? ' ' : ' active';
 			    		$redirection = $i*12;
-			    		echo '<li class="page-item '.$class.'"><a class="page-link" href="?p=user.listusers&l='.$redirection.'">'.$i.'</a></li>';
+			    		echo '<li class="page-item '.$class.'"><a class="page-link" href="?p=user.listusers&r='.$redirection.'">'.$i.'</a></li>';
 			    	}
 			 	?>
 			    <li class="page-item">
-			      <a class="page-link" href="?p=user.listusers&l=<?php echo ($active == $pagination) ? ($active*12) : (($active+1)*12); ?>" aria-label="Next">
+			      <a class="page-link" href="?p=user.listusers&r=<?php echo ($active == $pagination) ? ($active*12) : (($active+1)*12); ?>" aria-label="Next">
 			        <span aria-hidden="true">&raquo;</span>
 			        <span class="sr-only">Next</span>
 			      </a>

@@ -173,7 +173,7 @@ class HousingController extends Controller {
                 {    
                     if (Session::get('Role') == 2) $housing->setState(0);
                     if (Session::get('Role') == 3) $housing->setState(1);   
-                    if ($_POST['method'] == "updateHousing") $property->setState(2);
+                    if ($_POST['method'] == "updateHousing") $housing->setState(2);
                     if ($_POST['id'] == "") 
                     {
                         $property = $this->getConnection()->getRepository("Property")->find($_POST['idProperty']);
@@ -439,12 +439,12 @@ class HousingController extends Controller {
     }
     public function listHousings()
     {
-        if (isset($_GET['l']) && (($_GET['l'] % 12) == 0))
+        if (isset($_GET['r']) && (($_GET['r'] % 12) == 0))
         {
             $housings = $this->getConnection()->getRepository('Housing')->findByState(0); 
             $size = sizeof($housings);
 
-            $offset = (isset($_GET['l'])) ? $_GET['l'] : 12;
+            $offset = (isset($_GET['r'])) ? $_GET['r'] : 12;
             $limit = $offset - 12;
             $dql = "SELECT h FROM Housing h WHERE h.state = 0 ORDER BY h.reference ASC";
             $query = $this->getConnection()->createQuery($dql)
@@ -471,6 +471,7 @@ class HousingController extends Controller {
                 $reference = "LK ".$reference;
                 $housings[$key]['reference'] = $reference;
                 $housings[$key]["id"] = $housing->getId();
+                $housings[$key]["idProperty"] = $housing->getIdProperty()->getId();
             }
             $this->render('housing.list', compact('housings', 'size'));
         }

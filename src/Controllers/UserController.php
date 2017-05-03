@@ -319,13 +319,13 @@ class UserController extends Controller {
     }
     public function listUsers()
     {
-        if (isset($_GET['l']) && (($_GET['l'] % 12) == 0))
+        if (isset($_GET['r']) && (($_GET['r'] % 12) == 0))
         {
             $role = $this->getConnection()->getRepository('Role')->find(2);
             $users = $this->getConnection()->getRepository('User')->findByIdRole($role); 
             $size = sizeof($users);
 
-            $offset = (isset($_GET['l'])) ? $_GET['l'] : 12;
+            $offset = (isset($_GET['r'])) ? $_GET['r'] : 12;
             $limit = $offset - 12;
             $dql = "SELECT u FROM User u WHERE u.idRole = 2 ORDER BY u.name ASC";
             $query = $this->getConnection()->createQuery($dql)

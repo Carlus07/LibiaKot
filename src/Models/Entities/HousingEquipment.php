@@ -1,6 +1,6 @@
 <?php
 /**
- * @Entity @Table(name="housingEquipment")
+ * @Entity @Table(name="housingequipment")
  **/
 class HousingEquipment
 {
