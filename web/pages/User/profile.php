@@ -41,7 +41,7 @@
 				      	</tr>
 				      	<tr>
 				      		<th><i class="fa fa-phone" aria-hidden="true"></i></th>
-				         	<th><?php echo $translation['phone']; ?></th<?php echo $translation['street']; ?>>
+				         	<th><?php echo $translation['phone']; ?></th<?php echo $translation['street']; ?>></th>
 				         	<td value="phone" data-column="phone"><?php echo $user->getPhone();?></td>
 				      	</tr>
 				      	<tr>
@@ -65,5 +65,3 @@
 		</div>
 	</div>
 </div>
-<?php
-?>

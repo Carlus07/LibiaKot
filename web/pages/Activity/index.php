@@ -41,5 +41,5 @@
 		</div>
 	</div>
 	<div id="dialog-confirm">
+	</div>
 </div>
-<?php

@@ -282,7 +282,9 @@
                         }
                         else if ((s.url.substring(0,2) == "?p") && (s.url.substring(0,1) != "#")) window.history.pushState({"html": contentHtml},"", s.url);
                     }
-                    s.content.html(contentHtml).fadeIn('fast');
+                    s.content.empty();
+                    s.content.append(contentHtml);
+                    s.content.fadeIn('fast');
                     ModuleManager.closeModules();
                     ModuleManager.loadModule(module);
                     Main.refreshBind();

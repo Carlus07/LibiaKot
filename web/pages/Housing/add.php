@@ -225,6 +225,7 @@
               </ul>
             </div>
           </div>
+        </fieldset>
           <?php
         }
         if (!isset($_GET['m']) || ((isset($_GET['m']) && (($_GET['m'] == 'updateHousing') || ($_GET['m'] == 'addHousing')))))
