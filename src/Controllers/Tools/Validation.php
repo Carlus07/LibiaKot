@@ -48,7 +48,6 @@ class Validation
             $this->setErr('passwordCheck');
         }
     }
-
     /**
      * Test la conformité d'un text
      * @param $phone
@@ -60,7 +59,7 @@ class Validation
             if (!$phone) {
                 $this->setErr('textEmpty');
             }
-            else if (!preg_match('#^0[1-68]([-. ]?[0-9]{2}){4}$#', $phone)){
+            else if ((!preg_match('/^((\+|00)32\s?|0)(\d\s?\d{3}|\d{2}\s?\d{2})(\s?\d{2}){2}$/', $phone)) && (!preg_match('/^((\+|00)32\s?|0)4(60|[789]\d)(\s?\d{2}){3}$/', $phone))) {
                 $this->setErr('textNotPhone');
             }
         }

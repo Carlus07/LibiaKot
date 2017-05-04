@@ -1,8 +1,9 @@
 Validation = (function() {
     var s = {
-        textWithoutNumber : /^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ'!?:._()\s-]{2,255}$/,
+        textWithoutNumber : /^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ'!?:./_()\s-]{2,255}$/,
         mail : /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        phone : /^0[1-9]([-. ]?[0-9]{2}){4}$/,
+        phone : /^((\+|00)32\s?|0)(\d\s?\d{3}|\d{2}\s?\d{2})(\s?\d{2}){2}$/,
+        mobile : /^((\+|00)32\s?|0)4(60|[789]\d)(\s?\d{2}){3}$/,
         password : /^[a-zA-Z0-9_-]{6,16}$/
     };
     var validationText = function(text)
@@ -38,7 +39,7 @@ Validation = (function() {
     var validationPhone = function(phone)
     {
         if (phone == "") return "textEmpty";
-        else if (!s.phone.test(phone)) return "textNotPhone";
+        else if ((!s.phone.test(phone)) && (!s.mobile.test(phone))) return "textNotPhone";
         else return "";
     };
     var validationPassword = function(password)
