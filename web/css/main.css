@@ -549,3 +549,22 @@ legend > span{
     background-color: #55ab26;
     border-color: #55ab26;
 }
+h4 > span{
+	background: #55ab26;
+	color:white;
+	margin:5px;
+    width:30px;
+    height:30px;
+    text-align:center;
+    border-radius:50%;
+    display: inline-block;
+	position: relative;
+	vertical-align: middle;
+	padding:5px;
+	font-size: 18px;
+}
+.typeHousing{
+ 	border:2px solid #55ab26;
+ 	padding:5px;
+ 	border-radius: 5%;
+ }

@@ -23,7 +23,7 @@
 						<a style="color:black" href="?p=housing.addHousing&m=updateProperty&id=<?php echo $housing['idProperty']; ?>"><i class="fa fa-home updateProperty" aria-hidden="true"></i></a>
 					</div>
 					<div class="col-xs-3 text-center">
-						<a class="viewHousing" style="color:black" href="#" value="<?php echo $housing['id']; ?>"><i class="fa fa-eye eye" aria-hidden="true"></i></a>
+						<a class="viewHousing" style="color:black" href="?p=housing.viewHousing&id=<?php echo $housing['id']; ?>"><i class="fa fa-eye eye" aria-hidden="true"></i></a>
 					</div>
 					<div class="col-xs-3 text-center">
 						<a class="deleteHousing" style="color:black" href="#" value="<?php echo $housing['id']; ?>"><i class="fa fa-times remove" aria-hidden="true"></i></a>

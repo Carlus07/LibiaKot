@@ -230,7 +230,8 @@ class HousingController extends Controller {
                     }
                 }
             }
-            $this->myHousing();
+            if (Session::get('Role') == 2) $this->myHousing();
+            if (Session::get('Role') == 3) $this->listHousings();
                 /*$translation = Language::translation("mail");
                 $redirection = Navi::getRedirection($translation, true, "http://localhost/Projet/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=register&t=".$user->getToken());
                 $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "register", "http://localhost/Projet/index.php?p=user.confirmation&t=".$user->getToken()."&m=register");
@@ -440,12 +441,12 @@ class HousingController extends Controller {
     {
         if (isset($_GET['r']) && (($_GET['r'] % 12) == 0))
         {
-            $housings = $this->getConnection()->getRepository('Housing')->findByState(0); 
+            $housings = $this->getConnection()->getRepository('Housing')->findByState(1); 
             $size = sizeof($housings);
 
             $offset = (isset($_GET['r'])) ? $_GET['r'] : 12;
             $limit = $offset - 12;
-            $dql = "SELECT h FROM Housing h WHERE h.state = 0 ORDER BY h.reference ASC";
+            $dql = "SELECT h FROM Housing h WHERE h.state = 1 ORDER BY h.reference ASC";
             $query = $this->getConnection()->createQuery($dql)
                            ->setFirstResult($limit)
                            ->setMaxResults($offset);
@@ -473,6 +474,19 @@ class HousingController extends Controller {
                 $housings[$key]["idProperty"] = $housing->getIdProperty()->getId();
             }
             $this->render('housing.list', compact('housings', 'size'));
+        }
+        else
+        {
+            $this->render('error.index');
+        }
+    }
+    public function viewHousing()
+    {
+        if ((isset($_GET['id'])) && ($_GET['id'] > 0))
+        {
+            $housing = $this->getConnection()->getRepository('Housing')->find($_GET['id']);
+            $pictures = $this->getConnection()->getRepository('Picture')->findByIdHousing($housing->getId());
+            $this->render('housing.viewHousing', compact('housing','pictures'));
         }
         else
         {
