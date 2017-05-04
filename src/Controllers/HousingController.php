@@ -231,7 +231,7 @@ class HousingController extends Controller {
                 }
             }
             if (Session::get('Role') == 2) $this->myHousing();
-            if (Session::get('Role') == 3) $this->listHousings();
+            if (Session::get('Role') == 3) $this->listHousings(12);
                 /*$translation = Language::translation("mail");
                 $redirection = Navi::getRedirection($translation, true, "http://localhost/Projet/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=register&t=".$user->getToken());
                 $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "register", "http://localhost/Projet/index.php?p=user.confirmation&t=".$user->getToken()."&m=register");
@@ -437,14 +437,14 @@ class HousingController extends Controller {
             }
         }
     }
-    public function listHousings()
+    public function listHousings($get = null)
     {
-        if (isset($_GET['r']) && (($_GET['r'] % 12) == 0))
+        if ((isset($_GET['r']) && (($_GET['r'] % 12) == 0)) || !empty($get))
         {
             $housings = $this->getConnection()->getRepository('Housing')->findByState(1); 
             $size = sizeof($housings);
 
-            $offset = (isset($_GET['r'])) ? $_GET['r'] : 12;
+            $offset = (isset($_GET['r'])) ? $_GET['r'] : ((!empty($get)) ? $get : 12);
             $limit = $offset - 12;
             $dql = "SELECT h FROM Housing h WHERE h.state = 1 ORDER BY h.reference ASC";
             $query = $this->getConnection()->createQuery($dql)

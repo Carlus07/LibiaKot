@@ -33,7 +33,7 @@
 		<?php
 	}
 	$pagination = ceil($size / 12);
-	$active = $_GET['r'] / 12;
+	$active = (isset($_GET['r'])) ? $_GET['r'] / 12 : 1;
 ?>
 		</div>
 		<div class="col-sm-12 text-center">
