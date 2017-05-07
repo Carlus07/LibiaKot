@@ -1,64 +1,313 @@
 <div class="container text-center">
 	<div class="row col-md-offset-1 col-md-10 col-md-offset-1"> 
-<?php 
-    $reference = $housing->getReference();
-    for ($i = 0; $i < 5-floor(log10($reference) + 1); $i++)
-    {
-        $reference = '0'.$reference;
-    }
-    $now = new DateTime('now');
-	$test = $now->diff($housing->getAvailability());
-	$availability = ($test->invert == 0) ? 'Disponible le : '.$housing->getAvailability()->format('d-m-Y') : "Disponible maintenant";
-	$capacity = ($housing->getCapacity() > 1) ? $housing->getCapacity().' places' : $housing->getCapacity().' place';
-?>
+		<?php 
+		$reference = $housing->getReference();
+		for ($i = 0; $i < 5-floor(log10($reference) + 1); $i++)
+		{
+			$reference = '0'.$reference;
+		}
+		$now = new DateTime('now');
+		$test = $now->diff($housing->getAvailability());
+		$availability = ($test->invert == 0) ? $translation['availableOn'].$housing->getAvailability()->format('d-m-Y') : $translation['availableNow'];
+		$capacity = ($housing->getCapacity() > 1) ? $housing->getCapacity().' '.$translation['place'].'s' : $housing->getCapacity().' '.$translation['place'];
+		$spaceAvailable = ($housing->getSpaceAvailable() > 1) ? $housing->getSpaceAvailable().' '.$translation['remainingPlaces'] : $translation['oneRemainingPlace'];
+		$pictureOwner = (empty($housing->getIdProperty()->getIdUser()->getPicture())) ? "web/pictures/avatar.png" : $housing->getIdProperty()->getIdUser()->getPicture();
+		$easeNearby = (empty($housing->getIdProperty()->getEaseNearby())) ? '/' : $housing->getIdProperty()->getEaseNearby();
+		?>
 		<fieldset>
-	        <legend><span><i class="fa fa-home" aria-hidden="true"></i></span><?php echo 'LK '.$reference; ?></legend>
-	        <div class="col-sm-8">
+			<legend><span><i class="fa fa-home" aria-hidden="true"></i></span><?php echo 'LK '.$reference; ?></legend>
+			<div class="col-sm-8">
 				<div class="container col-sm-12 carousel">
 					<div id="owl-example" class="owl-carousel">
-				<?php
-					if (empty($pictures))
-					{
-						echo '<div class="item"><img src="web/pictures/iconLarge.png"></div>';
-					}
-					else
-					{
-						foreach ($pictures as $picture) {
-							$namePicture = explode('.',$picture->getName());
-		    				$pictureSrc = "web/pictures/Housing/miniature/".$namePicture[0]."-miniature.".$namePicture[1];
-							echo '<div class="item"><img src="'.$pictureSrc.'"></div>';
+						<?php
+						if (empty($pictures))
+						{
+							echo '<div class="item"><img src="web/pictures/iconLarge.png"></div>';
 						}
-					}
-				?>
+						else
+						{
+							foreach ($pictures as $picture) {
+								$namePicture = explode('.',$picture->getName());
+								$pictureSrc = "web/pictures/Housing/miniature/".$namePicture[0]."-miniature.".$namePicture[1];
+								echo '<div class="item"><img src="'.$pictureSrc.'"></div>';
+							}
+						}
+						?>
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-4 text-center">
-				<div class="row">
-					<h3 class="typeHousing"><?php echo $translation[$housing->getIdType()->getIdLabel()->getLabel()];?></h3>
-				</div>
-				<div class="row">
-					<h4 style="margin:0;"><span><i class="fa fa-map-marker" aria-hidden="true"></i></span><?php echo $housing->getIdProperty()->getCity();?></h4>
-				</div>
-				<div class="row">
-					<h4 style="margin:0;"><?php echo $housing->getRent()+$housing->getCharge();?><span><i class="fa fa-eur" aria-hidden="true"></i></span></h4>
-				</div>
+			<div class="col-sm-4 text-center divSummaryHousing">
+				<div class="summaryHousing">
+					<div class="row">
+						<h3 class="typeHousing"><?php echo $translation[$housing->getIdType()->getIdLabel()->getLabel()];?></h3>
+					</div>
+					<div class="row">
+						<h4 style="margin:0;"><span><i class="fa fa-map-marker" aria-hidden="true"></i></span><?php echo $housing->getIdProperty()->getCity();?></h4>
+					</div>
+					<div class="row">
+						<h4 style="margin:0;"><?php echo $housing->getRent()+$housing->getCharge();?><span><i class="fa fa-eur" aria-hidden="true"></i></span></h4>
+					</div>
 
-				<?php 
+					<?php 
 					if (($housing->getIdType()->getIdLabel()->getLabel() == "apartment") || ($housing->getIdType()->getIdLabel()->getLabel() == "house"))
 					{
 						echo '<div class="row">
-								<h4 style="margin:0;"><span><i class="fa fa-users" aria-hidden="true"></i></span>'.$capacity.'</h4>
-							</div>';
+						<h4 style="margin:0;"><span><i class="fa fa-users" aria-hidden="true"></i></span>'.$capacity.'</h4>
+					</div>';
 					} 
-				?>
-				<div class="row">
-					<h4 style="margin:0;"><span><i class="fa fa-calendar" aria-hidden="true"></i></span><?php echo $availability;?></h4>
+					if ($housing->getIdType()->getIdLabel()->getLabel() == "flatsharing")
+					{
+						echo '<div class="row">
+						<h4 style="margin:0;"><span><i class="fa fa-users" aria-hidden="true"></i></span>'.$capacity.'</h4>
+					</div>';
+						echo '<div class="row">
+						<h4 style="margin:0;"><span><i class="fa fa-child" aria-hidden="true"></i></span>'.$spaceAvailable.'</h4>
+					</div>';
+					} 
+				?>			
+					<div class="row">
+						<h4 style="margin:0;"><span><i class="fa fa-calendar" aria-hidden="true"></i></span><?php echo $availability;?></h4>
+					</div>
+					<div class="row">
+						<h3 class="typeHousing" style="margin-top:20px;"><?php echo $translation['owner'];?></h3>
+					</div>
+					<div class="infoOwner">
+						<a href="?p=user.profile&id=<?php echo $housing->getIdProperty()->getIdUser()->getId(); ?>">
+							<div class="row">
+								<img class="pictureOwner" src="<?php echo $pictureOwner;?>"/>
+							</div>
+							<div class="row">
+								<h4 style="margin:0;"><?php echo $housing->getIdProperty()->getIdUser()->getFirstName().' '.$housing->getIdProperty()->getIdUser()->getName();?></h4>
+							</div>
+						</a>
+					</div>
 				</div>
 			</div>	
-	    </fieldset>
-	    <fieldset>
-	        <legend><span><i class="fa fa-map-marker" aria-hidden="true"></i></span>Localisation</legend>
-	    </fieldset>
-    </div>
+		</fieldset>
+		<fieldset>
+			<legend><span><i class="fa fa-map-signs" aria-hidden="true"></i></span>Localisation</legend>
+			<div id="map-canvas" class="mapViewHousing col-sm-12"></div>
+			<input type="hidden" name="GPSPosition" class="GPSPosition" value="<?php echo $housing->getIdProperty()->getGPSPosition(); ?>" />
+			<div class="row">
+				<h5><?php echo $translation['fullAddress'].$housing->getIdProperty()->getNumber().', '.$housing->getIdProperty()->getStreet().' - '.$housing->getIdProperty()->getZipCode().' '.$housing->getIdProperty()->getCity();?></h5>
+				<div class="col-sm-4">
+					<h5><?php echo $translation['easeNearby'].' :';?></h5>
+				</div>
+				<div class="col-sm-8">
+					<p><?php echo $easeNearby;?></p>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<legend><span><i class="fa fa-map-marker" aria-hidden="true"></i></span>Info sur la propriété</legend>
+			<div class="row">
+				<div class="col-sm-6">
+					<ul>
+						<li>
+							<div class="col-xs-2">
+								<img src="web\pictures\Equipment\jardin.png" class="equipmentLogo">
+							</div>
+							<div class="col-xs-7" style="margin-top:5px;">
+								<span class="labelEquipment"><?php echo $translation['garden']; ?></span>
+							</div>
+							<div class="col-xs-3">
+								<h4 style="margin:0;">
+									<?php echo ($housing->getIdProperty()->getGarden()) ? '<span><i class="fa fa-check" aria-hidden="true"></i></span>' : '<span style="background-color:#c9302c"><i class="fa fa-remove" aria-hidden="true"></i></span>'; ?>
+								</h4>
+							</div>
+						</li>
+						<li>
+							<div class="col-xs-2">
+								<img src="web\pictures\Equipment\15b332b6927.png" class="equipmentLogo">
+							</div>
+							<div class="col-xs-7" style="margin-top:5px;">
+								<span class="labelEquipment"><?php echo $translation['terrace']; ?></span>
+							</div>
+							<div class="col-xs-3">
+								<h4 style="margin:0;">
+									<?php echo ($housing->getIdProperty()->getTerrace()) ? '<span><i class="fa fa-check" aria-hidden="true"></i></span>' : '<span style="background-color:#c9302c"><i class="fa fa-remove" aria-hidden="true"></i></span>'; ?>
+								</h4>
+							</div>
+						</li>
+						<li>
+							<div class="col-xs-2">
+								<img src="web\pictures\Equipment\15b33312f3e.png" class="equipmentLogo">
+							</div>
+							<div class="col-xs-7" style="margin-top:5px;">
+								<span class="labelEquipment"><?php echo $translation['bicycleParking']; ?></span>
+							</div>
+							<div class="col-xs-3">
+								<h4 style="margin:0;">
+									<?php echo ($housing->getIdProperty()->getBicycleParking()) ? '<span><i class="fa fa-check" aria-hidden="true"></i></span>' : '<span style="background-color:#c9302c"><i class="fa fa-remove" aria-hidden="true"></i></span>'; ?>
+								</h4>
+							</div>
+						</li>
+						<li>
+							<div class="col-xs-2">
+								<img src="web\pictures\Equipment\15b3332ba1c.png" class="equipmentLogo">
+							</div>
+							<div class="col-xs-7" style="margin-top:5px;">
+								<span class="labelEquipment"><?php echo $translation['carParking']; ?></span>
+							</div>
+							<div class="col-xs-3">
+								<h4 style="margin:0;">
+									<?php echo ($housing->getIdProperty()->getCarParking()) ? '<span><i class="fa fa-check" aria-hidden="true"></i></span>' : '<span style="background-color:#c9302c"><i class="fa fa-remove" aria-hidden="true"></i></span>'; ?>
+								</h4>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<div class="col-sm-6">
+					<ul>
+						<li>
+							<div class="col-xs-2">
+								<img src="web\pictures\Equipment\pmr.png" class="equipmentLogo">
+							</div>
+							<div class="col-xs-7" style="margin-top:5px;">
+								<span class="labelEquipment"><?php echo $translation['disabledAccess']; ?></span>
+							</div>
+							<div class="col-xs-3">
+								<h4 style="margin:0;">
+									<?php echo ($housing->getIdProperty()->getDisabledAccess()) ? '<span><i class="fa fa-check" aria-hidden="true"></i></span>' : '<span style="background-color:#c9302c"><i class="fa fa-remove" aria-hidden="true"></i></span>'; ?>
+								</h4>
+							</div>
+						</li>
+						<li>
+							<div class="col-xs-2">
+								<img src="web\pictures\Equipment\smoke.png" class="equipmentLogo">
+							</div>
+							<div class="col-xs-7" style="margin-top:5px;">
+								<span class="labelEquipment"><?php echo $translation['smoker']; ?></span>
+							</div>
+							<div class="col-xs-3">
+								<h4 style="margin:0;">
+									<?php echo ($housing->getIdProperty()->getSmoker()) ? '<span><i class="fa fa-check" aria-hidden="true"></i></span>' : '<span style="background-color:#c9302c"><i class="fa fa-remove" aria-hidden="true"></i></span>'; ?>
+								</h4>
+							</div>
+						</li>
+						<li>
+							<div class="col-xs-2">
+								<img src="web\pictures\Equipment\peb.png" class="equipmentLogo">
+							</div>
+							<div class="col-xs-7" style="margin-top:5px;">
+								<span class="labelEquipment"><?php echo $translation['realizedPEB']; ?></span>
+							</div>
+							<div class="col-xs-3">
+								<h4 style="margin:0;">
+									<?php echo ($housing->getIdProperty()->getPEB()) ? '<span><i class="fa fa-check" aria-hidden="true"></i></span>' : '<span style="background-color:#c9302c"><i class="fa fa-remove" aria-hidden="true"></i></span>'; ?>
+								</h4>
+							</div>
+						</li>
+						<li>
+							<div class="col-xs-2">
+								<img src="web\pictures\Equipment\pet.png" class="equipmentLogo">
+							</div>
+							<div class="col-xs-7" style="margin-top:5px;">
+								<span class="labelEquipment"><?php echo $translation['animalAllowded']; ?></span>
+							</div>
+							<div class="col-xs-3">
+								<h4 style="margin:0;">
+									<?php echo ($housing->getIdProperty()->getAnimal()) ? '<span><i class="fa fa-check" aria-hidden="true"></i></span>' : '<span style="background-color:#c9302c"><i class="fa fa-remove" aria-hidden="true"></i></span>'; ?>
+								</h4>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<legend><span><i class="fa fa-bed" aria-hidden="true"></i></span>Info sur le logement</legend>
+			<div class="row">
+				<div class="col-sm-4">
+					<h5><?php echo $translation['area'].' :';?></h5>
+				</div>
+				<div class="col-sm-8">
+					<p><?php echo $housing->getArea().' m²';?></p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4">
+					<h5><?php echo $translation['floor'].' :';?></h5>
+				</div>
+				<div class="col-sm-8">
+					<p><?php echo $housing->getFloor();?></p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4">
+					<h5><?php echo $translation['bathroom'].' :';?></h5>
+				</div>
+				<div class="col-sm-8">
+					<p>
+						<?php 
+						if ($housing->getBathroom() == 1) echo $translation['common'];
+						if ($housing->getBathroom() == 2) echo $translation['privateRoom'];
+						if ($housing->getBathroom() == 3) echo $translation['privateSeparate'];
+						?>
+					</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4">
+					<h5><?php echo $translation['kitchen'].' :';?></h5>
+				</div>
+				<div class="col-sm-8">
+					<p>
+						<?php 
+						if ($housing->getKitchen() == 1) echo $translation['common'];
+						if ($housing->getKitchen() == 2) echo $translation['privateRoom'];
+						if ($housing->getKitchen() == 3) echo $translation['privateSeparate'];
+						?>
+					</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4">
+					<h5><?php echo $translation['heating'].' :';?></h5>
+				</div>
+				<div class="col-sm-8">
+					<p>
+						<?php 
+						if ($housing->getHeating() == 1) echo $translation['central'];
+						if ($housing->getHeating() == 2) echo $translation['electric'];
+						if ($housing->getHeating() == 3) echo $translation['gaz'];
+						?>
+					</p>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<legend><span><i class="fa fa-cogs" aria-hidden="true"></i></span>Equipement du logement</legend>
+			<div class="row">
+				<?php
+				foreach($equipments as $category)
+				{
+					echo '<div class="col-sm-6">';
+					echo '<h4 style="color:#55ab26;">'.$translation[key($category)].'</h4>';
+					echo '<ul>';
+					if (isset($category))
+					{
+						foreach ($category as $equipement)
+						{
+							echo '<li>';
+							echo '<div class="col-xs-2">';
+							$src = (isset($equipment["picture"])) ? $equipment["picture"] : '';
+							echo '<img class="equipmentLogo" src="'.$src.'"/>';
+							echo '</div>';
+							echo '<div class="col-xs-7">';
+							echo '<span class="labelEquipment">'.$translation[$equipment["label"]].'</span>';
+							echo '</div>';
+							echo '<div class="col-xs-3" style="z-index:2;">';
+							echo '<h4 style="margin:0;"><span><i class="fa fa-check" aria-hidden="true"></i></span></h4>';
+							echo '</div>';
+							echo '</li>';
+						}
+					}
+					echo '</ul>';
+					echo '</div>';
+				}
+				?>
+			</div>
+		</fieldset>
+	</div>
 </div>

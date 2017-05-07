@@ -424,6 +424,7 @@ legend > span{
 	position: relative;
 	vertical-align: middle;
 	padding:5px;
+	font-size: 18px;
 }
 .equipmentLogo{
 	width:30px;
@@ -568,3 +569,31 @@ h4 > span{
  	padding:5px;
  	border-radius: 5%;
  }
+ .pictureOwner{
+ 	width: 120px;
+ 	border-radius: 50%;
+ 	margin-bottom: 8px;
+ }
+ .divSummaryHousing{
+ 	display: table;
+ 	margin: auto;
+ }
+ .summaryHousing{
+ 	display: table-cell;
+ 	vertical-align: middle;
+ }
+ .infoOwner{
+ 	cursor: pointer;
+ 	padding-top:15px;
+ 	padding-bottom: 15px;
+ }
+ .infoOwner:hover{
+ 	background-color: #bbbbbb;
+ }
+ .mapViewHousing{
+	height: 350px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+}

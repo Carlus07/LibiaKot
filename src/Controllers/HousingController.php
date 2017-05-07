@@ -486,7 +486,16 @@ class HousingController extends Controller {
         {
             $housing = $this->getConnection()->getRepository('Housing')->find($_GET['id']);
             $pictures = $this->getConnection()->getRepository('Picture')->findByIdHousing($housing->getId());
-            $this->render('housing.viewHousing', compact('housing','pictures'));
+            $results = $this->getConnection()->getRepository('HousingEquipment')->findByIdHousing($housing->getId());
+            $equipments = [];
+            foreach ($results as $equipment) {
+                $category = $equipment->getIdEquipment()->getIdCategory()->getIdLabel()->getLabel();
+                $array['label'] = $equipment->getIdEquipment()->getIdLabel()->getLabel();
+                $array['picture'] = $equipment->getIdEquipment()->getIcon();
+                if (!isset($equipments[$category])) $equipments[$category] = $array;
+                else array_push($equipments[$category], $array);
+            }
+            $this->render('housing.viewHousing', compact('housing','pictures', 'equipments'));
         }
         else
         {
