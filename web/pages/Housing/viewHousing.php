@@ -78,6 +78,9 @@
 							</div>
 							<div class="row">
 								<h4 style="margin:0;"><?php echo $housing->getIdProperty()->getIdUser()->getFirstName().' '.$housing->getIdProperty()->getIdUser()->getName();?></h4>
+							</div><br>
+							<div class="row">
+								<h4 style="margin:0;color:#55ab26;"><i class="fa fa-envelope" aria-hidden="true"></i> Contacter</h4>
 							</div>
 						</a>
 					</div>
@@ -219,6 +222,36 @@
 			<legend><span><i class="fa fa-bed" aria-hidden="true"></i></span>Info sur le logement</legend>
 			<div class="row">
 				<div class="col-sm-4">
+					<h5><?php echo $translation['domiciliation'].' :';?></h5>
+				</div>
+				<div class="col-sm-8">
+					<p>
+						<?php 
+						if ($housing->getIdProperty()->getDomiciliation() == 0) echo $translation['no'];
+						if ($housing->getIdProperty()->getDomiciliation() == 1) echo $translation['yes'];
+						if ($housing->getIdProperty()->getDomiciliation() == 2) echo $translation['onCondition'];
+						?>
+					</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4">
+					<h5><?php echo $translation['targetAudience'].' :';?></h5>
+				</div>
+				<div class="col-sm-8">
+					<p>
+						<?php 
+						if ($housing->getIdProperty()->getTargetAudience() == 0) echo $translation['everybody'];
+						if ($housing->getIdProperty()->getTargetAudience() == 1) echo $translation['onlyGirls'];
+						if ($housing->getIdProperty()->getTargetAudience() == 2) echo $translation['onlyBoys'];
+						if ($housing->getIdProperty()->getTargetAudience() == 3) echo $translation['onlyHighSchool'];
+						if ($housing->getIdProperty()->getTargetAudience() == 4) echo $translation['onlyUniversity'];
+						?>
+					</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4">
 					<h5><?php echo $translation['area'].' :';?></h5>
 				</div>
 				<div class="col-sm-8">
@@ -280,14 +313,15 @@
 			<legend><span><i class="fa fa-cogs" aria-hidden="true"></i></span>Equipement du logement</legend>
 			<div class="row">
 				<?php
-				foreach($equipments as $category)
+				foreach($equipments as $key => $category)
 				{
 					echo '<div class="col-sm-6">';
-					echo '<h4 style="color:#55ab26;">'.$translation[key($category)].'</h4>';
+					echo '<h4 style="color:#55ab26;">'.$translation[$key].'</h4>';
 					echo '<ul>';
+
 					if (isset($category))
 					{
-						foreach ($category as $equipement)
+						foreach ($category as $equipment)
 						{
 							echo '<li>';
 							echo '<div class="col-xs-2">';
@@ -307,6 +341,50 @@
 					echo '</div>';
 				}
 				?>
+			</div>
+		</fieldset>
+		<fieldset>
+			<legend><span><i class="fa fa-eur" aria-hidden="true"></i></span><?php echo $translation['rent']; ?></legend>
+			<div class="row">
+				<div class="col-sm-4">
+					<h5><?php echo $translation['rent'].' :';?></h5>
+				</div>
+				<div class="col-sm-8">
+					<p><?php echo $housing->getRent().' €';?></p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4">
+					<h5><?php echo $translation['charge'].' :';?></h5>
+				</div>
+				<div class="col-sm-8">
+					<p><?php echo $housing->getCharge().' €';?></p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4">
+					<h5><?php echo $translation['deposit'].' :';?></h5>
+				</div>
+				<div class="col-sm-8">
+					<p><?php echo $housing->getDeposit().' €';?></p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4">
+					<h5><?php echo $translation['rentalDuration'].' :';?></h5>
+				</div>
+				<div class="col-sm-8">
+					<p>
+						<?php 
+						if ($housing->getRentalDuration() == 1) echo '12 '.$translation['month'];
+						if ($housing->getRentalDuration() == 2) echo '10 '.$translation['month'];
+						if ($housing->getRentalDuration() == 3) echo $translation['firstSemester'];
+						if ($housing->getRentalDuration() == 4) echo $translation['secondSemester'];
+						if ($housing->getRentalDuration() == 5) echo $translation['summerHoliday'];
+						if ($housing->getRentalDuration() == 6) echo $translation['other'];
+						?>
+					</p>
+				</div>
 			</div>
 		</fieldset>
 	</div>
