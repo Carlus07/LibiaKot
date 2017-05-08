@@ -2,8 +2,47 @@
 	<div class="row col-md-offset-1 col-md-10 col-md-offset-1"> 
 		<div class="col-sm-12 text-center">
 			<div class="col-md-4 col-sm-4 hidden-xs">
-				<div class="row" style="padding:10px;">
-					
+				<div class="row frameSearch" >
+					<div class="col-sm-12" style="margin-bottom: 15px;">
+						<h4 style="margin:0;margin-bottom: 15px;"><span><i class="fa fa-search" aria-hidden="true"></i></span><?php echo 'Référence';?></h4>
+			            <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+			            	<div class="input-group-addon">LK</div>
+			            	<input type="number" class="form-control" id="area" name="area">
+			            </div>
+					</div>
+					<div class="col-sm-12">
+						<h4 style="margin:0;margin-bottom: 15px;"><span><i class="fa fa-home" aria-hidden="true"></i></span><?php echo 'Type';?></h4>
+			            <div class="form-group">
+	                		<select class="form-control" id="housingType" name="housingType">
+	                		<option value=""></option>
+		                <?php
+		                  	foreach ($menus as $label => $menu) {
+		                    	foreach ($menu as $labelType => $idType) {
+		                      		foreach ($idType as $idSubType => $subMenu) {
+		                        		if (empty($subMenu)) 
+				                        {
+				                          echo (($initialized) && ($accomodation->getIdType()->getId() == key($idType))) ? '<option selected data-type="'.$label.'"  value="'.key($idType).'">'.$labelType.'</option>' : '<option data-type="'.$label.'"  value="'.key($idType).'">'.$labelType.'</option>';
+				                        }
+		                        		foreach ($subMenu as $idSubMenu => $labelSubMenu) {
+		                          			echo (($initialized) && (null != ($accomodation->getIdSubType())) && ($accomodation->getIdSubType()->getId() == $idSubMenu)) ? '<option selected data-type="'.$label.'" value="'.key($idType).'+'.$idSubMenu.'">'.$labelSubMenu.'</option>' : '<option data-type="'.$label.'" value="'.key($idType).'+'.$idSubMenu.'">'.$labelSubMenu.'</option>';
+		                        		}
+		                      		}
+		                    	}
+		                  	}
+	                  ?>
+	                		</select>
+	              		</div>
+					</div>
+					<div class="col-sm-12" style="margin-bottom: 15px;">
+						<h4 style="margin:0;margin-bottom: 15px;"><span><i class="fa fa-euro" aria-hidden="true"></i></span><?php echo 'Loyer';?></h4>
+			            <input type="text" id="amountRent" class="amount" readonly>
+			            <div id="slider-range"></div>
+					</div>
+					<div class="col-sm-12" style="margin-bottom: 15px;">
+						<h4 style="margin:0;margin-bottom: 15px;"><span><i class="fa fa-bed" aria-hidden="true"></i></span><?php echo 'Nombre de chambre minimum';?></h4>
+			            <input type="text" id="amountBedroom" class="amount" readonly>
+			            <div id="slider-range-min"></div>
+					</div>
 				</div>
 			</div>
 			<?php
@@ -32,7 +71,7 @@
 						$availability = ($result->invert == 0) ? $translation['availableOn'].$housing->getAvailability()->format('d-m-Y') : $translation['availableNow'];
 			?>
 						<div class=" col-md-4 col-sm-4 col-xs-12">
-							<div class="row frameUser" style="padding:5px;cursor:pointer;">
+							<div class="row frameUser" style="padding:5px;margin:0px;cursor:pointer;">
 								<div class="col-sm-12">
 									<h4 style="margin:0;"><span><i class="fa fa-tags" aria-hidden="true"></i></span><?php echo $reference;?></h4>
 								</div>

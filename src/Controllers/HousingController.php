@@ -20,12 +20,12 @@ class HousingController extends Controller {
         if (isset($_GET['t']))
         {
             $subType = $this->getConnection()->getRepository("SubType")->find($_GET['t']);
-            $housings = $this->getConnection()->getRepository("Housing")->findByIdSubType($subType);
+            $housings = $this->getConnection()->getRepository("Housing")->findBy((array('idSubType' => $subType, 'state' => '1')));
         }
         else if (isset($_GET['id']))
         {
             $type = $this->getConnection()->getRepository("Type")->find($_GET['id']);
-            $housings = $this->getConnection()->getRepository("Housing")->findByIdType($type);
+            $housings = $this->getConnection()->getRepository("Housing")->findBy((array('idType' => $type, 'state' => '1')));
         }
         if (!empty($housings))
         {
@@ -41,7 +41,21 @@ class HousingController extends Controller {
                 $pictures[$housing->getId()] = $picture;
             }
         }
-        $this->render('housing.view', compact("housings", "pictures"));
+        $menus = array();
+        $typeRepo = static::getConnection()->getRepository("Type");
+        $types = $typeRepo->findAll();
+        $subTypeRepo = static::getConnection()->getRepository("SubType");
+        $subTypes = $subTypeRepo->findAll();     
+
+        foreach($types as $type)
+        {
+            $menus[$type->getIdLabel()->getLabel()][Language::getLabelTranslation($type->getIdLabel())][$type->getId()] = array();
+        }
+        foreach($subTypes as $subType)
+        {
+            $menus[$subType->getIdType()->getIdLabel()->getLabel()][Language::getLabelTranslation($subType->getIdType()->getIdLabel()->getId())][$subType->getIdType()->getId()][$subType->getId()] = Language::getLabelTranslation($subType->getIdLabel());
+        }
+        $this->render('housing.view', compact("housings", "pictures", "menus"));
     }
     public function addHousing($errors = "") 
     {
