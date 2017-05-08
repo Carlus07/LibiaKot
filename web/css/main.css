@@ -512,6 +512,7 @@ legend > span{
 	font-size: 20px;
 	cursor:pointer;
 	position: relative;
+	margin-top: 5px;
 }
 .titleHousing{
 	margin-top:10px;
@@ -563,6 +564,20 @@ h4 > span{
 	vertical-align: middle;
 	padding:5px;
 	font-size: 18px;
+}
+h5 > span{
+	background: #55ab26;
+	color:white;
+	margin:5px;
+    width:25px;
+    height:25px;
+    text-align:center;
+    border-radius:50%;
+    display: inline-block;
+	position: relative;
+	vertical-align: middle;
+	padding:4px;
+	font-size: 16px;
 }
 .typeHousing{
  	border:2px solid #55ab26;

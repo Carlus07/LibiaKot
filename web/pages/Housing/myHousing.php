@@ -43,13 +43,10 @@
 						    		</div>
 						    	</div>
 						    	<div class="row text-center">
-										<div class="col-xs-4">
+										<div class="col-xs-6">
 							    			<a style="color:black" href="?p=housing.addHousing&m=updateProperty&id=<?php echo $property['property']->getId();?>"><i class="fa fa-pencil-square-o pencil" aria-hidden="true"></i></a>
 							    		</div>
-							    		<div class="col-xs-4">
-							    			<a class="viewProperty" style="color:black" href="#" value="<?php echo $property['property']->getId();?>"><i class="fa fa-eye eye" aria-hidden="true"></i></a>
-							    		</div>
-							    		<div class="col-xs-4">
+							    		<div class="col-xs-6">
 							    			<a class="removeProperty" style="color:black" href="#" value="<?php echo $property['property']->getId();?>"><i class="fa fa-times remove" aria-hidden="true"></i></a>
 							    		</div>
 							    	</div>
@@ -103,7 +100,7 @@
 							    			<a style="color:black" href="?p=housing.addHousing&m=updateHousing&id=<?php echo $housing->getId();?>"><i class="fa fa-pencil-square-o pencil" aria-hidden="true"></i></a>
 							    		</div>
 							    		<div class="col-xs-4">
-							    			<a class="viewProperty" style="color:black" href="#" value="<?php echo $property['property']->getId();?>"><i class="fa fa-eye eye" aria-hidden="true"></i></a>
+							    			<a class="viewHousing" style="color:black" href="?p=housing.viewHousing&id=<?php echo $housing->getId(); ?>"><i class="fa fa-eye eye" aria-hidden="true"></i></a>
 							    		</div>
 							    		<div class="col-xs-4">
 							    			<a class="removeHousing" style="color:black" href="#" value="<?php echo $housing->getId();?>"><i class="fa fa-times remove" aria-hidden="true"></i></a>
@@ -164,9 +161,6 @@
 			    	<div class="row text-center">
 						<div class="col-xs-4">
 			    			<a style="color:black" href="?p=housing.addHousing&m=updateProperty&id=<?php echo $property->getId();?>"><i class="fa fa-pencil-square-o pencil" aria-hidden="true"></i></a>
-			    		</div>
-			    		<div class="col-xs-4">
-			    			<a class="viewProperty" style="color:black" href="#" value="<?php echo $property['property']->getId();?>"><i class="fa fa-eye eye" aria-hidden="true"></i></a>
 			    		</div>
 			    		<div class="col-xs-4">
 			    			<a class="removeProperty" style="color:black" href="#" value="<?php echo $property->getId();?>"><i class="fa fa-times remove" aria-hidden="true"></i></a>

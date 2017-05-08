@@ -15,8 +15,33 @@ use Models\Session;
 
 class HousingController extends Controller {
 
-    public function view() {
-        $this->render('housing.view');
+    public function view() 
+    {
+        if (isset($_GET['t']))
+        {
+            $subType = $this->getConnection()->getRepository("SubType")->find($_GET['t']);
+            $housings = $this->getConnection()->getRepository("Housing")->findByIdSubType($subType);
+        }
+        else if (isset($_GET['id']))
+        {
+            $type = $this->getConnection()->getRepository("Type")->find($_GET['id']);
+            $housings = $this->getConnection()->getRepository("Housing")->findByIdType($type);
+        }
+        if (!empty($housings))
+        {
+            $pictures = [];
+            foreach ($housings as $housing) {
+                $results = $this->getConnection()->getRepository('Picture')->findByIdHousing($housing->getId());
+                if (!empty($results))
+                {
+                    $namePicture = explode('.',$results[0]->getName());
+                    $picture = "web/pictures/Housing/miniature/".$namePicture[0]."-miniature.".$namePicture[1];
+                }
+                else $picture =  "web/pictures/iconLarge.png";
+                $pictures[$housing->getId()] = $picture;
+            }
+        }
+        $this->render('housing.view', compact("housings", "pictures"));
     }
     public function addHousing($errors = "") 
     {
