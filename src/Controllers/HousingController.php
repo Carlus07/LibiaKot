@@ -501,4 +501,62 @@ class HousingController extends Controller {
             $this->render('error.index');
         }
     }
+    public function request($get = null)
+    {
+        if ((isset($_GET['r']) && (($_GET['r'] % 12) == 0)) || !empty($get))
+        {
+            $housings = $this->getConnection()->getRepository('Housing')->findByState([0, 2]); 
+            $size = sizeof($housings);
+
+            $offset = (isset($_GET['r'])) ? $_GET['r'] : ((!empty($get)) ? $get : 12);
+            $limit = $offset - 12;
+            $dql = "SELECT h FROM Housing h WHERE h.state = 0 OR h.state = 2 ORDER BY h.reference ASC";
+            $query = $this->getConnection()->createQuery($dql)
+                           ->setFirstResult($limit)
+                           ->setMaxResults($offset);
+
+            $results = $query->getResult();
+            $housings = [];
+            foreach ($results as $key => $housing) {
+                $pictures = $this->getConnection()->getRepository('Picture')->findByIdHousing($housing->getId());
+                if (!empty($pictures))
+                {
+                    $namePicture = explode('.',$pictures[0]->getName());
+                    $picture = "web/pictures/Housing/miniature/".$namePicture[0]."-miniature.".$namePicture[1];
+                }
+                else $picture =  "web/pictures/iconLarge.png";
+                $housings[$key]['picture'] = $picture;
+
+                $reference = $housing->getReference();
+                for ($i = 0; $i < 5-floor(log10($reference) + 1); $i++)
+                {
+                    $reference = '0'.$reference;
+                }
+                $reference = "LK ".$reference;
+                $housings[$key]['reference'] = $reference;
+                $housings[$key]["id"] = $housing->getId();
+                $housings[$key]["idProperty"] = $housing->getIdProperty()->getId();
+            }
+            $this->render('housing.request', compact('housings', 'size'));
+        }
+        else
+        {
+            $this->render('error.index');
+        }
+    }
+    public function confirmHousing()
+    {
+        $housing = $this->getConnection()->getRepository('Housing')->find($_POST['idHousing']);
+        if ($housing != null)
+        {
+            $housing->setState(1);
+            $property = $this->getConnection()->getRepository('Housing')->find($housing->getId());
+            $property->setState(1);
+            $this->getConnection()->remove($housing);
+            $this->getConnection()->remove($property);
+            $this->getConnection()->flush();
+            echo "success+successConfirmHousing";
+        }
+        else echo "warning+errorConfirmHousing";
+    }
 }

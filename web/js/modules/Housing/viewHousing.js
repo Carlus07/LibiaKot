@@ -2,12 +2,15 @@ HousingViewHousing = (function() {
     var s = {
         carousel : $("#owl-example"),
         summary : $('.divSummaryHousing'),
-        heightPicture : $('.carousel').height(),
+        heightPicture : $('.item').height(),
         GPSPosition : $('.GPSPosition'),
         divMap : $("#map-canvas"),
         geoCoder : null,
         map : null,
-        marker : null
+        marker : null,
+        deleteHousing : $('.deleteHousing'),
+        confirmHousing : $('.confirmHousing'),
+        dialog : $('#dialog-confirm')
     };
 
     var init = function() {
@@ -21,11 +24,13 @@ HousingViewHousing = (function() {
         s.carousel.owlCarousel({
             singleItem:true
         });
+        s.deleteHousing.on('click', deleteHousing);
+        s.confirmHousing.on('click', confirmHousing);
         $(window).resize(adjustment);
     };
     var adjustment = function()
     {
-        s.heightPicture = $('.carousel').height();
+        s.heightPicture = $('.item').height();
         s.summary.height(s.heightPicture+'px');
     };
     var initializeMap = function()
@@ -54,6 +59,59 @@ HousingViewHousing = (function() {
             }
             s.map = new google.maps.Map(s.divMap[0], mapOptions);
         }
+    };
+    var deleteHousing = function()
+    {
+        var selection = $(this).attr("value");
+        Translator.translation("confirmDeleteHousing").done(function(data){
+            s.dialog.html('<p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>'+data+'</p>').dialog({
+                title : "Confirmation",
+                resizable: false,
+                height: "auto",
+                width: 400,
+                modal: true,
+                buttons: {
+                    "Ok": function() {
+                        s.dialog.dialog( "close" );
+                        $.post("?w=housing.deleteHousing",
+                            {idHousing: selection},
+                            function(result)
+                            {
+                                var str = result.split('+');
+                                Translator.translation(str[1]).done(function(data){
+                                    Notification.notification(str[0], data);
+                                    if (str[0] == "success") 
+                                    {
+                                        PageManager.loadPage();
+                                        return true;
+                                    }
+                                    else return false;
+                                });
+                            }
+                        );
+                    },
+                    Cancel: function() {
+                        s.dialog.dialog( "close" );
+                        return false;
+                    }
+                }
+            });
+        });
+    };
+    var confirmHousing = function() 
+    {
+        var selection = $(this).attr("value");
+        $.post("?w=housing.deleteHousing",
+            {idHousing: selection},
+            function(result)
+            {
+                var str = result.split('+');
+                Translator.translation(str[1]).done(function(data){
+                    Notification.notification(str[0], data);
+                    if (str[0] == "success") PageManager.loadPage("home.index");
+                });
+            }
+        );
     };
     return {
         init: init

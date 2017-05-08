@@ -1,3 +1,5 @@
+
+
 <div class="container text-center">
 	<div class="row col-md-offset-1 col-md-10 col-md-offset-1"> 
 		<?php 
@@ -7,12 +9,13 @@
 			$reference = '0'.$reference;
 		}
 		$now = new DateTime('now');
-		$test = $now->diff($housing->getAvailability());
-		$availability = ($test->invert == 0) ? $translation['availableOn'].$housing->getAvailability()->format('d-m-Y') : $translation['availableNow'];
+		$result = $now->diff($housing->getAvailability());
+		$availability = ($result->invert == 0) ? $translation['availableOn'].$housing->getAvailability()->format('d-m-Y') : $translation['availableNow'];
 		$capacity = ($housing->getCapacity() > 1) ? $housing->getCapacity().' '.$translation['place'].'s' : $housing->getCapacity().' '.$translation['place'];
 		$spaceAvailable = ($housing->getSpaceAvailable() > 1) ? $housing->getSpaceAvailable().' '.$translation['remainingPlaces'] : $translation['oneRemainingPlace'];
 		$pictureOwner = (empty($housing->getIdProperty()->getIdUser()->getPicture())) ? "web/pictures/avatar.png" : $housing->getIdProperty()->getIdUser()->getPicture();
-		$easeNearby = (empty($housing->getIdProperty()->getEaseNearby())) ? '/' : $housing->getIdProperty()->getEaseNearby();
+		$easeNearby = (empty($housing->getIdProperty()->getEaseNearby())) ? '/' : utf8_encode($housing->getIdProperty()->getEaseNearby());
+		$rentComment = (empty($housing->getRentComment())) ? '/' : utf8_encode($housing->getRentComment());
 		?>
 		<fieldset>
 			<legend><span><i class="fa fa-home" aria-hidden="true"></i></span><?php echo 'LK '.$reference; ?></legend>
@@ -77,7 +80,7 @@
 								<img class="pictureOwner" src="<?php echo $pictureOwner;?>"/>
 							</div>
 							<div class="row">
-								<h4 style="margin:0;"><?php echo $housing->getIdProperty()->getIdUser()->getFirstName().' '.$housing->getIdProperty()->getIdUser()->getName();?></h4>
+								<h4 style="margin:0;"><?php echo utf8_encode($housing->getIdProperty()->getIdUser()->getFirstName()).' '.utf8_encode($housing->getIdProperty()->getIdUser()->getName());?></h4>
 							</div><br>
 							<div class="row">
 								<h4 style="margin:0;color:#55ab26;"><i class="fa fa-envelope" aria-hidden="true"></i> Contacter</h4>
@@ -119,7 +122,7 @@
 								</h4>
 							</div>
 						</li>
-						<li>
+						<li> 
 							<div class="col-xs-2">
 								<img src="web\pictures\Equipment\15b332b6927.png" class="equipmentLogo">
 							</div>
@@ -386,6 +389,37 @@
 					</p>
 				</div>
 			</div>
+			<div class="row">
+				<div class="col-sm-4">
+					<h5><?php echo $translation['rentComment'].' :';?></h5>
+				</div>
+				<div class="col-sm-8">
+					<p><?php echo $rentComment;?></p>
+				</div>
+			</div>
 		</fieldset>
+	<?php
+		if ((isset($_GET['request'])) && ($_SESSION['Role'] == 3))
+		{
+	?>
+		<fieldset>
+			<legend><span><i class="fa fa-check" aria-hidden="true"></i></span>Validation</legend>
+			<div class="row">
+				<div class="col-sm-4">
+					<a href="#" class="confirmHousing" value="<?php echo $housing->getId(); ?>"><button class="btn btn-lg btn-success btn-signin buttonUpdatePassword" type="submit"><i class="fa fa-check" aria-hidden="true"></i><?php echo '  '.$translation["confirmation"]; ?></button></a>
+				</div>
+				<div class="col-sm-4">
+					<a href="?p=user.mail&id=<?php echo $housing->getIdProperty()->getIdUser()->getId(); ?>"><button class="btn btn-lg btn-success btn-signin buttonUpdatePassword" type="submit"><i class="fa fa-envelope" aria-hidden="true"></i><?php echo '  '.$translation["contactOwner"]; ?></button></a>
+				</div>
+				<div class="col-sm-4">
+					<a href="#" class="deleteHousing" value="<?php echo $housing->getId(); ?>"><button style="background-color:#c9302c;" class="btn btn-lg btn-success btn-signin buttonUpdatePassword" type="submit"><i class="fa fa-remove" aria-hidden="true"></i><?php echo '  '.$translation["removeRequest"]; ?></button></a>
+				</div>
+			</div>
+		</fieldset>
+	<?php
+		}
+	?>
+	</div>
+	<div id="dialog-confirm">
 	</div>
 </div>
