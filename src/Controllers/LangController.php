@@ -17,16 +17,18 @@ class LangController extends Controller
         Router::redirect(end($currentPages));
     }
 
-    public function getTraductionByLabel() {
-        if (isset($_POST['label']))
+    public function getTraductionByLabel($l = null) {
+        $label = (isset($_POST['label'])) ? $_POST["label"] : $l;
+        if (!empty($label))
         {
             $query = $this->getConnection()->createQuery("
                 SELECT t.libelle
                 FROM Translation t JOIN t.idLabel l 
-                WHERE t.idLanguage = '".Language::getLanguage()."' AND l.label = '".$_POST["label"]."'
+                WHERE t.idLanguage = '".Language::getLanguage()."' AND l.label = '".$label."'
             ");
             $result = $query->getResult();
-            echo(utf8_encode($result[0]['libelle']));
+            if (empty($l)) echo(utf8_encode($result[0]['libelle']));
+            else return utf8_encode($result[0]['libelle']);
         }
     	else echo '';
     }

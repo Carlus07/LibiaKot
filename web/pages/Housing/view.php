@@ -7,24 +7,24 @@
 						<h4 style="margin:0;margin-bottom: 15px;"><span><i class="fa fa-search" aria-hidden="true"></i></span><?php echo 'Référence';?></h4>
 			            <div class="input-group mb-2 mr-sm-2 mb-sm-0">
 			            	<div class="input-group-addon">LK</div>
-			            	<input type="number" class="form-control" id="area" name="area">
+			            	<input type="number" class="form-control" id="reference" name="reference">
 			            </div>
 					</div>
 					<div class="col-sm-12">
 						<h4 style="margin:0;margin-bottom: 15px;"><span><i class="fa fa-home" aria-hidden="true"></i></span><?php echo 'Type';?></h4>
 			            <div class="form-group">
 	                		<select class="form-control" id="housingType" name="housingType">
-	                		<option value=""></option>
-		                <?php
+-		                <?php
+		                	$id = (isset($_GET['id'])) ? $_GET['id'] : $housings[0]->getIdType()->getId().'+'.$_GET['t'];
 		                  	foreach ($menus as $label => $menu) {
 		                    	foreach ($menu as $labelType => $idType) {
 		                      		foreach ($idType as $idSubType => $subMenu) {
 		                        		if (empty($subMenu)) 
 				                        {
-				                          echo (($initialized) && ($accomodation->getIdType()->getId() == key($idType))) ? '<option selected data-type="'.$label.'"  value="'.key($idType).'">'.$labelType.'</option>' : '<option data-type="'.$label.'"  value="'.key($idType).'">'.$labelType.'</option>';
+				                          echo ($id == key($idType)) ? '<option data-type="'.$label.'"  selected value="'.key($idType).'">'.$labelType.'</option>' : '<option data-type="'.$label.'"  value="'.key($idType).'">'.$labelType.'</option>';
 				                        }
 		                        		foreach ($subMenu as $idSubMenu => $labelSubMenu) {
-		                          			echo (($initialized) && (null != ($accomodation->getIdSubType())) && ($accomodation->getIdSubType()->getId() == $idSubMenu)) ? '<option selected data-type="'.$label.'" value="'.key($idType).'+'.$idSubMenu.'">'.$labelSubMenu.'</option>' : '<option data-type="'.$label.'" value="'.key($idType).'+'.$idSubMenu.'">'.$labelSubMenu.'</option>';
+		                          			echo ($id == key($idType)) ? '<option selected data-type="'.$label.'" value="'.key($idType).'+'.$idSubMenu.'">'.$labelSubMenu.'</option>' : '<option data-type="'.$label.'" value="'.key($idType).'+'.$idSubMenu.'">'.$labelSubMenu.'</option>';
 		                        		}
 		                      		}
 		                    	}
@@ -39,9 +39,23 @@
 			            <div id="slider-range"></div>
 					</div>
 					<div class="col-sm-12" style="margin-bottom: 15px;">
-						<h4 style="margin:0;margin-bottom: 15px;"><span><i class="fa fa-bed" aria-hidden="true"></i></span><?php echo 'Nombre de chambre minimum';?></h4>
+						<h5 style="margin:0;margin-bottom: 15px;"><span><i class="fa fa-bed" aria-hidden="true"></i></span><?php echo 'Nombre de chambre minimum';?></h5>
 			            <input type="text" id="amountBedroom" class="amount" readonly>
 			            <div id="slider-range-min"></div>
+					</div>
+					<div class="col-sm-12">
+						<h4 style="margin:0;margin-bottom: 15px;"><span><i class="fa fa-hourglass-o" aria-hidden="true"></i></span><?php echo $translation['rentalDuration'];?></h4>
+			            <div class="form-group">
+                			<select class="form-control" id="rentalDuration" name="rentalDuration">
+                				<option value=""></option>
+                  				<option value="1"><?php echo '12 '.$translation['month']; ?></option>
+                  				<option value="2"><?php echo '10 '.$translation['month']; ?></option>
+                  				<option value="3"><?php echo $translation['firstSemester']; ?></option>
+                  				<option value="4"><?php echo $translation['secondSemester']; ?></option>
+                  				<option value="5"><?php echo $translation['summerHoliday']; ?></option>
+                  				<option value="6"><?php echo $translation['other']; ?></option>
+                			</select>
+              			</div>
 					</div>
 				</div>
 			</div>
@@ -57,7 +71,7 @@
 				else
 				{
 			?>
-					
+					<div class="contentHousing">
 			<?php
 					foreach ($housings as $housing) {
 						$reference = $housing->getReference();
@@ -109,6 +123,7 @@
 			<?php
 				}
 			?>
+				</div>
 			</div>
 		</div>
 	</div>

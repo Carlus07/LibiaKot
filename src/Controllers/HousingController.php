@@ -598,4 +598,32 @@ class HousingController extends Controller {
         }
         else echo "warning+errorConfirmHousing";
     }
+
+    public function getHousingByReference()
+    {
+        $housing = $this->getConnection()->getRepository('Housing')->findByReference($_POST['reference']);
+        if (!empty($housing[0]))
+        {
+            $language = new LangController;
+            $result['reference'] = $housing[0]->getReference();
+            $result['rent'] = $housing[0]->getRent()+$housing[0]->getCharge();
+            $result['city'] = $housing[0]->getIdProperty()->getCity();
+            $result['label'] = $language->getTraductionByLabel($housing[0]->getIdType()->getIdLabel()->getLabel());
+            $result['capacity'] = $housing[0]->getCapacity();
+            $now = new \DateTime('now');
+            $diff = $now->diff($housing[0]->getAvailability());
+            $availability = ($diff->invert == 0) ?  $language->getTraductionByLabel('availableOn').$housing[0]->getAvailability()->format('d-m-Y') : $language->getTraductionByLabel('availableNow');
+            $result['availability'] = $availability;
+            $pictures = $this->getConnection()->getRepository('Picture')->findByIdHousing($housing[0]->getId());
+            if (!empty($pictures))
+            {
+                $namePicture = explode('.',$pictures[0]->getName());
+                $picture = "web/pictures/Housing/miniature/".$namePicture[0]."-miniature.".$namePicture[1];
+            }
+            else $picture =  "web/pictures/iconLarge.png";
+            $result['picture'] = $picture;
+            echo json_encode($result);
+        }
+        else echo json_encode('');
+    }
 }
