@@ -181,7 +181,7 @@ class HousingController extends Controller {
                 else $housing->setIdSubType(null);
 
                 $housing->setAvailability(new \DateTime($_POST['availability']));
-                if ($_POST['capacity'] == "") $housing->setCapacity(0);
+                if ($_POST['capacity'] == "") $housing->setCapacity(1);
                 else $housing->setCapacity(htmlspecialchars($_POST['capacity']));
                 if ($_POST['spaceAvailable'] == "") $housing->setSpaceAvailable(0);
                 else $housing->setSpaceAvailable(htmlspecialchars($_POST['spaceAvailable']));
@@ -623,6 +623,44 @@ class HousingController extends Controller {
             else $picture =  "web/pictures/iconLarge.png";
             $result['picture'] = $picture;
             echo json_encode($result);
+        }
+        else echo json_encode('');
+    }
+    public function getHousingByOthers()
+    {
+        $type = explode("+", $_POST['type']);
+        $typeRequest = (isset($type[1])) ? " AND h.idSubType = ".$type[1] : " AND h.idType = '".$type[0]."'";
+        $rentDurationRequest = (empty($_POST['rentDuration'])) ? '' : " AND h.rentalDuration = ".$_POST['rentDuration'];
+        $query = $this->getConnection()->createQuery("
+                    SELECT h
+                    FROM Housing h
+                    WHERE h.rent >= '".$_POST['rent'][0]."' AND h.charge <= '".$_POST['rent'][1]."' AND h.capacity >= '".$_POST['bedroom']."'".$typeRequest.$rentDurationRequest
+                );
+        $results = $query->getResult();
+        if (!empty($results))
+        {
+            $housings = [];
+            $now = new \DateTime('now');
+            $language = new LangController;
+            foreach ($results as $key => $housing) {
+                $housings[$key]['reference'] = $housing->getReference();
+                $housings[$key]['rent'] = $housing->getRent()+$housing->getCharge();
+                $housings[$key]['city'] = $housing->getIdProperty()->getCity();
+                $housings[$key]['label'] = $language->getTraductionByLabel($housing->getIdType()->getIdLabel()->getLabel());
+                $housings[$key]['capacity'] = $housing->getCapacity();
+                $diff = $now->diff($housing->getAvailability());
+                $availability = ($diff->invert == 0) ?  $language->getTraductionByLabel('availableOn').$housing->getAvailability()->format('d-m-Y') : $language->getTraductionByLabel('availableNow');
+                $housings[$key]['availability'] = $availability;
+                $pictures = $this->getConnection()->getRepository('Picture')->findByIdHousing($housing->getId());
+                if (!empty($pictures))
+                {
+                    $namePicture = explode('.',$pictures[0]->getName());
+                    $picture = "web/pictures/Housing/miniature/".$namePicture[0]."-miniature.".$namePicture[1];
+                }
+                else $picture =  "web/pictures/iconLarge.png";
+                $housings[$key]['picture'] = $picture;
+                echo json_encode($housings);
+            }
         }
         else echo json_encode('');
     }

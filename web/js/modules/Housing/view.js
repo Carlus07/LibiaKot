@@ -6,7 +6,8 @@ HousingView = (function() {
         amoutBedroom : $('#amountBedroom'),
         reference : $('#reference'),
         content : $('.contentHousing'),
-        type : $('#housingType')
+        type : $('#housingType'),
+        rentDuration : $('#rentalDuration')
     };
 
     var init = function() {
@@ -34,10 +35,11 @@ HousingView = (function() {
                 s.amoutBedroom.val( ui.value );
             }
         });
-        s.slider.on("slidechange", function( event, ui ) {loadByOthers('rent', ui.values);} );
+        s.slider.on("slidechange", loadByOthers);
         s.reference.on('change', loadByReference);
-        s.type.on('change', function() { loadByOthers('type', s.type.val());});
-        s.sliderBedroom.on("slidechange", function( event, ui ) {loadByOthers('rent', ui.values);} );
+        s.type.on('change', loadByOthers);
+        s.sliderBedroom.on("slidechange", loadByOthers);
+        s.rentDuration.on("change", loadByOthers);
     };
     var loadByReference = function()
     {
@@ -97,9 +99,70 @@ HousingView = (function() {
             }
         );
     };
-    var loadByOthers = function(criterion, value)
+    var loadByOthers = function()
     {
-        console.log(criterion+value);
+        $.post("?w=housing.getHousingByOthers",
+            {type: s.type.val(), rent : s.slider.slider("values"), bedroom : s.sliderBedroom.slider("value"), rentDuration : s.rentDuration.val()},
+            function(result)
+            {
+                s.content.empty();
+                var housings = JSON.parse(result);
+                if (housings != '')
+                {
+                    for(var key in housings)
+                    {
+                        var reference = housings[key].reference;
+                        for (var i = 0; i < 5-Math.floor(Math.log(housings[key].reference) + 1); i++)
+                        {
+                            reference = '0'+reference;
+                        }
+                        reference = "LK "+reference;
+                        for (var i = 0; i < 5-Math.floor(Math.log(housings[key].reference) + 1); i++)
+                        {
+                            reference = '0'+reference;
+                        }
+                        reference = "LK "+reference;
+                        var content = '<div class=" col-md-4 col-sm-4 col-xs-12">'+
+                                    '<div class="row frameUser" style="padding:5px;margin:0px;cursor:pointer;">'+
+                                        '<div class="col-sm-12">'+
+                                            '<h4 style="margin:0;"><span><i class="fa fa-tags" aria-hidden="true"></i></span>'+reference+'</h4>'+
+                                         '</div>'+
+                                        '<div class="col-sm-12 text-center" style="margin-bottom: 15px;">'+
+                                            '<img class="img-responsive pictureUserList" src="'+housings[key].picture+'"/>'+
+                                        '</div>'+
+                                        '<div class="col-sm-12">'+
+                                            '<h4 style="margin:0;color:#55ab26;">'+housings[key].label+'</h4>'+
+                                        '</div>';
+                        if (housings[key].capacity > 1)
+                        {
+                            content = content + '<div class="col-sm-12">'+
+                                                    '<h5 style="margin:0;">';
+                                                    for (var i = 1; i <= housings[key].capacity; i++)
+                                                    {
+                                                        content = content + '<span><i class="fa fa-child" aria-hidden="true"></i></span>';
+                                                    }
+                            content = content +     '</h5>'+
+                                                '</div>';
+                        }
+                        content = content + '<div class="col-sm-12">'+
+                                                '<h5 style="margin:0;"><span><i class="fa fa-map-marker" aria-hidden="true"></i></span>'+housings[key].city+'  -  '+housings[key].rent+'<span><i class="fa fa-eur" aria-hidden="true"></i></span></h5>'+
+                                            '</div>'+
+                                            '<div class="col-sm-12">'+
+                                                '<h5 style="margin:0;font-size:12px"><span><i class="fa fa-calendar" aria-hidden="true"></i></span>'+housings[key].availability+'</h5>'+
+                                            '</div>'+
+                                          '</div>'+
+                                        '</div>'
+                        s.content.append(content);
+                    }
+                }
+                else
+                {
+                    s.content.append('<div class="col-sm-8 col-xs-12">'+
+                                        '<h5>No Result...</h5>'+
+                                    '</div>');
+                }
+            }
+        );
     };
     return {
         init: init
