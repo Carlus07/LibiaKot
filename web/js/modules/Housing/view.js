@@ -5,7 +5,8 @@ HousingView = (function() {
         amountRent : $( "#amountRent"),
         amoutBedroom : $('#amountBedroom'),
         reference : $('#reference'),
-        content : $('.contentHousing')
+        content : $('.contentHousing'),
+        type : $('#housingType')
     };
 
     var init = function() {
@@ -33,8 +34,10 @@ HousingView = (function() {
                 s.amoutBedroom.val( ui.value );
             }
         });
-        s.slider.on("slidechange", function( event, ui ) {console.log(ui)} );
+        s.slider.on("slidechange", function( event, ui ) {loadByOthers('rent', ui.values);} );
         s.reference.on('change', loadByReference);
+        s.type.on('change', function() { loadByOthers('type', s.type.val());});
+        s.sliderBedroom.on("slidechange", function( event, ui ) {loadByOthers('rent', ui.values);} );
     };
     var loadByReference = function()
     {
@@ -93,6 +96,10 @@ HousingView = (function() {
                 }
             }
         );
+    };
+    var loadByOthers = function(criterion, value)
+    {
+        console.log(criterion+value);
     };
     return {
         init: init

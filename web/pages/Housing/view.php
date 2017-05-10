@@ -15,7 +15,9 @@
 			            <div class="form-group">
 	                		<select class="form-control" id="housingType" name="housingType">
 -		                <?php
-		                	$id = (isset($_GET['id'])) ? $_GET['id'] : $housings[0]->getIdType()->getId().'+'.$_GET['t'];
+							if (!empty($housing)) $id = (isset($_GET['id'])) ? $_GET['id'] : $housings[0]->getIdType()->getId().'+'.$_GET['t'];
+							else $id = 0;
+		                	
 		                  	foreach ($menus as $label => $menu) {
 		                    	foreach ($menu as $labelType => $idType) {
 		                      		foreach ($idType as $idSubType => $subMenu) {
