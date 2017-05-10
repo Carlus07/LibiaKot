@@ -208,10 +208,6 @@ HousingView = (function() {
        s.housings.each(function(){
             var myLatlng = new google.maps.LatLng($(this).attr('data-latitude'), $(this).attr('data-longitude'));
             var reference = $(this).attr('data-reference');
-            for (var i = 0; i < 5-Math.floor(Math.log($(this).attr('data-reference')) + 1); i++)
-            {
-                reference = '0'+reference;
-            }
             reference = "LK "+reference;
             var contentString =  '<a href="?p=housing.viewHousing&id='+$(this).attr('data-id')+'">'+
                                     '<div class="text-center col-xs-12">'+
