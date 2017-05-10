@@ -27,6 +27,10 @@ class HousingController extends Controller {
             $type = $this->getConnection()->getRepository("Type")->find($_GET['id']);
             $housings = $this->getConnection()->getRepository("Housing")->findBy((array('idType' => $type, 'state' => '1')));
         }
+        if (!isset($_GET['id']) && !(isset($_GET['t'])))
+        {
+            $housings = $this->getConnection()->getRepository("Housing")->findByState(1);
+        }
         if (!empty($housings))
         {
             $pictures = [];

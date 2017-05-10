@@ -286,7 +286,7 @@ class Navi
             }
             default:
                 $trad = "searchmenu";
-                $link = "?p=search.index";
+                $link = "?p=housing.view";
                 break;
         }
         return '<ul class="nav navbar-nav navbar-right hidden-sm">

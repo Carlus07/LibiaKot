@@ -465,6 +465,13 @@ legend > span{
     position: relative;
     overflow: hidden;
 }
+.mapView{
+	height: 550px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 25px;
+}
 .gmnoprint, .gm-style-cc{
 	display: none;
 }

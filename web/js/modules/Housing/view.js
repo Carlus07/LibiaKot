@@ -7,13 +7,21 @@ HousingView = (function() {
         reference : $('#reference'),
         content : $('.contentHousing'),
         type : $('#housingType'),
-        rentDuration : $('#rentalDuration')
+        rentDuration : $('#rentalDuration'),
+        map : null,
+        divMap : $("#map-canvas"),
+        housings : $('.marker')
     };
 
     var init = function() {
         bindUIActions();
         s.amountRent.val(s.slider.slider( "values", 0 ) + "€ - " + s.slider.slider( "values", 1 ) + "€");
         s.amoutBedroom.val(s.sliderBedroom.slider( "value" ) );
+        if (s.divMap.length != 0)
+        {
+            LoaderScript.loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyCvRAuFQQ04OVRXeimrBPdMMHRnpMXYw8Q&language=fr");
+            setTimeout(function(){ initializeMap(); }, 3000);
+        }
     };
 
     var bindUIActions = function() {
@@ -94,9 +102,20 @@ HousingView = (function() {
                 }
                 else
                 {
-                    s.content.append('<div class="col-sm-8 col-xs-12">'+
-                                        '<h5>No Result...</h5>'+
+                    Translator.translation("noResult").done(function(data){
+                        s.content.append('<div class="col-sm-8 col-xs-12" style="margin-bottom:25px;">'+
+                                        '<div class="row">'+
+                                            '<div class="error col-xs-offset-1 col-xs-10 col-xs-offset-1 text-center">'+
+                                                '<div class="col-xs-4">'+
+                                                    '<img src="web/pictures/notFound.png" class="errorPicture img-responsive"/>'+
+                                                '</div>'+
+                                                '<div class="col-xs-8 messagePicture">'+
+                                                    '<h3>'+data+'</h3>'+
+                                                '</div>'+
+                                            '</div>'+
+                                        '</div>'+
                                     '</div>');
+                    });
                 }
             }
         );
@@ -107,6 +126,7 @@ HousingView = (function() {
             {type: s.type.val(), rent : s.slider.slider("values"), bedroom : s.sliderBedroom.slider("value"), rentDuration : s.rentDuration.val()},
             function(result)
             {
+                console.log(s.content);
                 s.content.empty();
                 var housings = JSON.parse(result);
                 if (housings != '')
@@ -156,12 +176,91 @@ HousingView = (function() {
                 }
                 else
                 {
-                    s.content.append('<div class="col-sm-8 col-xs-12">'+
-                                        '<h5>No Result...</h5>'+
+                    Translator.translation("noResult").done(function(data){
+                        s.content.append('<div class="col-sm-8 col-xs-12" style="margin-bottom:25px;">'+
+                                        '<div class="row">'+
+                                            '<div class="error col-xs-offset-1 col-xs-10 col-xs-offset-1 text-center">'+
+                                                '<div class="col-xs-4">'+
+                                                    '<img src="web/pictures/notFound.png" class="errorPicture img-responsive"/>'+
+                                                '</div>'+
+                                                '<div class="col-xs-8 messagePicture">'+
+                                                    '<h3>'+data+'</h3>'+
+                                                '</div>'+
+                                            '</div>'+
+                                        '</div>'+
                                     '</div>');
+                    });
                 }
             }
         );
+    };
+    var initializeMap = function()
+    {
+        if (window['google'] == undefined) setTimeout(initializeMap, 1000);
+        s.geoCoder = new google.maps.Geocoder();
+        var latlng = new google.maps.LatLng(50.466667,4.867222);
+        var mapOptions = {
+            zoom      : 14,
+            center    : latlng
+        }
+        var map = new google.maps.Map(s.divMap[0], mapOptions);
+
+       s.housings.each(function(){
+            var myLatlng = new google.maps.LatLng($(this).attr('data-latitude'), $(this).attr('data-longitude'));
+            var reference = $(this).attr('data-reference');
+            for (var i = 0; i < 5-Math.floor(Math.log($(this).attr('data-reference')) + 1); i++)
+            {
+                reference = '0'+reference;
+            }
+            reference = "LK "+reference;
+            var contentString =  '<a href="?p=housing.viewHousing&id='+$(this).attr('data-id')+'">'+
+                                    '<div class="text-center col-xs-12">'+
+                                    '<div class="row frameUser" style="width=100%;padding:5px;margin:0px;cursor:pointer;">'+
+                                        '<div class="col-sm-12">'+
+                                            '<h4 style="margin:0;"><span><i class="fa fa-tags" aria-hidden="true"></i></span>'+reference+'</h4>'+
+                                         '</div>'+
+                                        '<div class="col-sm-12 text-center" style="margin-bottom: 15px;">'+
+                                            '<img style="width:50%;" lass="img-responsive pictureUserList" src="'+$(this).attr('data-picture')+'"/>'+
+                                        '</div>'+
+                                        '<div class="col-sm-12">'+
+                                            '<h4 style="margin:0;color:#55ab26;">'+$(this).attr('data-type')+'</h4>'+
+                                        '</div>';
+                        if ($(this).attr('data-capacity') > 1)
+                        {
+                            contentString = contentString + '<div class="col-sm-12">'+
+                                                    '<h5 style="margin:0;">';
+                                                    for (var i = 1; i <= $(this).attr('data-capacity'); i++)
+                                                    {
+                                                        contentString = contentString + '<span><i class="fa fa-child" aria-hidden="true"></i></span>';
+                                                    }
+                            contentString = contentString +     '</h5>'+
+                                                '</div>';
+                        }
+                        contentString = contentString + '<div class="col-sm-12">'+
+                                                '<h5 style="margin:0;"><span><i class="fa fa-map-marker" aria-hidden="true"></i></span>'+$(this).attr('data-city')+'  -  '+$(this).attr('data-rent')+'<span><i class="fa fa-eur" aria-hidden="true"></i></span></h5>'+
+                                            '</div>'+
+                                            '<div class="col-sm-12">'+
+                                                '<h5 style="margin:0;font-size:12px"><span><i class="fa fa-calendar" aria-hidden="true"></i></span>'+$(this).attr('data-availability')+'</h5>'+
+                                            '</div>'+
+                                          '</div>'+
+                                        '</div>'+
+                                        '</a>';
+
+
+
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString,
+                maxWidth: 250
+            });
+            var marker = new google.maps.Marker({
+                position: myLatlng,
+                title:"LK "+$(this).attr('data-reference')
+            });
+            marker.setMap(map);
+            marker.addListener('click', function() {
+                infowindow.open(map, marker);
+            });
+       });        
     };
     return {
         init: init

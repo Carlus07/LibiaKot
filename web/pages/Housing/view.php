@@ -62,11 +62,48 @@
 				</div>
 			</div>
 			<?php
-				if (empty($housings))
+				if (empty($housings) && (isset($_GET['id']) || (isset($_GET['t']))))
 				{
 			?>
-					<div class="col-sm-8 col-xs-12">
-						<h5>No Result...</h5>
+					<div class="col-sm-8 col-xs-12" style="margin-bottom:25px;">
+						<div class="row">
+							<div class="error col-xs-offset-1 col-xs-10 col-xs-offset-1 text-center">
+								<div class="col-xs-4">
+									<img src="web/pictures/notFound.png" class="errorPicture img-responsive"/>
+								</div>
+								<div class="col-xs-8 messagePicture">
+									<h3><?php echo $translation['noResult']; ?></h3>
+								</div>
+							</div>
+						</div>
+					</div>
+			<?php
+				}
+				else if (!isset($_GET['id']) && !isset($_GET['t']))
+				{
+			?>
+					<div class="contentHousing">
+						<div class="col-md-8 col-sm-8 col-xs-12">
+							<div id="map-canvas" class="mapView"></div>
+			<?php
+							if (!empty($housings))
+							{
+								foreach ($housings as $housing) {
+									$reference = $housing->getReference();
+					                for ($i = 0; $i < 5-floor(log10($reference) + 1); $i++)
+					                {
+					                    $reference = '0'.$reference;
+					                }
+					                $coordonnee = explode(',', $housing->getIdProperty()->getGPSPosition());
+					                $now = new DateTime('now');
+									$result = $now->diff($housing->getAvailability());
+									$availability = ($result->invert == 0) ? $translation['availableOn'].$housing->getAvailability()->format('d-m-Y') : $translation['availableNow'];
+									$type = $translation[$housing->getIdType()->getIdLabel()->getLabel()];
+									echo '<input type="hidden" class="marker" data-picture="'.$pictures[$housing->getId()].'" data-reference="'.$reference.'" data-availability="'.$availability.'" data-capacity="'.$housing->getCapacity().'" data-city="'.$housing->getIdProperty()->getCity().'" data-rent="'.($housing->getRent()+$housing->getCharge()).'" data-type="'.$type.'" data-latitude="'.$coordonnee[0].'" data-longitude="'.$coordonnee[1].'" data-id="'.$housing->getId().'"/>';
+								}
+							}
+			?>
+						</div>
 					</div>
 			<?php
 				}
@@ -75,6 +112,7 @@
 			?>
 					<div class="contentHousing">
 			<?php
+
 					foreach ($housings as $housing) {
 						$reference = $housing->getReference();
 		                for ($i = 0; $i < 5-floor(log10($reference) + 1); $i++)
