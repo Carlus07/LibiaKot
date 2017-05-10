@@ -9,6 +9,8 @@
                 dropdownMenu : $(".dropdownMenu"),
                 subMenu : $(".textSubMenu"),
                 logo : $(".unamur"),
+                search : $("#search"),
+                buttonSearch : $('.button-search'),
                 width : $(window).width()
             };
 
@@ -16,6 +18,9 @@
                 bindUIActions();
                 activationMenu();
                 if(s.width <= 767) deactivationMenu();
+                Translator.translation('textEmpty').done(function(data){
+                    s.search[0].setCustomValidity(data);
+                });
             };
 
             var bindUIActions = function() {
@@ -30,6 +35,7 @@
                 s.logo.on('mouseout', function(){
                     $(this).attr('src', 'web/pictures/unamur.png');
                 });
+                s.buttonSearch.on('click', search);
             };
             var adjustment = function()
             {
@@ -72,6 +78,43 @@
                 s.subMenu = $(".textSubMenu");
                 s.logo = $(".unamur");
                 init();
+            };
+            var search = function() 
+            {
+                re = "lk";
+                var find = (s.search.val()).toLowerCase().match(re);
+                if (find)
+                {
+                    if (find.index == 0)
+                    {
+                        var reference = s.search.val().toLowerCase().split('lk');
+                        var error = "";
+                        if (reference[1] == "") error = "formatRefEmpty";
+                        var number = parseInt(reference[1]);
+                        if (isNaN(number)) error = "refNotInteger";
+                        else if (number < 0) error = "refNotNull";
+                        else if (number > 99999) error = "refTooLong";
+                        else error = "";
+
+                        if (error != "")
+                        {
+                            Translator.translation(error).done(function(data){
+                                s.search[0].setCustomValidity(data);
+                            });
+                        }
+                        else s.search[0].setCustomValidity("");
+                    }
+                    else
+                    {
+                        s.search[0].setCustomValidity("tset");
+                    }
+                }
+                else
+                {
+                    Translator.translation("formatRefEmpty").done(function(data){
+                        s.search[0].setCustomValidity(data);
+                    });
+                }
             };
             return {
                 init: init,

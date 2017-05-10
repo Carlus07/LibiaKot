@@ -58,17 +58,18 @@ HousingView = (function() {
                         reference = '0'+reference;
                     }
                     reference = "LK "+reference;
-                    var content = '<div class=" col-md-4 col-sm-4 col-xs-12">'+
-                                '<div class="row frameUser" style="padding:5px;margin:0px;cursor:pointer;">'+
-                                    '<div class="col-sm-12">'+
-                                        '<h4 style="margin:0;"><span><i class="fa fa-tags" aria-hidden="true"></i></span>'+reference+'</h4>'+
-                                     '</div>'+
-                                    '<div class="col-sm-12 text-center" style="margin-bottom: 15px;">'+
-                                        '<img class="img-responsive pictureUserList" src="'+housing.picture+'"/>'+
-                                    '</div>'+
-                                    '<div class="col-sm-12">'+
-                                        '<h4 style="margin:0;color:#55ab26;">'+housing.label+'</h4>'+
-                                    '</div>';
+                    var content = '<a href="?p=housing.viewHousing&id='+housing.id+'">'+
+                                    '<div class=" col-md-4 col-sm-4 col-xs-12">'+
+                                        '<div class="row frameUser" style="padding:5px;margin:0px;cursor:pointer;">'+
+                                            '<div class="col-sm-12">'+
+                                                '<h4 style="margin:0;"><span><i class="fa fa-tags" aria-hidden="true"></i></span>'+reference+'</h4>'+
+                                             '</div>'+
+                                            '<div class="col-sm-12 text-center" style="margin-bottom: 15px;">'+
+                                                '<img class="img-responsive pictureUserList" src="'+housing.picture+'"/>'+
+                                            '</div>'+
+                                            '<div class="col-sm-12">'+
+                                                '<h4 style="margin:0;color:#55ab26;">'+housing.label+'</h4>'+
+                                            '</div>';
                     if (housing.capacity > 1)
                     {
                         content = content + '<div class="col-sm-12">'+
@@ -80,14 +81,15 @@ HousingView = (function() {
                         content = content +     '</h5>'+
                                             '</div>';
                     }
-                    content = content + '<div class="col-sm-12">'+
-                                            '<h5 style="margin:0;"><span><i class="fa fa-map-marker" aria-hidden="true"></i></span>'+housing.city+'  -  '+housing.rent+'<span><i class="fa fa-eur" aria-hidden="true"></i></span></h5>'+
+                    content = content +     '<div class="col-sm-12">'+
+                                                '<h5 style="margin:0;"><span><i class="fa fa-map-marker" aria-hidden="true"></i></span>'+housing.city+'  -  '+housing.rent+'<span><i class="fa fa-eur" aria-hidden="true"></i></span></h5>'+
+                                            '</div>'+
+                                            '<div class="col-sm-12">'+
+                                                '<h5 style="margin:0;font-size:12px"><span><i class="fa fa-calendar" aria-hidden="true"></i></span>'+housing.availability+'</h5>'+
+                                            '</div>'+
+                                          '</div>'+
                                         '</div>'+
-                                        '<div class="col-sm-12">'+
-                                            '<h5 style="margin:0;font-size:12px"><span><i class="fa fa-calendar" aria-hidden="true"></i></span>'+housing.availability+'</h5>'+
-                                        '</div>'+
-                                      '</div>'+
-                                    '</div>'
+                                    '</a>';
                     s.content.append(content);
                 }
                 else
@@ -117,12 +119,8 @@ HousingView = (function() {
                             reference = '0'+reference;
                         }
                         reference = "LK "+reference;
-                        for (var i = 0; i < 5-Math.floor(Math.log(housings[key].reference) + 1); i++)
-                        {
-                            reference = '0'+reference;
-                        }
-                        reference = "LK "+reference;
-                        var content = '<div class=" col-md-4 col-sm-4 col-xs-12">'+
+                        var content =  '<a href="?p=housing.viewHousing&id='+housings[key].id+'">'+
+                                    '<div class=" col-md-4 col-sm-4 col-xs-12">'+
                                     '<div class="row frameUser" style="padding:5px;margin:0px;cursor:pointer;">'+
                                         '<div class="col-sm-12">'+
                                             '<h4 style="margin:0;"><span><i class="fa fa-tags" aria-hidden="true"></i></span>'+reference+'</h4>'+
@@ -151,7 +149,8 @@ HousingView = (function() {
                                                 '<h5 style="margin:0;font-size:12px"><span><i class="fa fa-calendar" aria-hidden="true"></i></span>'+housings[key].availability+'</h5>'+
                                             '</div>'+
                                           '</div>'+
-                                        '</div>'
+                                        '</div>'+
+                                        '</a>';
                         s.content.append(content);
                     }
                 }

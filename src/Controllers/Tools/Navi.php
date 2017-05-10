@@ -37,10 +37,12 @@ class Navi
 			<a class="navbar-logo" href="?p=home.index"><img src="web/pictures/libiakot.png"></a>
 		</div>
 		<div class="col-sm-5 offset-sm-1 text-center">
-			<div class="searchBox">
-	      		<input class="form-control input-search" placeholder="'.$translation["search"].'" type="text">
-	      		<button class="button-search input-group-addon"><i class="fa fa-search"></i></button>
-	  		</div>
+            <form action="?r=housing.search" method="POST">
+    			<div class="searchBox">
+    	      		<input class="form-control input-search" name="search" id="search" placeholder="'.$translation["search"].'" type="text" required> 
+    	      		<button class="button-search input-group-addon" type="submit"><i class="fa fa-search"></i></button>
+    	  		</div>
+            </form>
     	</div>';
     	if ($variableReturn) return ob_get_clean();
     }

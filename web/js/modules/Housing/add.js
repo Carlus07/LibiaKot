@@ -212,15 +212,15 @@ HousingAdd = (function() {
               });
 
                 this._on( this.input, {
-                  autocompleteselect: function( event, ui ) {
-                    ui.item.option.selected = true;
-                    this._trigger( "select", event, {
-                      item: ui.item.option
-                  });
-                },
+                      autocompleteselect: function( event, ui ) {
+                        ui.item.option.selected = true;
+                        this._trigger( "select", event, {
+                          item: ui.item.option
+                      });
+                    },
 
-                autocompletechange: "_removeIfInvalid"
-            });
+                    autocompletechange: "_removeIfInvalid"
+                });
             },
 
             _createShowAllButton: function() {

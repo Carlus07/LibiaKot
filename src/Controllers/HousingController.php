@@ -61,8 +61,22 @@ class HousingController extends Controller {
     {
         if (empty($_POST)) 
         {   
-            if (isset($_GET['m']) && ($_GET['m'] == "updateHousing")) $accomodation = $this->getConnection()->getRepository("Housing")->find($_GET['id']);
-            else if (isset($_GET['m']) && ($_GET['m'] == "updateProperty")) $accomodation = $this->getConnection()->getRepository("Property")->find($_GET['id']);
+            if (isset($_GET['m']) && ($_GET['m'] == "updateHousing")) 
+            {
+                $accomodation = $this->getConnection()->getRepository("Housing")->find($_GET['id']);
+                if (($accomodation->getIdProperty()->getIdUser()->getId() != Session::get('idUser')) && (Session::get('Role') != 3))
+                {
+                    $this->render('error.index');
+                }
+            }
+            else if (isset($_GET['m']) && ($_GET['m'] == "updateProperty")) 
+            {
+                $accomodation = $this->getConnection()->getRepository("Property")->find($_GET['id']);
+                if (($accomodation->getIdUser()->getId() != Session::get('idUser')) && (Session::get('Role') != 3))
+                {
+                    $this->render('error.index');
+                }
+            }
             else $accomodation = null;
 
             if (isset($_GET['m']) && ($_GET['m'] == "updateHousing"))
@@ -524,16 +538,23 @@ class HousingController extends Controller {
         if ((isset($_GET['id'])) && ($_GET['id'] > 0))
         {
             $housing = $this->getConnection()->getRepository('Housing')->find($_GET['id']);
-            $pictures = $this->getConnection()->getRepository('Picture')->findByIdHousing($housing->getId());
-            $results = $this->getConnection()->getRepository('HousingEquipment')->findByIdHousing($housing->getId());
-            $equipments = [];
-            foreach ($results as $key => $equipment) {
-                $category = $equipment->getIdEquipment()->getIdCategory()->getIdLabel()->getLabel();
-                $array['label'] = $equipment->getIdEquipment()->getIdLabel()->getLabel();
-                $array['picture'] = $equipment->getIdEquipment()->getIcon();
-                $equipments[$category][$key] = $array;
+            if (!empty($housing))
+            {
+                $pictures = $this->getConnection()->getRepository('Picture')->findByIdHousing($housing->getId());
+                $results = $this->getConnection()->getRepository('HousingEquipment')->findByIdHousing($housing->getId());
+                $equipments = [];
+                foreach ($results as $key => $equipment) {
+                    $category = $equipment->getIdEquipment()->getIdCategory()->getIdLabel()->getLabel();
+                    $array['label'] = $equipment->getIdEquipment()->getIdLabel()->getLabel();
+                    $array['picture'] = $equipment->getIdEquipment()->getIcon();
+                    $equipments[$category][$key] = $array;
+                }
+                $this->render('housing.viewHousing.equipment', compact('housing','pictures', 'equipments'));
             }
-            $this->render('housing.viewHousing.equipment', compact('housing','pictures', 'equipments'));
+            else
+            {
+                $this->render('error.index');
+            }
         }
         else
         {
@@ -605,6 +626,7 @@ class HousingController extends Controller {
         if (!empty($housing[0]))
         {
             $language = new LangController;
+            $result['id'] = $housing[0]->getId();
             $result['reference'] = $housing[0]->getReference();
             $result['rent'] = $housing[0]->getRent()+$housing[0]->getCharge();
             $result['city'] = $housing[0]->getIdProperty()->getCity();
@@ -643,6 +665,7 @@ class HousingController extends Controller {
             $now = new \DateTime('now');
             $language = new LangController;
             foreach ($results as $key => $housing) {
+                $housings[$key]['id'] = $housing->getId();
                 $housings[$key]['reference'] = $housing->getReference();
                 $housings[$key]['rent'] = $housing->getRent()+$housing->getCharge();
                 $housings[$key]['city'] = $housing->getIdProperty()->getCity();
@@ -663,5 +686,36 @@ class HousingController extends Controller {
             }
         }
         else echo json_encode('');
+    }
+    public function search()
+    {
+        if (isset($_POST['search']))
+        {
+            $reference = explode('lk', strtolower($_POST['search']));
+            $reference = intval($reference[1]);
+            $result = $this->getConnection()->getRepository('Housing')->findByReference($reference);
+            if (!empty($result))
+            {
+                $housing = $result[0];
+                $pictures = $this->getConnection()->getRepository('Picture')->findByIdHousing($housing->getId());
+                $results = $this->getConnection()->getRepository('HousingEquipment')->findByIdHousing($housing->getId());
+                $equipments = [];
+                foreach ($results as $key => $equipment) {
+                    $category = $equipment->getIdEquipment()->getIdCategory()->getIdLabel()->getLabel();
+                    $array['label'] = $equipment->getIdEquipment()->getIdLabel()->getLabel();
+                    $array['picture'] = $equipment->getIdEquipment()->getIcon();
+                    $equipments[$category][$key] = $array;
+                }
+                $this->render('housing.viewHousing.equipment', compact('housing','pictures', 'equipments'));
+            }
+            else
+            {
+                $this->render('error.index');
+            }
+        }
+        else
+        {
+            $this->render('error.index');
+        }
     }
 }
