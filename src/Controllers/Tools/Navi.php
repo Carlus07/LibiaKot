@@ -247,7 +247,7 @@ class Navi
         $subTypes = $subTypeRepo->findAll();     
 
         $association = array();
-        $preKey = "?p=housing.view&id=";
+        $preKey = "?p=housing.view&r=10&id=";
         foreach($types as $type)
         {
             if (($role != 1) && method_exists($type, 'getLink')) $preKey = "";
@@ -286,7 +286,7 @@ class Navi
             }
             default:
                 $trad = "searchmenu";
-                $link = "?p=housing.view";
+                $link = "?p=housing.view&r=10";
                 break;
         }
         return '<ul class="nav navbar-nav navbar-right hidden-sm">

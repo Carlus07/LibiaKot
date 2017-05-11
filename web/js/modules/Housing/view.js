@@ -10,7 +10,8 @@ HousingView = (function() {
         rentDuration : $('#rentalDuration'),
         map : null,
         divMap : $("#map-canvas"),
-        housings : $('.marker')
+        housings : $('.marker'),
+        pagination : $('.pagination')
     };
 
     var init = function() {
@@ -49,6 +50,9 @@ HousingView = (function() {
         s.sliderBedroom.on("slidechange", loadByOthers);
         s.rentDuration.on("change", loadByOthers);
     };
+    var paginationUIAction = function() {
+        s.pageLink.on('click', loadByReference);
+    }
     var loadByReference = function()
     {
         var selection = $(this).val();
@@ -120,13 +124,15 @@ HousingView = (function() {
             }
         );
     };
-    var loadByOthers = function()
+    var loadByOthers = function(event)
     {
+        var os = (event.type == "click") ? $(this).val() : 0;
+        var lm = (os != 0) ? os - 10 : 0;
+
         $.post("?w=housing.getHousingByOthers",
-            {type: s.type.val(), rent : s.slider.slider("values"), bedroom : s.sliderBedroom.slider("value"), rentDuration : s.rentDuration.val()},
+            {type: s.type.val(), rent : s.slider.slider("values"), bedroom : s.sliderBedroom.slider("value"), rentDuration : s.rentDuration.val(), offset : os, limit : lm},
             function(result)
             {
-                console.log(s.content);
                 s.content.empty();
                 var housings = JSON.parse(result);
                 if (housings != '')
@@ -172,6 +178,36 @@ HousingView = (function() {
                                         '</div>'+
                                         '</a>';
                         s.content.append(content);
+                    }
+                    s.pagination.empty();
+                    var pagination = Math.ceil((housings[0].size)/10);
+                    var active = os / 10;
+                    var previous = (active == 1) ? 10 : ((active-1)*10);
+                    var next = (active == pagination) ? (active*10) : ((active+1)*10);
+
+                    if (pagination > 1)
+                    {
+                        content =   '<li class="page-item">'+
+                                        '<a class="page-link" value="'+previous+'" href="#" aria-label="Previous">'+
+                                            '<span aria-hidden="true">&laquo;</span>'+ 
+                                            '<span class="sr-only">Previous</span>'+
+                                        '</a>'+
+                                    '</li>';
+                        for(var i = 1; i <= $pagination; i++)
+                        {
+                            var string = (active != i) ? ' ' : ' active';
+                            var redirection = i*10;
+                            content = content + '<li class="page-item '+string+'"><a class="page-link" href="?p=housing.view&r='+redirection+'">'+i+'</a></li>';
+                        }   
+                        content =   '<li class="page-item">'+
+                                        '<a class="page-link" value="'+previous+'" href="#" aria-label="Next">'+
+                                            '<span aria-hidden="true">&raquo;</span>'+
+                                            '<span class="sr-only">Next</span>'+
+                                        '</a>'+
+                                    '</li>';
+                        s.pageLink = $('.page-link');
+                        paginationUIAction();
+                        s.pagination.append(content);
                     }
                 }
                 else

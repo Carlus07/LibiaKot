@@ -17,49 +17,71 @@ class HousingController extends Controller {
 
     public function view() 
     {
-        if (isset($_GET['t']))
+        if (isset($_GET['r']) && (($_GET['r'] % 10) == 0))
         {
-            $subType = $this->getConnection()->getRepository("SubType")->find($_GET['t']);
-            $housings = $this->getConnection()->getRepository("Housing")->findBy((array('idSubType' => $subType, 'state' => '1')));
-        }
-        else if (isset($_GET['id']))
-        {
-            $type = $this->getConnection()->getRepository("Type")->find($_GET['id']);
-            $housings = $this->getConnection()->getRepository("Housing")->findBy((array('idType' => $type, 'state' => '1')));
-        }
-        if (!isset($_GET['id']) && !(isset($_GET['t'])))
-        {
-            $housings = $this->getConnection()->getRepository("Housing")->findByState(1);
-        }
-        if (!empty($housings))
-        {
-            $pictures = [];
-            foreach ($housings as $housing) {
-                $results = $this->getConnection()->getRepository('Picture')->findByIdHousing($housing->getId());
-                if (!empty($results))
-                {
-                    $namePicture = explode('.',$results[0]->getName());
-                    $picture = "web/pictures/Housing/miniature/".$namePicture[0]."-miniature.".$namePicture[1];
-                }
-                else $picture =  "web/pictures/iconLarge.png";
-                $pictures[$housing->getId()] = $picture;
-            }
-        }
-        $menus = array();
-        $typeRepo = static::getConnection()->getRepository("Type");
-        $types = $typeRepo->findAll();
-        $subTypeRepo = static::getConnection()->getRepository("SubType");
-        $subTypes = $subTypeRepo->findAll();     
+            if ((isset($_GET['t'])) || (isset($_GET['id'])))
+            {
+                $housings = $this->getConnection()->getRepository('Housing')->findByState([0, 2]); 
+                $size = sizeof($housings);
 
-        foreach($types as $type)
-        {
-            $menus[$type->getIdLabel()->getLabel()][Language::getLabelTranslation($type->getIdLabel())][$type->getId()] = array();
+                $offset = (isset($_GET['r'])) ? $_GET['r'] : 10;
+                $limit = $offset - 10;
+
+                $type = (isset($_GET['t'])) ? "SubType" : "Type";
+                $id = (isset($_GET['t'])) ? $_GET['t'] : $_GET['id'];
+                $request = $this->getConnection()->getRepository($type)->find($id);
+                $idType = "id".$type;
+                $housings = $this->getConnection()->getRepository("Housing")->findBy(array($idType => $request, 'state' => '1'));
+                $size = sizeof($housings);
+
+                $param = "h.".$idType;
+                $dql = "SELECT h FROM Housing h WHERE h.state = 1 AND ".$param." = ".$request->getId()." ORDER BY h.reference ASC";
+                $query = $this->getConnection()->createQuery($dql)
+                                ->setFirstResult($limit)
+                                ->setMaxResults($offset);
+                $housings = $query->getResult();
+            }
+            else if (!isset($_GET['id']) && !(isset($_GET['t'])))
+            {
+                $housings = $this->getConnection()->getRepository("Housing")->findByState(1);
+                $size = 0;
+            }
+
+            if (!empty($housings))
+            {
+                $pictures = [];
+                foreach ($housings as $housing) {
+                    $results = $this->getConnection()->getRepository('Picture')->findByIdHousing($housing->getId());
+                    if (!empty($results))
+                    {
+                        $namePicture = explode('.',$results[0]->getName());
+                        $picture = "web/pictures/Housing/miniature/".$namePicture[0]."-miniature.".$namePicture[1];
+                    }
+                    else $picture =  "web/pictures/iconLarge.png";
+                    $pictures[$housing->getId()] = $picture;
+                }
+            }
+
+            $menus = array();
+            $typeRepo = static::getConnection()->getRepository("Type");
+            $types = $typeRepo->findAll();
+            $subTypeRepo = static::getConnection()->getRepository("SubType");
+            $subTypes = $subTypeRepo->findAll();     
+
+            foreach($types as $type)
+            {
+                $menus[$type->getIdLabel()->getLabel()][Language::getLabelTranslation($type->getIdLabel())][$type->getId()] = array();
+            }
+            foreach($subTypes as $subType)
+            {
+                $menus[$subType->getIdType()->getIdLabel()->getLabel()][Language::getLabelTranslation($subType->getIdType()->getIdLabel()->getId())][$subType->getIdType()->getId()][$subType->getId()] = Language::getLabelTranslation($subType->getIdLabel());
+            }
+            $this->render('housing.view', compact("housings", "pictures", "menus", "size"));
         }
-        foreach($subTypes as $subType)
+        else
         {
-            $menus[$subType->getIdType()->getIdLabel()->getLabel()][Language::getLabelTranslation($subType->getIdType()->getIdLabel()->getId())][$subType->getIdType()->getId()][$subType->getId()] = Language::getLabelTranslation($subType->getIdLabel());
+            $this->render('error.index');
         }
-        $this->render('housing.view', compact("housings", "pictures", "menus"));
     }
     public function addHousing($errors = "") 
     {
@@ -654,6 +676,8 @@ class HousingController extends Controller {
     }
     public function getHousingByOthers()
     {
+        $offset = ($_POST['offset'] == 0) ? 10 : $_POST['offset'];
+        $limit = $offset - 10;
         $type = explode("+", $_POST['type']);
         $typeRequest = (isset($type[1])) ? " AND h.idSubType = ".$type[1] : " AND h.idType = '".$type[0]."'";
         $rentDurationRequest = (empty($_POST['rentDuration'])) ? '' : " AND h.rentalDuration = ".$_POST['rentDuration'];
@@ -663,12 +687,23 @@ class HousingController extends Controller {
                     WHERE h.rent >= '".$_POST['rent'][0]."' AND h.charge <= '".$_POST['rent'][1]."' AND h.capacity >= '".$_POST['bedroom']."'".$typeRequest.$rentDurationRequest
                 );
         $results = $query->getResult();
+        $size = sizeof($results);
+
+        $query = $this->getConnection()->createQuery("
+                    SELECT h
+                    FROM Housing h
+                    WHERE h.rent >= '".$_POST['rent'][0]."' AND h.charge <= '".$_POST['rent'][1]."' AND h.capacity >= '".$_POST['bedroom']."'".$typeRequest.$rentDurationRequest
+                )->setFirstResult($limit)->setMaxResults($offset);
+
+        $results = $query->getResult();
+
         if (!empty($results))
         {
             $housings = [];
             $now = new \DateTime('now');
             $language = new LangController;
             foreach ($results as $key => $housing) {
+                $housings[$key]['size'] = $size;
                 $housings[$key]['id'] = $housing->getId();
                 $housings[$key]['reference'] = $housing->getReference();
                 $housings[$key]['rent'] = $housing->getRent()+$housing->getCharge();
@@ -686,8 +721,8 @@ class HousingController extends Controller {
                 }
                 else $picture =  "web/pictures/iconLarge.png";
                 $housings[$key]['picture'] = $picture;
-                echo json_encode($housings);
             }
+            echo json_encode($housings);
         }
         else echo json_encode('');
     }
