@@ -2,7 +2,8 @@ ModuleManager.loadModule("web/js/tools/Notification.js");
 HousingList = (function() {
     var s = {
        deleteHousing : $('.deleteHousing'),
-       dialog : $('#dialog-confirm')
+       dialog : $('#dialog-confirm'),
+       createPDF : $(".createPDF")
     };
     var init = function() {
         bindUIActions();
@@ -10,6 +11,7 @@ HousingList = (function() {
 
     var bindUIActions = function() {
         s.deleteHousing.on('click', deleteHousing);
+        s.createPDF.on('click', createPDF);
     };
     var deleteHousing = function()
     {
@@ -48,6 +50,14 @@ HousingList = (function() {
                 }
             });
         });
+    };
+    var createPDF = function()
+    {
+        $.post("?r=housing.listHousing", 
+            function(result)
+            {
+                window.open('listHousing.pdf');
+            });
     };
     return {
         init: init

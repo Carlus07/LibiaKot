@@ -1,6 +1,9 @@
 <div class="container">
 	<div class="row col-md-offset-1 col-md-10 col-md-offset-1"> 
-		<div class="col-sm-12 text-center">
+		<div class="row col-sm-12 text-center">
+		<a href="#" class="createPDF"><button class="btn btn-lg btn-success btn-signin buttonUpdatePassword" type="submit"><?php echo '  '.$translation["listHousing"]; ?></button></a>
+		</div>
+		<div class="row col-sm-12 text-center">
 <?php
 	foreach ($housings as $housing) {
 		?>

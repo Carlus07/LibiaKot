@@ -260,7 +260,7 @@ class Navi
         {
             if(array_key_exists($preKey.$subType->$method()->getId(), $menus))
             {
-                if ($role == 1) $link = "?p=housing.view&t=".$subType->getId();
+                if ($role == 1) $link = "?p=housing.view&r=10&t=".$subType->getId();
                 else if (!method_exists($subType->$method(), "getLink")) $link = "?p=".$subType->$method()->getLink(); 
                 else $link = "?p=".$subType->getLink();
 

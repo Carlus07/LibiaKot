@@ -12,6 +12,7 @@ use Controllers\Tools\Mail;
 use Controllers\Tools\Language;
 use Controllers\Tools\Validation;
 use Models\Session;
+require 'src\Controllers\Tools\HtmlToPdf.php';
 
 class HousingController extends Controller {
 
@@ -756,5 +757,21 @@ class HousingController extends Controller {
         {
             $this->render('error.index');
         }
+    }
+    public function listHousing()
+    {
+        $pdf=new \PDF_HTML();
+        $pdf->AliasNbPages();
+        $pdf->AddPage();
+        $pdf->SetFont('Arial','',12);
+        $housings = $this->getConnection()->getRepository("Housing")->findByState(1);
+       /* foreach ($housings as $key => $housing) {
+            $picture = (empty($housing->getIdProperty()->getIdUser()->getPicture())) ? 'web/pictures/avatar.png' : $housing->getIdProperty()->getIdUser()->getPicture();
+            $pdf->Image($picture,10,10,30,30);
+        }*/
+        $pdf->WriteHTML('<font face="times">The </font><b><font color="#7070D0">FPDF</font></b><font face="times"> logo:</font>
+<br><br>
+<img src="web/pictures/avatar.png" width="104px" style="border:1px solid red;">');
+        $pdf->Output('F', 'listHousing.pdf');
     }
 }
