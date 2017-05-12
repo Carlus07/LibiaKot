@@ -56,7 +56,7 @@ HousingList = (function() {
         $.post("?r=housing.listHousing", 
             function(result)
             {
-                window.open('listHousing.pdf');
+                window.open('listHousing.php');
             });
     };
     return {
