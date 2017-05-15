@@ -49,7 +49,7 @@ class Housing
     protected $state;
     /**
      * Une logement possède une propriété
-     * @OneToOne(targetEntity="Property")
+     * @ManyToOne(targetEntity="Property")
      * @JoinColumn(name="idProperty", referencedColumnName="idProperty")
     */
     protected $idProperty;

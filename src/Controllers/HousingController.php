@@ -759,12 +759,41 @@ class HousingController extends Controller {
     }
     public function listHousing()
     {
+        $housingTranslation = Language::translation("housing");
+        $equipmentTranslation = Language::translation("equipment");
+        $translation = array_merge($housingTranslation, $equipmentTranslation);
         $query = static::getConnection()->createQuery("
             SELECT u, p, h 
             FROM Housing h JOIN h.idProperty p JOIN p.idUser u
-            WHERE h.state = 1
+            WHERE h.state = 1 ORDER BY u.idUser, p.idProperty ASC
         ");
         $housings = $query->getResult();
-        $_SESSION['housings'] = $housings;
+        $pictures = [];
+        $type = [];
+        foreach ($housings as $housing) 
+        {
+            $results = $this->getConnection()->getRepository('HousingEquipment')->findByIdHousing($housing->getId());
+            $equipments = [];
+            foreach ($results as $key => $equipment) {
+                $category = $equipment->getIdEquipment()->getIdCategory()->getIdLabel()->getLabel();
+                $array['label'] = $equipment->getIdEquipment()->getIdLabel()->getLabel();
+                $array['picture'] = $equipment->getIdEquipment()->getIcon();
+                $equipments[$category][$key] = $array;
+            }
+            $result = $this->getConnection()->getRepository('Picture')->findByIdHousing($housing->getId());
+            if (!empty($result))
+            {
+                $namePicture = explode('.',$result[0]->getName());
+                $picture = "web/pictures/Housing/miniature/".$namePicture[0]."-miniature.".$namePicture[1];
+            }
+            else $picture =  "web/pictures/iconLarge.png";
+            $pictures[$housing->getId()] = $picture;
+            $type[$housing->getId()] = $translation[$housing->getIdType()->getIdLabel()->getLabel()];
+        }
+        Session::set('type', $type);
+        Session::set('pictures', $pictures);
+        Session::set('housings', $housings);
+        Session::set('translation', $translation);
+        Session::set('equipments', $equipments);
     }
 }
