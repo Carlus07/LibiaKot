@@ -98,7 +98,7 @@ class UserController extends Controller {
                 $this->getConnection()->flush();
                 $translation = Language::translation("mail");
                 $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=register&t=".$user->getToken());
-                $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "register", "http://libiakot-test.test.fundp.ac.be/index.php?p=user.confirmation&t=".$user->getToken()."&m=register");
+                $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "register", "http://libiakot-test.test.fundp.ac.be/index.php?p=mail.confirmation&t=".$user->getToken()."&m=register");
                 if (!Mail::sendMail($translation["subjectRegister"], $user->getMail(), $redirection, $contentMessage))
                 {
                     $this->render('error.index');
