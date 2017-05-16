@@ -1,5 +1,6 @@
 <?php
 require_once "src/bootstrap.php";
+require_once "src/Models/Entities/Activity.php";
 require_once "src/Models/Entities/Language.php";
 require_once "src/Models/Entities/Translation.php";
 require_once "src/Models/Entities/Label.php";
