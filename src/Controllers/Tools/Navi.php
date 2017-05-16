@@ -125,7 +125,7 @@ class Navi
                 <div class="footerLink">
                     <h5>'.$translation['footerTitle3'].'</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#">'.$translation['contact'].'</a></li>
+                        <li><a href="?p=home.contact">'.$translation['contact'].'</a></li>
                         <li>081/72 50 82</li>
                         <li><a href="mailto:cathy.jentgen@unamur.be">cathy.jentgen@unamur.be</a></li>
                     </ul>

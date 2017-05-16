@@ -7,4 +7,7 @@ class HomeController extends Controller {
     public function index() {
         $this->render('home.index');
     }
+    public function contact() {
+    	$this->render('home.contact');
+    }
 }

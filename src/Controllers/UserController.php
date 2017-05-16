@@ -356,4 +356,20 @@ class UserController extends Controller {
         }
         else echo "warning+errorDelete";
     }
+    public function sendMessage()
+    {
+        if(!empty($_POST['idOwner']))
+        {
+            $user = $this->getConnection()->getRepository('User')->find($_POST['idOwner']);
+            $translation = Language::translation("mail");
+            $redirection = Navi::getRedirection($translation, true, "http://localhost/Projet/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=register&t=".$user->getToken());
+            $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "register", "http://localhost/Projet/index.php?p=user.confirmation&t=".$user->getToken()."&m=register");
+            Mail::sendMail($translation["subjectRegister"], $user->getMail(), $redirection, $contentMessage);
+            Router::redirect('mail.confirmation', 'register');
+        }
+        else
+        {
+            $this->render('error.index');
+        }
+    }
 }

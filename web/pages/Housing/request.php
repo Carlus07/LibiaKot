@@ -2,7 +2,7 @@
 	<div class="row col-md-offset-1 col-md-10 col-md-offset-1"> 
 		<div class="col-sm-12 text-center">
 <?php
-	if (!empty($housing))
+	if (!empty($housings))
 	{
 		foreach ($housings as $housing) {
 		?>

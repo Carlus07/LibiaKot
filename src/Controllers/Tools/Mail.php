@@ -29,13 +29,13 @@ class Mail
         $mail->isSMTP();                                    // Set mailer to use SMTP
         $mail->SMTPDebug = 0;
         $mail->SMTPAuth = true;                             // Enable SMTP authentication
-        $mail->Host = 'smtp.gmail.com';  				    // Specify main and backup SMTP servers
-        $mail->Username = 'hephaistos.projet@gmail.com';    // SMTP username
-        $mail->Password = '(Branlette)';                    // SMTP password
-        $mail->SMTPSecure = 'ssl';                          // Enable TLS encryption, `ssl` also accepted
-        $mail->Port = 465;                                  // TCP port to connect to
+        $mail->Host = 'smtp.unamur.be';  				    // Specify main and backup SMTP servers
+        $mail->Username = 'logement@unamur.be';             // SMTP username
+       // $mail->Password = '';                               // SMTP password
+       // $mail->SMTPSecure = 'ssl';                        // Enable TLS encryption, `ssl` also accepted
+        $mail->Port = 25;                                   // TCP port to connect to
 
-        $mail->setFrom('hephaistos.projet@gmail.com', 'Service logement UNamur');
+        $mail->setFrom('logement@unamur.be', 'Service logement UNamur');
         $mail->AddAddress($email);
         $mail->addReplyTo('no reply');
 

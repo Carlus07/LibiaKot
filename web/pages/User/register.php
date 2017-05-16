@@ -3,6 +3,13 @@
     <p id="profile-name" class="profile-name-card"><?php echo $translation['titleRegister']; ?></p>
     <p id="profile-name" class="profile-name-card"></p>
     <input type="hidden" class="admin" value="<?php echo (!isset($admin)) ? "false" : "true"; ?>"/>
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="alert alert-info infoHousing" role="alert">
+          <span><?php echo $translation['infoRegister']; ?></span>
+        </div>
+      </div>
+    </div>
     <p class="inputNeeded">* <?php echo $translation['requiredField']; ?></p>
     <input type="hidden" id="errorRegister" value="<?php echo (!empty($errors)) ? $errors : ""; ?>"/>
     <form class="form-signin" action="<?php echo (!isset($admin)) ? "?w=user.register" : "?w=user.add"; ?>" method="POST">

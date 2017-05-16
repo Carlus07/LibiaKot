@@ -10,7 +10,10 @@ HousingViewHousing = (function() {
         marker : null,
         deleteHousing : $('.deleteHousing'),
         confirmHousing : $('.confirmHousing'),
-        dialog : $('#dialog-confirm')
+        dialog : $('#dialog-confirm'),
+        mail : $('.mail'),
+        menu : $('.selection'),
+        message : $('.message')
     };
 
     var init = function() {
@@ -27,6 +30,7 @@ HousingViewHousing = (function() {
         s.deleteHousing.on('click', deleteHousing);
         s.confirmHousing.on('click', confirmHousing);
         $(window).resize(adjustment);
+        s.mail.on('click', displayForm);
     };
     var adjustment = function()
     {
@@ -112,6 +116,11 @@ HousingViewHousing = (function() {
                 });
             }
         );
+    };
+    var displayForm = function()
+    {
+        s.menu.empty();
+        s.message.css('display','block');
     };
     return {
         init: init

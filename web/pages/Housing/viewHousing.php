@@ -404,16 +404,28 @@
 	?>
 		<fieldset>
 			<legend><span><i class="fa fa-check" aria-hidden="true"></i></span>Validation</legend>
-			<div class="row">
+			<div class="row selection">
 				<div class="col-sm-4">
-					<a href="#" class="confirmHousing" value="<?php echo $housing->getId(); ?>"><button class="btn btn-lg btn-success btn-signin buttonUpdatePassword" type="submit"><i class="fa fa-check" aria-hidden="true"></i><?php echo '  '.$translation["confirmation"]; ?></button></a>
+					<a href="#" class="confirmHousing" value="<?php echo $housing->getId(); ?>"><button onclick="return false;" class="btn btn-lg btn-success btn-signin buttonUpdatePassword" type=""><i class="fa fa-check" aria-hidden="true"></i><?php echo '  '.$translation["confirmation"]; ?></button></a>
 				</div>
 				<div class="col-sm-4">
-					<a href="?p=user.mail&id=<?php echo $housing->getIdProperty()->getIdUser()->getId(); ?>"><button class="btn btn-lg btn-success btn-signin buttonUpdatePassword" type="submit"><i class="fa fa-envelope" aria-hidden="true"></i><?php echo '  '.$translation["contactOwner"]; ?></button></a>
+					<a href="#" class="mail" value="<?php echo $housing->getIdProperty()->getIdUser()->getId(); ?>"><button onclick="return false;" class="btn btn-lg btn-success btn-signin buttonUpdatePassword" type="text"><i class="fa fa-envelope" aria-hidden="true"></i><?php echo '  '.$translation["contactOwner"]; ?></button></a>
 				</div>
 				<div class="col-sm-4">
-					<a href="#" class="deleteHousing" value="<?php echo $housing->getId(); ?>"><button style="background-color:#c9302c;" class="btn btn-lg btn-success btn-signin buttonUpdatePassword" type="submit"><i class="fa fa-remove" aria-hidden="true"></i><?php echo '  '.$translation["removeRequest"]; ?></button></a>
+					<a href="#" class="deleteHousing" value="<?php echo $housing->getId(); ?>"><button onclick="return false;" style="background-color:#c9302c;" class="btn btn-lg btn-success btn-signin buttonUpdatePassword" type=""><i class="fa fa-remove" aria-hidden="true"></i><?php echo '  '.$translation["removeRequest"]; ?></button></a>
 				</div>
+			</div>
+			<div class="col-sm-12 message" style="display: none">
+				<form action="?w=user.sendMessage" method="POST">
+					<input type="hidden" value="<?php echo $housing->getIdProperty()->getIdUser()->getId(); ?>" class="idOwner" name="idOwner"/>
+              		<div class="form-group">
+	                	<label for="message"><?php echo $translation['message']; ?></label>
+	                	<textarea class="form-control" name="message" id="message" style="resize:none;" rows="3"></textarea>
+              		</div>
+              		<div class="col-sm-push-4 col-sm-4">
+						<button class="btn btn-lg btn-success btn-signin buttonUpdatePassword" type="submit"><i class="fa fa-send" aria-hidden="true"></i><?php echo '  '.$translation["sendMessage"]; ?></button>
+					</div>
+              	</form>
 			</div>
 		</fieldset>
 	<?php

@@ -8,7 +8,7 @@ if (!$finalization)
 		case 'register' :
 		{
 			$title = $translation['confirmationRegister'];
-			$message = $translation['textRegister'];
+			$message = '<p>'.$translation['textRegisterFirst'].'</p><p>'.$translation['textRegisterSecond'].'</p><p>'.$translation['textRegisterThird'].'</p>';
 			break;
 		}
 		case 'changepassword' :
@@ -52,7 +52,7 @@ echo '
 			</div>
 		</div>
 		<div class="row text-center messageError">
-			<p>'.$message.'</p>
+			'.$message.'
 		</div>
 	</div>
 </div>';

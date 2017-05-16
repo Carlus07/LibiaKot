@@ -21,9 +21,6 @@ class HousingController extends Controller {
         {
             if ((isset($_GET['t'])) || (isset($_GET['id'])))
             {
-                $housings = $this->getConnection()->getRepository('Housing')->findByState([0, 2]); 
-                $size = sizeof($housings);
-
                 $offset = (isset($_GET['r'])) ? $_GET['r'] : 10;
                 $limit = $offset - 10;
 
