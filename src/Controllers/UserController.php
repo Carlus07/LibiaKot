@@ -108,22 +108,6 @@ class UserController extends Controller {
         }
     }
 
-    public function confirmation() {
-        $page = (isset($_POST['page'])) ? $_POST['page'] : $_GET['m'];
-        $finalization = 0;
-        if (isset($_GET['t']))
-        {
-            $user = $this->getConnection()->getRepository('User')->findByToken($_GET['t']);
-            if (!empty($user)) 
-            {
-                $user[0]->setConfirmed(true);
-                $this->getConnection()->flush();
-                $finalization = 1;
-            }
-        }
-        $this->render('user.confirmation', compact("page", "finalization"));
-    }
-
     public function logout() {
         Session::set('idUser', 0);
         Session::set('Role', 1);
@@ -137,6 +121,8 @@ class UserController extends Controller {
     {
         if(isset($_GET['id']))
         {
+            $value['id'] =  $_GET['id'];
+            Session::set('settings', $value);
             $user = $this->getConnection()->getRepository('User')->find($_GET['id']);
         }
         else $user = $this->getConnection()->getRepository('User')->find(Session::get('idUser'));
@@ -324,6 +310,8 @@ class UserController extends Controller {
     {
         if (isset($_GET['r']) && (($_GET['r'] % 12) == 0))
         {
+            $value['r'] = $_GET['r'];
+            Session::set('settings', $value);
             $role = $this->getConnection()->getRepository('Role')->find(2);
             $users = $this->getConnection()->getRepository('User')->findByIdRole($role); 
             $size = sizeof($users);

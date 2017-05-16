@@ -26,7 +26,7 @@ else
 		case 'register' :
 		{
 			$title = $translation['finalizationRegister'];
-			$message = $translation['textFinalizationRegister'];
+			$message = '<p>'.$translation['textFinalizationRegisterFirst'].'</p><p>'.$translation['textFinalizationRegisterSecond'].'</p>';
 			break;
 		}
 		case 'changepassword' :

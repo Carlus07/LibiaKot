@@ -27,7 +27,6 @@ class Controller
         $parts = explode('.', $view);
         $vp = ucfirst($parts[0]) . '/' . $parts[1];
         extract($variables);
-
         //Traduction de la vue + du contenu statique
         $translation = (!isset($parts[2])) ? Language::translation($parts[0]) : Language::translation($parts[0], $parts[2]);
         $languages = Language::getAll();

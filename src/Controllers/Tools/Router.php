@@ -91,6 +91,14 @@ class Router
     {
         unset($_GET);
         unset($_POST);
+        $settings = Session::get('settings');
+        if ($settings)
+        {
+            foreach ($settings as $key => $setting) {
+                $_GET[$key] = $setting;
+            }
+            Session::remove('settings');
+        }
         if (strlen($type) > 2) $_POST['page'] = $type;
         static::switchView($address, $type);
     }

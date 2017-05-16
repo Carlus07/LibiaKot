@@ -21,6 +21,11 @@ class HousingController extends Controller {
         {
             if ((isset($_GET['t'])) || (isset($_GET['id'])))
             {
+                $value['t'] = $_GET['t'];
+                $value['id'] = $_GET['id'];
+                $value['r'] = $_GET['r'];
+                Session::set('settings', $value);
+
                 $offset = (isset($_GET['r'])) ? $_GET['r'] : 10;
                 $limit = $offset - 10;
 
@@ -84,6 +89,9 @@ class HousingController extends Controller {
     {
         if (empty($_POST)) 
         {   
+            $value['m'] = $_GET['m'];
+            Session::set('settings', $value);
+
             if (isset($_GET['m']) && ($_GET['m'] == "updateHousing")) 
             {
                 $accomodation = $this->getConnection()->getRepository("Housing")->find($_GET['id']);
@@ -517,6 +525,9 @@ class HousingController extends Controller {
     {
         if ((isset($_GET['r']) && (($_GET['r'] % 12) == 0)) || !empty($get))
         {
+            $value['r'] = (isset($_GET['r'])) ? $_GET['r'] : $get;
+            Session::set('settings', $value);
+
             $housings = $this->getConnection()->getRepository('Housing')->findByState(1); 
             $size = sizeof($housings);
 
@@ -560,6 +571,9 @@ class HousingController extends Controller {
     {
         if ((isset($_GET['id'])) && ($_GET['id'] > 0))
         {
+            $value['id'] = $_GET['id'];
+            Session::set('settings', $value);
+
             $housing = $this->getConnection()->getRepository('Housing')->find($_GET['id']);
             if (!empty($housing))
             {
@@ -588,6 +602,8 @@ class HousingController extends Controller {
     {
         if ((isset($_GET['r']) && (($_GET['r'] % 12) == 0)) || !empty($get))
         {
+            $value['r'] = (isset($_GET['r'])) ? $_GET['r'] : $get;
+            Session::set('settings', $value);
             $housings = $this->getConnection()->getRepository('Housing')->findByState([0, 2]); 
             $size = sizeof($housings);
 
