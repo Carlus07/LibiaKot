@@ -99,7 +99,10 @@ class UserController extends Controller {
                 $translation = Language::translation("mail");
                 $redirection = Navi::getRedirection($translation, true, "http://localhost/Projet/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=register&t=".$user->getToken());
                 $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "register", "http://localhost/Projet/index.php?p=user.confirmation&t=".$user->getToken()."&m=register");
-                Mail::sendMail($translation["subjectRegister"], $user->getMail(), $redirection, $contentMessage);
+                if (!Mail::sendMail($translation["subjectRegister"], $user->getMail(), $redirection, $contentMessage))
+                {
+                    $this->render('error.index');
+                }
                 Router::redirect('user.confirmation', 'register');
             }
         }
@@ -242,7 +245,7 @@ class UserController extends Controller {
             }
             else
             {
-                //A terminer
+                $this->render('error.index');
             }
         }
     }

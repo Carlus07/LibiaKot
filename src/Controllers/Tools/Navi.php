@@ -188,7 +188,7 @@ class Navi
                             <tr>
                                <td class= "padded" style= "padding: 0;vertical-align: top;padding-left: 40px;padding-right: 40px;text-align: left">
                                   <div class= "btn" style="Margin-bottom: 20px;text-align: center">
-                                     <a href="'.$link.'" style= "display: inline-block;text-align: center;text-decoration: none;border-radius: 6px;-moz-border-radius: 6px;color: #fff;font-size: 16px;height:150px;line-height: 24px;font-family: sans-serif;background-color: #55ab26;padding: 15px 60px">'.$translation['buttonRegister'].'</a>
+                                     <a href="'.$link.'" style= "display: inline-block;text-align: center;text-decoration: none;border-radius: 6px;-moz-border-radius: 6px;color: #fff;font-size: 16px;line-height: 24px;font-family: sans-serif;background-color: #55ab26;padding: 15px 60px">'.$translation['buttonRegister'].'</a>
                                   </div>
                                </td>
                             </tr>
