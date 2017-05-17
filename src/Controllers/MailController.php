@@ -5,7 +5,12 @@ namespace Controllers;
 class MailController extends Controller {
 	
     public function confirmation() {
-        $page = (isset($_POST['page'])) ? $_POST['page'] : $_GET['m'];
+        $value['t'] = (isset($_GET['t'])) ? $_GET['t'] : "";
+        $value['m'] = (isset($_GET['m'])) ?  $_GET['m'] : "";
+        Session::set('settings', $value);
+
+        $page = (isset($_POST['page'])) ? $_POST['page'] : $value['m'];
+
         $finalization = 0;
         if (isset($_GET['t']))
         {
