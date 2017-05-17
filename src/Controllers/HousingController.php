@@ -316,11 +316,39 @@ class HousingController extends Controller {
             }
             if (Session::get('Role') == 2) $this->myHousing();
             if (Session::get('Role') == 3) $this->listHousings(12);
-                /*$translation = Language::translation("mail");
-                $redirection = Navi::getRedirection($translation, true, "http://localhost/Projet/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=register&t=".$user->getToken());
-                $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "register", "http://localhost/Projet/index.php?p=user.confirmation&t=".$user->getToken()."&m=register");
-                Mail::sendMail($translation["subjectRegister"], $user->getMail(), $redirection, $contentMessage);
-                Router::redirect('user.confirmation', 'register');*/
+            $translation = Language::translation("mail");
+            if (($_POST['method'] == "updateHousing") || if ($_POST['method'] == "updateProperty"))
+            {
+                $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=updateHousing";
+                $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "updateHousing");
+                if (!Mail::sendMail($translation["subjectUpdateHousing"], $user[0]->getMail(), $redirection, $contentMessage))
+                {
+                    $this->render('error.mail');
+                }
+                $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=Cathy&l=".Session::get("Language")."&m=newRequest";
+                $contentMessage = Navi::getContentMail($translation, true, 'Cathy', "newRequest");
+                if (!Mail::sendMail($translation["newRequest"], 'carlmath@hotmail.com', $redirection, $contentMessage))
+                {
+                    $this->render('error.mail');
+                }
+                Router::redirect('mail.confirmation', 'addHousing');
+            }
+            else
+            {
+                $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=addHousing";
+                $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "addHousing");
+                if (!Mail::sendMail($translation["subjectAddHousing"], $user[0]->getMail(), $redirection, $contentMessage))
+                {
+                    $this->render('error.mail');
+                }
+                $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=Cathy&l=".Session::get("Language")."&m=newRequest";
+                $contentMessage = Navi::getContentMail($translation, true, 'Cathy', "newRequest");
+                if (!Mail::sendMail($translation["newRequest"], 'carlmath@hotmail.com', $redirection, $contentMessage))
+                {
+                    $this->render('error.mail');
+                }
+                Router::redirect('mail.confirmation', 'addHousing');
+            }
         }
     }
     public function getZipCode($return = false)

@@ -17,6 +17,12 @@ if (!$finalization)
 			$message = '<p>'.$translation['textRegisterFirst'].'</p><p>'.$translation['textRegisterSecond'].'</p><p>'.$translation['textRegisterThird'].'</p>';
 			break;
 		}
+		case 'addHousing' :
+		{
+			$title = $translation['confirmationCP'];
+			$message = '<p>'.$translation['textRegisterFirst'].'</p><p>'.$translation['textRegisterSecond'].'</p><p>'.$translation['textRegisterThird'].'</p>';
+			break;
+		}
 	};
 }
 else

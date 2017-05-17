@@ -140,19 +140,23 @@ class UserController extends Controller {
         $unencodedData = base64_decode($filteredData);
         //Renommage de l'image avec un nom unique
         $fp = fopen($repertory.$nameFinal, 'wb' );
-        //Ecriture dans le fichier
-        fwrite( $fp, $unencodedData);
-        fclose( $fp );
-
-        $user = $this->getConnection()->getRepository('User')->find($_POST['id']);
-
-        if (!empty($user)) 
+        if ($fp != false)
         {
-            if ($user->getPicture() != null) unlink($user->getPicture());
-            $user->setPicture($repertory.$nameFinal);
-            $this->getConnection()->persist($user);
-            $this->getConnection()->flush();
-            echo "success+successUploadAvatar";
+            //Ecriture dans le fichier
+            fwrite( $fp, $unencodedData);
+            fclose( $fp );
+
+            $user = $this->getConnection()->getRepository('User')->find($_POST['id']);
+
+            if (!empty($user)) 
+            {
+                if ($user->getPicture() != null) unlink($user->getPicture());
+                $user->setPicture($repertory.$nameFinal);
+                $this->getConnection()->persist($user);
+                $this->getConnection()->flush();
+                echo "success+successUploadAvatar";
+            }
+            else echo "warning+errorUploadAvatar";
         }
         else echo "warning+errorUploadAvatar";
     }
@@ -228,7 +232,7 @@ class UserController extends Controller {
                 $contentMessage = Navi::getContentMail($translation, true, $user[0]->getFirstName(), "changepassword", "http://libiakot-test.test.fundp.ac.be/index.php?p=mail.confirmation&t=".$user[0]->getToken()."&m=changepassword", $newPassword);
                 if (!Mail::sendMail($translation["subjectChangePassword"], $user[0]->getMail(), $redirection, $contentMessage))
                 {
-                    $this->render('error.index');
+                    $this->render('error.mail');
                 }
                 Router::redirect('mail.confirmation', 'changepassword');
             }
