@@ -11,6 +11,7 @@ require_once "src/Models/Entities/Label.php";
 require_once "src/Models/Entities/Language.php";
 require_once "src/Models/Entities/Locality.php";
 require_once "src/Models/Entities/Menu.php";
+require_once "src/Models/Entities/Permission.php";
 require_once "src/Models/Entities/Picture.php";
 require_once "src/Models/Entities/Property.php";
 require_once "src/Models/Entities/Role.php";
@@ -28,7 +29,6 @@ if(session_id() == "") session_start();
 
 Language::getLanguageDefault();
 Session::set("ip", $_SERVER['SERVER_ADDR']);
-
 $type = "";
 if (!empty($_GET['p'])) $type = "p";
 else if (!empty($_GET['r'])) $type = "r";

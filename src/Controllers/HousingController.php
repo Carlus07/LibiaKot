@@ -21,8 +21,8 @@ class HousingController extends Controller {
         {
             if ((isset($_GET['t'])) || (isset($_GET['id'])))
             {
-                $value['t'] = $_GET['t'];
-                $value['id'] = $_GET['id'];
+                $value['t'] = (isset($_GET['t'])) ? $_GET['t'] : "";
+                $value['id'] = (isset($_GET['id'])) ?  $_GET['id'] : "";
                 $value['r'] = $_GET['r'];
                 Session::set('settings', $value);
 
@@ -89,7 +89,7 @@ class HousingController extends Controller {
     {
         if (empty($_POST)) 
         {   
-            $value['m'] = $_GET['m'];
+            $value['m'] = (isset($_GET['m'])) ? $_GET['m'] : "";
             Session::set('settings', $value);
 
             if (isset($_GET['m']) && ($_GET['m'] == "updateHousing")) 

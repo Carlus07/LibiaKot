@@ -3,7 +3,7 @@ namespace Controllers\Tools;
 
 use Models\Session;
 use Models\Entities\User;
-
+ 
 /**
  * Class Permission
  * Permet de gérer les rôles d'un utilisateur.
@@ -29,8 +29,7 @@ class Permission
     {
 
         $entityManager = Connection::getConnection();
-        $userRepo = $entityManager->getRepository('User');
-        $user = $userRepo->find($user_id);
+        $user = $entityManager->getRepository('User')->find($user_id);
         return (!empty($user)) ? $user->getIdRole()->getId() : 1;
     }
 
@@ -51,5 +50,17 @@ class Permission
     {
         $role = static::getRole($user_id);
         static::storeRole($role);
+    }
+
+    public static function allowed($address, $type)
+    {
+        if (($type == "p") || ($type == "h"))
+        {
+            $entityManager = Connection::getConnection();
+            $role = $entityManager->getRepository('Permission')->find(Session::get('Role'));
+            $permission = $entityManager->getRepository('Permission')->findBy(array('idRole' => $role, 'url' => $address));
+            return (isset($permission[0])) ? true : false;
+        }
+        else return true;
     }
 }

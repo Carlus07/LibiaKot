@@ -21,12 +21,11 @@ class Router
     /**
      * Initialise la requète.
      */
-    private static function init()
+    private static function init($address)
     {
         if (!Permission::exist()) {
             Permission::refresh(Session::get('idUser'));
         }
-
         if (isset($_POST['ajaxCall'])) {
             static::setAjaxCall(true);
             unset($_POST['ajaxCall']);
@@ -109,10 +108,17 @@ class Router
      */
     public static function switchView($address = 'home.index', $type = "h")
     {
-        static::init();
-        static::setTypeAddress($type);
-        static::prepareAddress($address);
-        static::trySwitch();
+        static::init($address);
+        if (!Permission::allowed($address, $type))
+        {
+            static::redirect("error.permission");
+        }
+        else 
+        {
+            static::setTypeAddress($type);
+            static::prepareAddress($address);
+            static::trySwitch();
+        }
         //NE RIEN PLACER ICI à cause du redirect!
     }
 

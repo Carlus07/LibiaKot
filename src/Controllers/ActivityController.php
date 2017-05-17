@@ -1,6 +1,7 @@
 <?php
 
 namespace Controllers;
+use Models\Session;
 
 class ActivityController extends Controller {
 

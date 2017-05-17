@@ -333,11 +333,9 @@
                     Main.refreshBind();
                 });
             };
-
             var refreshPage = function() {
                 loadPage();
             };
-
             return {
                 init: init,
                 loadPage: loadPage,

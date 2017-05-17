@@ -65,14 +65,16 @@
 		if (empty($housings) && (isset($_GET['id']) || (isset($_GET['t']))))
 		{
 			?>
-			<div class="col-sm-8 col-xs-12" style="margin-bottom:25px;">
-				<div class="row">
-					<div class="error col-xs-offset-1 col-xs-10 col-xs-offset-1 text-center">
-						<div class="col-xs-4">
-							<img src="web/pictures/notFound.png" class="errorPicture img-responsive"/>
-						</div>
-						<div class="col-xs-8 messagePicture">
-							<h3><?php echo $translation['noResult']; ?></h3>
+			<div class="contentHousing">
+				<div class="col-sm-8 col-xs-12" style="margin-bottom:25px;">
+					<div class="row">
+						<div class="error col-xs-offset-1 col-xs-10 col-xs-offset-1 text-center">
+							<div class="col-xs-4">
+								<img src="web/pictures/notFound.png" class="errorPicture img-responsive"/>
+							</div>
+							<div class="col-xs-8 messagePicture">
+								<h3><?php echo $translation['noResult']; ?></h3>
+							</div>
 						</div>
 					</div>
 				</div>
