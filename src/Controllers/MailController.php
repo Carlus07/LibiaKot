@@ -1,6 +1,7 @@
 <?php
 
 namespace Controllers;
+use Models\Session;
 
 class MailController extends Controller {
 	
