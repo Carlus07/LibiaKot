@@ -11,8 +11,8 @@ class ActivityController extends Controller {
             FROM Activity a JOIN a.idLabel l
             WHERE (l.label LIKE 'activity%')
         ");
-        $langs = $this->getConnection()->getRepository('Language')->findBy(array(), array('order' => 'ASC'));
         $activities = $query->getResult();
+        $langs = $this->getConnection()->getRepository('Language')->findBy(array(), array('order' => 'ASC'));
         $this->render('activity.index', compact('activities', 'langs'));
     }
     public function displayTab()

@@ -14,7 +14,7 @@ if (!$finalization)
 		case 'changepassword' :
 		{
 			$title = $translation['confirmationCP'];
-			$message = $translation['textRegister'];
+			$message = '<p>'.$translation['textRegisterFirst'].'</p><p>'.$translation['textRegisterSecond'].'</p><p>'.$translation['textRegisterThird'].'</p>';
 			break;
 		}
 	};
@@ -32,7 +32,7 @@ else
 		case 'changepassword' :
 		{
 			$title = $translation['finalizationCP'];
-			$message = $translation['textFinalizationCP'];
+			$message = '<p>'.$translation['textFinalizationCP'].'</p>';
 			break;
 		}
 	};

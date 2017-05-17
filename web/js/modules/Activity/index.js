@@ -207,7 +207,7 @@ ActivityIndex = (function() {
                 buttons: {
                     "Ok": function() {
                         s.dialog.dialog( "close" );
-                        $.post("?p=label.delete",
+                        $.post("?w=label.delete",
                             {idLab: idLabel, idTranslations : idTranslation},
                             function(result)
                             {
