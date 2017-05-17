@@ -101,7 +101,7 @@ class UserController extends Controller {
                 $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "register", "http://libiakot-test.test.fundp.ac.be/index.php?p=mail.confirmation&t=".$user->getToken()."&m=register");
                 if (!Mail::sendMail($translation["subjectRegister"], $user->getMail(), $redirection, $contentMessage))
                 {
-                    $this->render('error.index');
+                    $this->render('error.mail');
                 }
                 Router::redirect('mail.confirmation', 'register');
             }
@@ -225,9 +225,12 @@ class UserController extends Controller {
                 $this->getConnection()->flush();
                 $translation = Language::translation("mail");
                 $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=".$user[0]->getFirstName()."&l=".Session::get("Language")."&m=changepassword&t=".$user[0]->getToken().'&p='.Security::encrypt($newPassword));
-                $contentMessage = Navi::getContentMail($translation, true, $user[0]->getFirstName(), "changepassword", "http://libiakot-test.test.fundp.ac.be/index.php?p=user.confirmation&t=".$user[0]->getToken()."&m=changepassword", $newPassword);
-                Mail::sendMail($translation["subjectChangePassword"], $user[0]->getMail(), $redirection, $contentMessage);
-                Router::redirect('user.confirmation', 'changepassword');
+                $contentMessage = Navi::getContentMail($translation, true, $user[0]->getFirstName(), "changepassword", "http://libiakot-test.test.fundp.ac.be/index.php?p=mail.confirmation&t=".$user[0]->getToken()."&m=changepassword", $newPassword);
+                if (!Mail::sendMail($translation["subjectChangePassword"], $user[0]->getMail(), $redirection, $contentMessage))
+                {
+                    $this->render('error.index');
+                }
+                Router::redirect('mail.confirmation', 'changepassword');
             }
             else
             {
