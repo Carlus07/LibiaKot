@@ -62,7 +62,7 @@
 								//echo mktime($housing->getAvailability());
 								$now = new DateTime('now');
 								$test = $now->diff($housing->getAvailability());
-								$availability = ($test->invert == 0) ? $housing->getAvailability()->format('d-m-Y') : "Maintenant";
+								$availability = ($test->invert == 0) ? $housing->getAvailability()->format('d-m-Y') : $translation['availableNow'];
         				?>	
         						<div class="frameHousingView" style="width:65%">
 								    <div class="row">
@@ -71,6 +71,10 @@
 								    	</div>
 								    	<div class="col-sm-7">
 							    			<h4 class="text-center titleHousing"><?php echo $reference; ?></h4>
+							    			<div class="text-center" style="margin-bottom: 15px;">
+							                    <label style="width:150px" for="<?php echo $housing->getReference();?>"><?php echo ($housing->getVisibility()) ? $translation['visible'] : $translation['invisible']; ?></label>
+							                    <input type="checkbox" <?php echo ($housing->getVisibility())  ? 'checked data-state="true"' : 'data-state="false"' ?> name="visibility" data-idHousing="<?php echo $housing->getId();?>" class="checkBox" id="<?php echo $housing->getReference();?>"/>
+							                </div>
 							    			<table class="table tableProperty">
 										      	<tr>
 										      		<th><i class="fa fa-home" aria-hidden="true"></i></i></th>

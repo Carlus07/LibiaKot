@@ -23,6 +23,12 @@ if (!$finalization)
 			$message = '<p>'.$translation['textRegisterFirst'].'</p><p>'.$translation['textRegisterSecond'].'</p><p>'.$translation['textRegisterThird'].'</p>';
 			break;
 		}
+		case 'uploadHousing' :
+		{
+			$title = $translation['confirmationCP'];
+			$message = '<p>'.$translation['textRegisterFirst'].'</p><p>'.$translation['textRegisterSecond'].'</p><p>'.$translation['textRegisterThird'].'</p>';
+			break;
+		}
 		case 'sendMail' :
 		{
 			$title = $translation['confirmationSM'];

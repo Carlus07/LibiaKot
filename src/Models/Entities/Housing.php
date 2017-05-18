@@ -55,6 +55,8 @@ class Housing
     protected $idProperty;
     /** @Column(type="integer") **/
     protected $reference;
+    /** @Column(type="boolean") **/    
+    protected $visibility;
 
     public function getId(){
         return $this->idHousing;
@@ -203,5 +205,11 @@ class Housing
  
     public function setReference($reference){
         $this->reference = $reference;
+    }
+    public function getVisibility(){
+        return $this->visibility;
+    }
+    public function setVisibility($visibility){
+        $this->visibility = $visibility;
     }
 }

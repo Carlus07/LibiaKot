@@ -6,10 +6,12 @@ HousingMyHousing = (function() {
         longitude : $(".longitude"),
         dialog : $('#dialog-confirm'),
         removeProperty : $('.removeProperty'),
-        removeHousing : $('.removeHousing')
+        removeHousing : $('.removeHousing'),
+        checkBox : $('.checkBox')
     };
 
     var init = function() {
+
         bindUIActions();
         LoaderScript.loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyCvRAuFQQ04OVRXeimrBPdMMHRnpMXYw8Q&language=fr");
         setTimeout(function(){ initializeMaps(); }, 3000);
@@ -18,6 +20,10 @@ HousingMyHousing = (function() {
     var bindUIActions = function() {
         s.removeProperty.on('click', removeProperty);
         s.removeHousing.on('click', removeHousing);
+        s.checkBox.checkboxradio({
+            icon: false
+        });
+        s.checkBox.on('click', changeState);
     };
     var initializeMaps = function()
     {
@@ -50,7 +56,7 @@ HousingMyHousing = (function() {
                 buttons: {
                     "Ok": function() {
                         s.dialog.dialog( "close" );
-                        $.post("?p=housing.deleteHousing",
+                        $.post("?w=housing.deleteHousing",
                             {idHousing: id},
                             function(result)
                             {
@@ -84,7 +90,7 @@ HousingMyHousing = (function() {
                 buttons: {
                     "Ok": function() {
                         s.dialog.dialog( "close" );
-                        $.post("?p=housing.deleteProperty",
+                        $.post("?w=housing.deleteProperty",
                             {idProperty: id},
                             function(result)
                             {
@@ -103,6 +109,28 @@ HousingMyHousing = (function() {
                 }
             });
         });
+    };
+    var changeState = function()
+    {
+        var element = $(this);
+        if (element.attr("data-state") == "false")
+        {
+            element.attr("data-state", "true");
+            Translator.translation("visible").done(function(data){
+                element.prev().text(data);
+            });
+        }
+        else
+        {
+            element.attr("data-state", "false");
+            Translator.translation("invisible").done(function(data){
+                element.prev().text(data);
+            });
+        }
+        var stateHousing = (element.attr("data-state") == "false") ? 0 : 1;
+        $.post("?w=housing.changeVisibility",
+            {state : stateHousing, idHousing : element.attr("data-idHousing")}
+        );
     };
     return {
         init: init
