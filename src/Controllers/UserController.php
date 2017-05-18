@@ -293,11 +293,14 @@ class UserController extends Controller {
                 $user->setPassword(Security::cryptage($newPassword));
                 $this->getConnection()->persist($user);
                 $this->getConnection()->flush();
-                /*$translation = Language::translation("mail");
-                $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=register&t=".$user->getToken());
-                $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "register", "http://libiakot-test.test.fundp.ac.be/index.php?p=user.confirmation&t=".$user->getToken()."&m=register");
-                Mail::sendMail($translation["subjectRegister"], $user->getMail(), $redirection, $contentMessage);
-                Router::redirect('user.confirmation', 'register');*/
+                $translation = Language::translation("mail");
+                $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=addUser&p=".Security::encrypt($newPassword));
+                $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "addUser", "http://libiakot-test.test.fundp.ac.be/index.php?p=mail.confirmation&m=addUser", $newPassword);
+                if (!Mail::sendMail($translation["subjectAddUser"], $user->getMail(), $redirection, $contentMessage))
+                {
+                    $this->render('error.mail');
+                }
+                Router::redirect('mail.confirmation', 'addUser');
             }
         }
     }
@@ -360,13 +363,14 @@ class UserController extends Controller {
         {
             $user = $this->getConnection()->getRepository('User')->find($_POST['idOwner']);
             $translation = Language::translation("mail");
-            $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=sendMail");
+            $translation['message'] = $_POST['message'];
+            $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=sendMail&message=".$_POST['message']);
             $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "sendMail", "http://libiakot-test.test.fundp.ac.be/index.php?p=mail.confirmation&m=sendMail");
-            if (!Mail::sendMail($translation["subjectRegister"], $user->getMail(), $redirection, $contentMessage))
+            if (!Mail::sendMail($_POST['object'], $user->getMail(), $redirection, $contentMessage))
             {
                 $this->render('error.mail');
             }
-            Router::redirect('mail.confirmation', 'register');
+            Router::redirect('mail.confirmation', 'sendMail');
         }
         else
         {

@@ -212,6 +212,22 @@ class Navi
                       </table>';
                 break;
             }
+            case "sendMail" :
+            {
+                echo '<table style= "border-collapse: collapse;border-spacing: 0;width: 100%" width="100%">
+                         <tbody>
+                            <tr>
+                               <td class= "padded" style= "padding: 0;vertical-align: top;padding-left: 40px;padding-right: 40px;text-align: left">
+                               
+                                  <h1 style= "Margin-top: 0;font-weight: normal;color: #808285;font-family: sans-serif;font-size: 19px;Margin-bottom: 20px;text-align : center;line-height: 22px"> <strong style="font-weight: bold">'.$translation['welcome'].' '.$pseudo.'</strong> </h1>
+                                  <p style= "Margin-top: 0;font-weight: normal;color: #808285;font-family: sans-serif;font-size: 14px;Margin-bottom: 20px;text-align:center;line-height: 22px">'.$translation['message'].'</p>
+                                  </p> 
+                               </td>
+                            </tr>
+                         </tbody>
+                      </table>';
+                break;
+            }
             case "newRequest" :
             {
                 echo '<table style= "border-collapse: collapse;border-spacing: 0;width: 100%" width="100%">
@@ -238,6 +254,23 @@ class Navi
                                   <h1 style= "Margin-top: 0;font-weight: normal;color: #808285;font-family: sans-serif;font-size: 19px;Margin-bottom: 20px;text-align : center;line-height: 22px"> <strong style="font-weight: bold">'.$translation['welcome'].' '.$pseudo.'</strong> </h1>
                                   <p style= "Margin-top: 0;font-weight: normal;color: #808285;font-family: sans-serif;font-size: 14px;Margin-bottom: 20px;text-align:center;line-height: 22px">'.$translation['contentAddHousing'].'</p>
                                   </p> 
+                               </td>
+                            </tr>
+                         </tbody>
+                      </table>';
+                break;
+            }
+            case "addUser" :
+            {
+                echo '<table style= "border-collapse: collapse;border-spacing: 0;width: 100%" width="100%">
+                         <tbody>
+                            <tr>
+                               <td class= "padded" style= "padding: 0;vertical-align: top;padding-left: 40px;padding-right: 40px;text-align: left">
+                               
+                                  <h1 style= "Margin-top: 0;font-weight: normal;color: #808285;font-family: sans-serif;font-size: 19px;Margin-bottom: 20px;text-align : center;line-height: 22px"> <strong style="font-weight: bold">'.$translation['welcome'].' '.$pseudo.'</strong> </h1>
+                                  <p style= "Margin-top: 0;font-weight: normal;color: #808285;font-family: sans-serif;font-size: 14px;Margin-bottom: 20px;text-align:center;line-height: 22px">'.$translation['contentAddUser'].'</p>
+                                  <p style= "Margin-top: 0;font-weight: normal;color: #808285;font-family: sans-serif;font-size: 14px;Margin-bottom: 20px;text-align:center;line-height: 22px">'.$translation['yourPassword'].'<strong>'.$password.'</strong></p>
+                                  <p style= "Margin-top: 0;font-weight: normal;color: #808285;font-family: sans-serif;font-size: 14px;Margin-bottom: 20px;text-align:center;line-height: 22px">'.$translation['recallOption'].'</p>
                                </td>
                             </tr>
                          </tbody>

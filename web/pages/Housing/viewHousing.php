@@ -418,6 +418,10 @@
 			<div class="col-sm-12 message" style="display: none">
 				<form action="?w=user.sendMessage" method="POST">
 					<input type="hidden" value="<?php echo $housing->getIdProperty()->getIdUser()->getId(); ?>" class="idOwner" name="idOwner"/>
+					<div class='form-group'>
+		                <label for="object"><?php echo $translation['object']; ?></label>
+		                <input class="form-control" id="object" name="object" required="true" type="text"/>
+		            </div>
               		<div class="form-group">
 	                	<label for="message"><?php echo $translation['message']; ?></label>
 	                	<textarea class="form-control" name="message" id="message" style="resize:none;" rows="3"></textarea>

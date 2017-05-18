@@ -23,6 +23,18 @@ if (!$finalization)
 			$message = '<p>'.$translation['textRegisterFirst'].'</p><p>'.$translation['textRegisterSecond'].'</p><p>'.$translation['textRegisterThird'].'</p>';
 			break;
 		}
+		case 'sendMail' :
+		{
+			$title = $translation['confirmationSM'];
+			$message = '<p></p>';
+			break;
+		}
+		case 'addUser' :
+		{
+			$title = $translation['confirmationAU'];
+			$message = '<p>'.$translation['textAddUser'].'</p>';
+			break;
+		}
 	};
 }
 else
