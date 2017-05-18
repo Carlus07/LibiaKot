@@ -319,13 +319,13 @@ class HousingController extends Controller {
             $translation = Language::translation("mail");
             if (($_POST['method'] == "updateHousing") || ($_POST['method'] == "updateProperty"))
             {
-                $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=updateHousing";
+                $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=updateHousing");
                 $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "updateHousing");
                 if (!Mail::sendMail($translation["subjectUpdateHousing"], $user[0]->getMail(), $redirection, $contentMessage))
                 {
                     $this->render('error.mail');
                 }
-                $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=Cathy&l=".Session::get("Language")."&m=newRequest";
+                $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=Cathy&l=".Session::get("Language")."&m=newRequest");
                 $contentMessage = Navi::getContentMail($translation, true, 'Cathy', "newRequest");
                 if (!Mail::sendMail($translation["newRequest"], 'carlmath@hotmail.com', $redirection, $contentMessage))
                 {
@@ -335,13 +335,13 @@ class HousingController extends Controller {
             }
             else
             {
-                $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=addHousing";
+                $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=addHousing");
                 $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "addHousing");
                 if (!Mail::sendMail($translation["subjectAddHousing"], $user[0]->getMail(), $redirection, $contentMessage))
                 {
                     $this->render('error.mail');
                 }
-                $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=Cathy&l=".Session::get("Language")."&m=newRequest";
+                $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=Cathy&l=".Session::get("Language")."&m=newRequest");
                 $contentMessage = Navi::getContentMail($translation, true, 'Cathy', "newRequest");
                 if (!Mail::sendMail($translation["newRequest"], 'carlmath@hotmail.com', $redirection, $contentMessage))
                 {
