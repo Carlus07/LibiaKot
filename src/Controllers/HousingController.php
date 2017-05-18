@@ -317,7 +317,7 @@ class HousingController extends Controller {
             if (Session::get('Role') == 2) $this->myHousing();
             if (Session::get('Role') == 3) $this->listHousings(12);
             $translation = Language::translation("mail");
-            if (($_POST['method'] == "updateHousing") || if ($_POST['method'] == "updateProperty"))
+            if (($_POST['method'] == "updateHousing") || ($_POST['method'] == "updateProperty"))
             {
                 $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=updateHousing";
                 $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "updateHousing");

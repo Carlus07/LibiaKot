@@ -360,9 +360,12 @@ class UserController extends Controller {
         {
             $user = $this->getConnection()->getRepository('User')->find($_POST['idOwner']);
             $translation = Language::translation("mail");
-            $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=register&t=".$user->getToken());
-            $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "register", "http://libiakot-test.test.fundp.ac.be/index.php?p=user.confirmation&t=".$user->getToken()."&m=register");
-            Mail::sendMail($translation["subjectRegister"], $user->getMail(), $redirection, $contentMessage);
+            $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=sendMail");
+            $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "sendMail", "http://libiakot-test.test.fundp.ac.be/index.php?p=mail.confirmation&m=sendMail");
+            if (!Mail::sendMail($translation["subjectRegister"], $user->getMail(), $redirection, $contentMessage))
+            {
+                $this->render('error.mail');
+            }
             Router::redirect('mail.confirmation', 'register');
         }
         else
