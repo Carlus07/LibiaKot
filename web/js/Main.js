@@ -106,7 +106,9 @@
                     }
                     else
                     {
-                        s.search[0].setCustomValidity("tset");
+                        Translator.translation(error).done(function(data){
+                            s.search[0].setCustomValidity(data);
+                        });
                     }
                 }
                 else

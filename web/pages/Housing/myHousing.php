@@ -1,7 +1,7 @@
 <div class="container">
 	<div class="row col-md-offset-1 col-md-10 col-md-offset-1"> 
 	<?php
-		foreach ($accomodations as $accomodation) {
+		foreach ($accomodations as $typeAccomadation => $accomodation) {
 	?>	
 		<fieldset>
         	<legend><span><i class="fa fa-<?php echo $accomodation['icon']; ?>" aria-hidden="true"></i></span><?php echo $translation[$accomodation['title']]; ?></legend>
@@ -52,8 +52,9 @@
 							    	</div>
 						    </div>
 						<?php
-        					foreach ($property['housing'] as $housing) {
+        					foreach ($property['housing'] as $key => $housing) {
         						$reference = $housing->getReference();
+								
 								for ($i = 0; $i < 5-floor(log10($reference) + 1); $i++)
 								{
 									$reference = '0'.$reference;
@@ -67,7 +68,7 @@
         						<div class="frameHousingView" style="width:65%">
 								    <div class="row">
 								    	<div class="col-sm-5">
-								    	    <img class="img-responsive" src="<?php echo $property['picture']; ?>"/>
+								    	    <img class="img-responsive" src="<?php echo $pictures[$typeAccomadation][$key]; ?>"/>
 								    	</div>
 								    	<div class="col-sm-7">
 							    			<h4 class="text-center titleHousing"><?php echo $reference; ?></h4>

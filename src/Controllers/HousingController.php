@@ -12,6 +12,7 @@ use Controllers\Tools\Mail;
 use Controllers\Tools\Language;
 use Controllers\Tools\Navi;
 use Controllers\Tools\Validation;
+use Controllers\Tools\Router;
 use Models\Session;
 
 class HousingController extends Controller {
@@ -163,7 +164,7 @@ class HousingController extends Controller {
             $property = ($_POST['method'] == "updateProperty") ? $this->getConnection()->getRepository('Property')->find($_POST['id']) : new Property;
             $housing = ($_POST['method'] == "updateHousing") ? $this->getConnection()->getRepository('Housing')->find($_POST['id']) : new Housing;
             $validation = new Validation;
-            if (($_POST['method'] != "updateHousing") && (empty($_POST['id'])))
+            if (($_POST['method'] != "updateHousing") && ($_POST['method'] != "addHousing"))
             {
                 $property->setZipCode(htmlspecialchars($_POST['zipCode']));
                 $property->setCity(htmlspecialchars($_POST['city']));
@@ -194,9 +195,7 @@ class HousingController extends Controller {
 
                 $validation->number($property->getZipCode());
                 $validation->text($property->getCity());
-                $validation->text($property->getStreet());
                 $validation->number($property->getNumber());
-                $validation->text($property->getEaseNearby());
 
                 if ($validation->isErrors()) {
                     $errors = $validation->getErrors();
@@ -205,16 +204,27 @@ class HousingController extends Controller {
                 }
                 else
                 {
-                    $user = (Session::get('Role') == 3) ? $this->getConnection()->getRepository("User")->find($_POST['idUser']) : $this->getConnection()->getRepository("User")->find(Session::get('idUser'));
-                    $property->setIdUser($user);
-                    if (Session::get('Role') == 2) $property->setState(0);
-                    if (Session::get('Role') == 3) $property->setState(1);
-                    if ($_POST['method'] == "updateProperty") $property->setState(2);
+                    if (Session::get('Role') == 3)
+                    {
+                        if ((isset($_POST['idUser'])) && (!empty($_POST['idUser'])))
+                        {
+                            $property->setState(1);
+                            $user = $this->getConnection()->getRepository('User')->find($_POST['idUser']);
+                            $property->setIdUser($user);
+                        }
+                    }
+                    if (Session::get('Role') == 2) 
+                    {
+                        $property->setState(0);
+                        $user = $this->getConnection()->getRepository("User")->find(Session::get('idUser'));
+                        $property->setIdUser($user);
+                    }
+                    if (($_POST['method'] == "updateProperty") && (Session::get('Role') == 2)) $property->setState(2);
                     $this->getConnection()->persist($property);
                     $this->getConnection()->flush();
                 }
             }
-            if (($_POST['method'] != "updateProperty") || (!empty($_POST['id'])))
+            if ($_POST['method'] != "updateProperty")
             {
                 $result = explode('+',$_POST['housingType']);
                 $type = $this->getConnection()->getRepository("Type")->find($result[0]);
@@ -241,13 +251,13 @@ class HousingController extends Controller {
                 $housing->setDeposit(htmlspecialchars($_POST['deposit']));
                 $housing->setRentalDuration(htmlspecialchars($_POST['rentalDuration']));
                 $housing->setRentComment(htmlspecialchars($_POST['rentComment']));
-
+                $housing->setVisibility(1);
+                
                 $validation->number($housing->getArea());
                 $validation->number($housing->getFloor());
                 $validation->number($housing->getRent());
                 $validation->number($housing->getCharge());
                 $validation->number($housing->getDeposit());
-                $validation->text($housing->getRentComment());
                 
                 if ($validation->isErrors()) {
                     $errors = $validation->getErrors();
@@ -258,8 +268,13 @@ class HousingController extends Controller {
                 {    
                     if (Session::get('Role') == 2) $housing->setState(0);
                     if (Session::get('Role') == 3) $housing->setState(1);   
-                    if ($_POST['method'] == "updateHousing") $housing->setState(2);
-                    if (!empty($_POST['id'] == "")) $property = $this->getConnection()->getRepository('Property')->find($_POST['id']);
+                    if (($_POST['method'] == "updateHousing") && (Session::get('Role') == 2)) $housing->setState(2);
+                    
+                    if ((isset($_POST['id'])) && (!empty($_POST['id']))) 
+                    {
+                        $result = $this->getConnection()->getRepository('Housing')->find($_POST['id']);
+                        $property = $this->getConnection()->getRepository('Property')->find($result->getIdProperty());
+                    }
                     $housing->setIdProperty($property);
                     
                     $housingReference = $this->getConnection()->getRepository('Housing')->findOneBy(array(), array('reference' => 'DESC'));
@@ -318,42 +333,56 @@ class HousingController extends Controller {
             if (Session::get('Role') == 2) 
             {
                 $user = $this->getConnection()->getRepository("User")->find(Session::get('idUser'));
-                $this->myHousing();
-                $translation = Language::translation("mail");
-                if (($_POST['method'] == "updateHousing") || ($_POST['method'] == "updateProperty"))
+                if (!empty($user->getMail()))
                 {
-                    $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=updateHousing");
-                    $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "updateHousing");
-                    if (!Mail::sendMail($translation["subjectUpdateHousing"], $user[0]->getMail(), $redirection, $contentMessage))
+                    $translation = Language::translation("mail");
+                    if ($_POST['method'] != "updateProperty")
                     {
-                        $this->render('error.mail');
+                        if ($_POST['method'] == "updateHousing")
+                        {
+                            $redirection = Navi::getRedirection($translation, true, "http://".$_SERVER["SERVER_NAME"]."/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=updateHousing");
+                            $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "updateHousing");
+                            if (!Mail::sendMail($translation["subjectUpdateHousing"], $user->getMail(), $redirection, $contentMessage))
+                            {
+                                $this->render('error.mail');
+                            }
+                            $redirection = Navi::getRedirection($translation, true, "http://".$_SERVER["SERVER_NAME"]."/mail.php?fn=Cathy&l=".Session::get("Language")."&m=newRequest");
+                            $contentMessage = Navi::getContentMail($translation, true, 'Cathy', "newRequest");
+                            if (!Mail::sendMail($translation["newRequest"], 'carlmath@hotmail.com', $redirection, $contentMessage))
+                            {
+                                $this->render('error.mail');
+                            }
+                            Router::redirect('mail.confirmation', 'addHousing');
+                        }
+                        else
+                        {
+                            $redirection = Navi::getRedirection($translation, true, "http://".$_SERVER["SERVER_NAME"]."/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=addHousing");
+                            $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "addHousing");
+                            if (!Mail::sendMail($translation["subjectAddHousing"], $user->getMail(), $redirection, $contentMessage))
+                            {
+                                $this->render('error.mail');
+                            }
+                            $redirection = Navi::getRedirection($translation, true, "http://".$_SERVER["SERVER_NAME"]."/mail.php?fn=Cathy&l=".Session::get("Language")."&m=newRequest");
+                            $contentMessage = Navi::getContentMail($translation, true, 'Cathy', "newRequest");
+                            if (!Mail::sendMail($translation["newRequest"], 'carlmath@hotmail.com', $redirection, $contentMessage))
+                            {
+                                $this->render('error.mail');
+                            }
+                            Router::redirect('mail.confirmation', 'addHousing');
+                        }
                     }
-                    $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=Cathy&l=".Session::get("Language")."&m=newRequest");
-                    $contentMessage = Navi::getContentMail($translation, true, 'Cathy', "newRequest");
-                    if (!Mail::sendMail($translation["newRequest"], 'carlmath@hotmail.com', $redirection, $contentMessage))
+                    else
                     {
-                        $this->render('error.mail');
+                        $this->myHousing();
                     }
-                    Router::redirect('mail.confirmation', 'addHousing');
-                }
-                else
-                {
-                    $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=addHousing");
-                    $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "addHousing");
-                    if (!Mail::sendMail($translation["subjectAddHousing"], $user[0]->getMail(), $redirection, $contentMessage))
-                    {
-                        $this->render('error.mail');
-                    }
-                    $redirection = Navi::getRedirection($translation, true, "http://libiakot-test.test.fundp.ac.be/mail.php?fn=Cathy&l=".Session::get("Language")."&m=newRequest");
-                    $contentMessage = Navi::getContentMail($translation, true, 'Cathy', "newRequest");
-                    if (!Mail::sendMail($translation["newRequest"], 'carlmath@hotmail.com', $redirection, $contentMessage))
-                    {
-                        $this->render('error.mail');
-                    }
-                    Router::redirect('mail.confirmation', 'addHousing');
                 }
             }
-            if (Session::get('Role') == 3) $this->listHousings(12);
+            if (Session::get('Role') == 3) 
+            {
+                if ($_POST['method'] == "updateHousing") $this->listHousings(12);
+                if ($_POST['method'] == "updateProperty") $this->listProperties(12);
+                if ($_POST['method'] == "addHousing") $this->listProperties(12);
+            }
         }
     }
     public function getZipCode($return = false)
@@ -446,33 +475,36 @@ class HousingController extends Controller {
             $results = $this->getConnection()->getRepository('Housing')->findByIdProperty($property->getId());
             $pendingHousing[$key]['housing'] = [];
             $validatedHousing[$key]['housing'] = [];
+            $validate = 0;
+            $pending = 0;
             foreach ($results as $housing) {
-                $pictures = $this->getConnection()->getRepository('Picture')->findByIdHousing($housing->getId());
-                if (!empty($pictures))
+                $picture =  "web/pictures/iconLarge.png";
+                $resuls = $this->getConnection()->getRepository('Picture')->findByIdHousing($housing->getId());
+                if (!empty($resuls[0]))
                 {
-                    $namePicture = explode('.',$pictures[0]->getName());
+                    $namePicture = explode('.',$resuls[0]->getName());
                     $picture = "web/pictures/Housing/miniature/".$namePicture[0]."-miniature.".$namePicture[1];
                 }
-                else $picture =  "web/pictures/iconLarge.png";
-                
-                if ($housing->getState() == 0)
+                if (($housing->getState() == 0) || ($housing->getState() == 2))
                 {
-                    $pendingHousing[$key]['picture'] = $picture;
+                    $pictures['pendingHousing'][$pending] = $picture;
                     $pendingHousing[$key]['property'] = $property;
                     array_push($pendingHousing[$key]['housing'], $housing);
+                    $pending++;
                 }
                 else
                 {
-                    $validatedHousing[$key]['picture'] = $picture;
+                    $pictures['validatedHousing'][$validate] = $picture;
                     $validatedHousing[$key]['property'] = $property;
                     array_push($validatedHousing[$key]['housing'], $housing);
+                    $validate++;
                 }
             }
         }  
         $query = static::getConnection()->createQuery("
             SELECT p 
             FROM Property p
-            WHERE p.idProperty NOT IN (SELECT IDENTITY(h.idProperty) FROM Housing h)
+            WHERE p.idUser = ".Session::get('idUser')." AND p.idProperty NOT IN (SELECT IDENTITY(h.idProperty) FROM Housing h)
         ");
         $properties = $query->getResult();
 
@@ -482,7 +514,7 @@ class HousingController extends Controller {
         $validatedHousing['icon'] = "check";
         $accomodations['validatedHousing'] = $validatedHousing;
         $accomodations['pendingHousing'] = $pendingHousing;
-        $this->render('housing.myHousing', compact("accomodations", "properties"));
+        $this->render('housing.myHousing', compact("accomodations", "properties", "pictures"));
     }
     public function deleteHousing($idHousing = null)
     {
@@ -777,7 +809,7 @@ class HousingController extends Controller {
         if (isset($_POST['search']))
         {
             $reference = explode('lk', strtolower($_POST['search']));
-            $reference = intval($reference[1]);
+            $reference = (isset($reference[1])) ? intval($reference[1]) : 0;
             $result = $this->getConnection()->getRepository('Housing')->findByReference($reference);
             if (!empty($result))
             {
@@ -795,12 +827,12 @@ class HousingController extends Controller {
             }
             else
             {
-                $this->render('error.index');
+                $this->render('error.search');
             }
         }
         else
         {
-            $this->render('error.index');
+            $this->render('error.search');
         }
     }
     public function listHousing()
@@ -841,6 +873,40 @@ class HousingController extends Controller {
         Session::set('housings', $housings);
         Session::set('translation', $translation);
         Session::set('equipments', $equipments);
+    }
+    public function listProperties($get = null)
+    {
+        if ((isset($_GET['r']) && (($_GET['r'] % 12) == 0)) || !empty($get))
+        {
+            $value['r'] = (isset($_GET['r'])) ? $_GET['r'] : $get;
+            Session::set('settings', $value);
+
+            $properties = $this->getConnection()->getRepository('Property')->findAll();
+            $size = sizeof($properties);
+
+            $offset = (isset($_GET['r'])) ? $_GET['r'] : ((!empty($get)) ? $get : 12);
+            $limit = $offset - 12;
+            $dql = "SELECT h FROM Property h ORDER BY h.idProperty DESC";
+            $query = $this->getConnection()->createQuery($dql)
+                           ->setFirstResult($limit)
+                           ->setMaxResults($offset);
+
+            $results = $query->getResult();
+            $properties = [];
+            foreach ($results as $key => $property) {
+                $properties[$key]['picture'] = "web/pictures/iconLarge.png";
+                $properties[$key]['city'] = $property->getCity();
+                $properties[$key]['street'] = $property->getStreet();
+                $properties[$key]['number'] = $property->getNumber();
+                $properties[$key]['zipCode'] = $property->getZipCode();
+                $properties[$key]["idProperty"] = $property->getId();
+            }
+            $this->render('housing.listProperties', compact('properties', 'size'));
+        }
+        else
+        {
+            $this->render('error.index');
+        }
     }
     public function changeVisibility()
     {
