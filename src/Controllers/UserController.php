@@ -14,8 +14,8 @@ use Controllers\HousingController;
 class UserController extends Controller {
 
     public function login() {
-        if (isset($_POST['mail']) && isset($_POST['password'])) 
-        {
+    	if (isset($_POST['mail']) && isset($_POST['password'])) 
+    	{
             $mail = htmlspecialchars($_POST['mail']);
             $user = $this->getConnection()->getRepository('User')->findOneBy(array('mail' => $mail, 'password' => Security::cryptage($_POST['password'])));
             if (!empty($user)) 
@@ -41,16 +41,16 @@ class UserController extends Controller {
                 $error = 'connectionNotValid';
                 $this->render('user.login', compact('error', 'mail'));
             }
-        }
-        else
-        {
+    	}
+    	else
+    	{
             if (Session::get("Role") != 1) $this->render('home.index');
-            else $this->render('user.login');
-        }
+    		else $this->render('user.login');
+    	}
     }
 
     public function register() {
-        if (empty($_POST)) 
+    	if (empty($_POST)) 
         {
             $this->render('user.register', compact('user'));
         } 

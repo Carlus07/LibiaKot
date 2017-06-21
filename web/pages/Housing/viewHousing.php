@@ -14,8 +14,8 @@
 		$capacity = ($housing->getCapacity() > 1) ? $housing->getCapacity().' '.$translation['place'].'s' : $housing->getCapacity().' '.$translation['place'];
 		$spaceAvailable = ($housing->getSpaceAvailable() > 1) ? $housing->getSpaceAvailable().' '.$translation['remainingPlaces'] : $translation['oneRemainingPlace'];
 		$pictureOwner = (empty($housing->getIdProperty()->getIdUser()->getPicture())) ? "web/pictures/avatar.png" : $housing->getIdProperty()->getIdUser()->getPicture();
-		$easeNearby = (empty($housing->getIdProperty()->getEaseNearby())) ? '/' : utf8_encode($housing->getIdProperty()->getEaseNearby());
-		$rentComment = (empty($housing->getRentComment())) ? '/' : utf8_encode($housing->getRentComment());
+		$easeNearby = (empty($housing->getIdProperty()->getEaseNearby())) ? '/' : utf8_decode(utf8_decode($housing->getIdProperty()->getEaseNearby()));
+		$rentComment = (empty($housing->getRentComment())) ? '/' : utf8_decode(utf8_encode($housing->getRentComment()));
 		?>
 		<fieldset>
 			<legend><span><i class="fa fa-home" aria-hidden="true"></i></span><?php echo 'LK '.$reference; ?></legend>
@@ -80,10 +80,10 @@
 								<img class="pictureOwner" src="<?php echo $pictureOwner;?>"/>
 							</div>
 							<div class="row">
-								<h4 style="margin:0;"><?php echo utf8_encode($housing->getIdProperty()->getIdUser()->getFirstName()).' '.utf8_encode($housing->getIdProperty()->getIdUser()->getName());?></h4>
+								<h4 style="margin:0;"><?php echo utf8_encode($housing->getIdProperty()->getIdUser()->getFirstName()).' '.utf8_decode(utf8_encode($housing->getIdProperty()->getIdUser()->getName()));?></h4>
 							</div><br>
 							<div class="row">
-								<h4 style="margin:0;color:#55ab26;"><i class="fa fa-envelope" aria-hidden="true"></i> Contacter</h4>
+								<h4 style="margin:0;color:#55ab26;"><i class="fa fa-envelope" aria-hidden="true"></i><?php echo $translation['contact'];?></h4>
 							</div>
 						</a>
 					</div>
@@ -91,7 +91,7 @@
 			</div>	
 		</fieldset>
 		<fieldset>
-			<legend><span><i class="fa fa-map-signs" aria-hidden="true"></i></span>Localisation</legend>
+			<legend><span><i class="fa fa-map-signs" aria-hidden="true"></i></span><?php echo $translation['location'];?></legend>
 			<div id="map-canvas" class="mapViewHousing col-sm-12"></div>
 			<input type="hidden" name="GPSPosition" class="GPSPosition" value="<?php echo $housing->getIdProperty()->getGPSPosition(); ?>" />
 			<div class="row">
@@ -105,7 +105,7 @@
 			</div>
 		</fieldset>
 		<fieldset>
-			<legend><span><i class="fa fa-map-marker" aria-hidden="true"></i></span>Info sur la propriété</legend>
+			<legend><span><i class="fa fa-map-marker" aria-hidden="true"></i></span><?php echo $translation['propertyInfo'];?></legend>
 			<div class="row">
 				<div class="col-sm-6">
 					<ul>
@@ -222,7 +222,7 @@
 			</div>
 		</fieldset>
 		<fieldset>
-			<legend><span><i class="fa fa-bed" aria-hidden="true"></i></span>Info sur le logement</legend>
+			<legend><span><i class="fa fa-bed" aria-hidden="true"></i></span><?php echo $translation['housingInfo'];?></legend>
 			<div class="row">
 				<div class="col-sm-4">
 					<h5><?php echo $translation['domiciliation'].' :';?></h5>
@@ -313,7 +313,7 @@
 			</div>
 		</fieldset>
 		<fieldset>
-			<legend><span><i class="fa fa-cogs" aria-hidden="true"></i></span>Equipement du logement</legend>
+			<legend><span><i class="fa fa-cogs" aria-hidden="true"></i></span><?php echo $translation['equipmentHousing'];?></legend>
 			<div class="row">
 				<?php
 				foreach($equipments as $key => $category)

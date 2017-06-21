@@ -1,3 +1,4 @@
+ModuleManager.loadModule("web/js/tools/Notification.js");
 HousingViewHousing = (function() {
     var s = {
         carousel : $("#owl-example"),
@@ -105,7 +106,7 @@ HousingViewHousing = (function() {
     var confirmHousing = function() 
     {
         var selection = $(this).attr("value");
-        $.post("?w=housing.deleteHousing",
+        $.post("?w=housing.confirmHousing",
             {idHousing: selection},
             function(result)
             {

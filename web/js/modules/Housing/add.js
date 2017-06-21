@@ -114,8 +114,8 @@ HousingAdd = (function() {
         s.rent.on('change', function(){validation(this,"number");});
         s.charge.on('change', function(){validation(this,"number");});
         s.deposit.on('change', function(){validation(this,"number");});
-        s.easeNearby.on('change', function(){validation(this,"text");});
-        s.rentComment.on('change', function(){validation(this,"text");});
+        //s.easeNearby.on('change', function(){validation(this,"text");});
+        //s.rentComment.on('change', function(){validation(this,"text");});
     };
     var uploadUIActions = function() {
         s.cancelUpload.on('click', cancelUpload);

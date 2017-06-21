@@ -397,6 +397,7 @@ a:hover,a:focus {
 	margin-top:20px;
 	display: inline-block;
 	padding-bottom: 15px;
+	margin-bottom:15px;
 }
 .frameUser:hover{
 	background-color: #bbbbbb;
@@ -637,4 +638,8 @@ h5 > span{
 	font-weight: bold;
 	border:0;
 	text-align:center;
+}
+.contentHousing{
+    position:relative;
+    z-index:999;
 }

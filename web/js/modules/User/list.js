@@ -29,7 +29,7 @@ UserList = (function() {
                             function(result)
                             {
                                 var str = result.split('+');
-                                Translator.translation(str[1]).done(function(data){
+                                Translator.translation(str[2]).done(function(data){
                                     Notification.notification(str[0], data);
                                     if (str[0] == "success") 
                                     {

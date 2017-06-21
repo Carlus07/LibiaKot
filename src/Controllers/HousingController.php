@@ -31,8 +31,8 @@ class HousingController extends Controller {
                 $offset = (isset($_GET['r'])) ? $_GET['r'] : 10;
                 $limit = $offset - 10;
 
-                $type = (isset($_GET['t'])) ? "SubType" : "Type";
-                $id = (isset($_GET['t'])) ? $_GET['t'] : $_GET['id'];
+                $type = (isset($_GET['t']) && ($_GET['t'] != '')) ? "SubType" : "Type";
+                $id = (isset($_GET['t']) && ($_GET['t'] != '')) ? $_GET['t'] : $_GET['id'];
                 $request = $this->getConnection()->getRepository($type)->find($id);
                 $idType = "id".$type;
                 $housings = $this->getConnection()->getRepository("Housing")->findBy(array($idType => $request, 'state' => '1', 'visibility' => '1'));
@@ -204,21 +204,21 @@ class HousingController extends Controller {
                 }
                 else
                 {
-                    if (Session::get('Role') == 3)
-                    {
-                        if ((isset($_POST['idUser'])) && (!empty($_POST['idUser'])))
-                        {
-                            $property->setState(1);
-                            $user = $this->getConnection()->getRepository('User')->find($_POST['idUser']);
-                            $property->setIdUser($user);
-                        }
-                    }
-                    if (Session::get('Role') == 2) 
-                    {
-                        $property->setState(0);
-                        $user = $this->getConnection()->getRepository("User")->find(Session::get('idUser'));
-                        $property->setIdUser($user);
-                    }
+					if (Session::get('Role') == 3)
+					{
+						if ((isset($_POST['idUser'])) && (!empty($_POST['idUser'])))
+						{
+							$property->setState(1);
+							$user = $this->getConnection()->getRepository('User')->find($_POST['idUser']);
+							$property->setIdUser($user);
+						}
+					}
+					if (Session::get('Role') == 2) 
+					{
+						$property->setState(0);
+						$user = $this->getConnection()->getRepository("User")->find(Session::get('idUser'));
+						$property->setIdUser($user);
+					}
                     if (($_POST['method'] == "updateProperty") && (Session::get('Role') == 2)) $property->setState(2);
                     $this->getConnection()->persist($property);
                     $this->getConnection()->flush();
@@ -251,8 +251,8 @@ class HousingController extends Controller {
                 $housing->setDeposit(htmlspecialchars($_POST['deposit']));
                 $housing->setRentalDuration(htmlspecialchars($_POST['rentalDuration']));
                 $housing->setRentComment(htmlspecialchars($_POST['rentComment']));
-                $housing->setVisibility(1);
-                
+				$housing->setVisibility(1);
+				
                 $validation->number($housing->getArea());
                 $validation->number($housing->getFloor());
                 $validation->number($housing->getRent());
@@ -268,15 +268,22 @@ class HousingController extends Controller {
                 {    
                     if (Session::get('Role') == 2) $housing->setState(0);
                     if (Session::get('Role') == 3) $housing->setState(1);   
-                    if (($_POST['method'] == "updateHousing") && (Session::get('Role') == 2)) $housing->setState(2);
-                    
-                    if ((isset($_POST['id'])) && (!empty($_POST['id']))) 
-                    {
-                        $result = $this->getConnection()->getRepository('Housing')->find($_POST['id']);
-                        $property = $this->getConnection()->getRepository('Property')->find($result->getIdProperty());
-                    }
-                    $housing->setIdProperty($property);
-                    
+					if (($_POST['method'] == "updateHousing") && (Session::get('Role') == 2)) $housing->setState(2);
+					
+					if ((isset($_POST['id'])) && (!empty($_POST['id']))) 
+					{
+                        if ($_POST['method'] == "addHousing")
+                        {
+                            $property = $this->getConnection()->getRepository('Property')->find($_POST['id']);
+                        }
+                        else
+                        {
+                            $result = $this->getConnection()->getRepository('Housing')->find($_POST['id']);
+                            $property = $this->getConnection()->getRepository('Property')->find($result->getIdProperty());
+                        }
+					}
+					$housing->setIdProperty($property);
+					
                     $housingReference = $this->getConnection()->getRepository('Housing')->findOneBy(array(), array('reference' => 'DESC'));
                     if (!empty($housingReference))
                     {
@@ -333,56 +340,56 @@ class HousingController extends Controller {
             if (Session::get('Role') == 2) 
             {
                 $user = $this->getConnection()->getRepository("User")->find(Session::get('idUser'));
-                if (!empty($user->getMail()))
-                {
-                    $translation = Language::translation("mail");
-                    if ($_POST['method'] != "updateProperty")
-                    {
-                        if ($_POST['method'] == "updateHousing")
-                        {
-                            $redirection = Navi::getRedirection($translation, true, "http://".$_SERVER["SERVER_NAME"]."/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=updateHousing");
-                            $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "updateHousing");
-                            if (!Mail::sendMail($translation["subjectUpdateHousing"], $user->getMail(), $redirection, $contentMessage))
-                            {
-                                $this->render('error.mail');
-                            }
-                            $redirection = Navi::getRedirection($translation, true, "http://".$_SERVER["SERVER_NAME"]."/mail.php?fn=Cathy&l=".Session::get("Language")."&m=newRequest");
-                            $contentMessage = Navi::getContentMail($translation, true, 'Cathy', "newRequest");
-                            if (!Mail::sendMail($translation["newRequest"], 'carlmath@hotmail.com', $redirection, $contentMessage))
-                            {
-                                $this->render('error.mail');
-                            }
-                            Router::redirect('mail.confirmation', 'addHousing');
-                        }
-                        else
-                        {
-                            $redirection = Navi::getRedirection($translation, true, "http://".$_SERVER["SERVER_NAME"]."/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=addHousing");
-                            $contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "addHousing");
-                            if (!Mail::sendMail($translation["subjectAddHousing"], $user->getMail(), $redirection, $contentMessage))
-                            {
-                                $this->render('error.mail');
-                            }
-                            $redirection = Navi::getRedirection($translation, true, "http://".$_SERVER["SERVER_NAME"]."/mail.php?fn=Cathy&l=".Session::get("Language")."&m=newRequest");
-                            $contentMessage = Navi::getContentMail($translation, true, 'Cathy', "newRequest");
-                            if (!Mail::sendMail($translation["newRequest"], 'carlmath@hotmail.com', $redirection, $contentMessage))
-                            {
-                                $this->render('error.mail');
-                            }
-                            Router::redirect('mail.confirmation', 'addHousing');
-                        }
-                    }
-                    else
-                    {
-                        $this->myHousing();
-                    }
-                }
+				if (!empty($user->getMail()))
+				{
+					$translation = Language::translation("mail");
+					if ($_POST['method'] != "updateProperty")
+					{
+						if ($_POST['method'] == "updateHousing")
+						{
+							$redirection = Navi::getRedirection($translation, true, "http://".$_SERVER["SERVER_NAME"]."/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=updateHousing");
+							$contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "updateHousing");
+							if (!Mail::sendMail($translation["subjectUpdateHousing"], $user->getMail(), $redirection, $contentMessage))
+							{
+								$this->render('error.mail');
+							}
+							$redirection = Navi::getRedirection($translation, true, "http://".$_SERVER["SERVER_NAME"]."/mail.php?fn=Cathy&l=".Session::get("Language")."&m=newRequest");
+							$contentMessage = Navi::getContentMail($translation, true, 'Cathy', "newRequest");
+							if (!Mail::sendMail($translation["newRequest"], 'cathy.jentgen@unamur.be', $redirection, $contentMessage))
+							{
+								$this->render('error.mail');
+							}
+							Router::redirect('mail.confirmation', 'addHousing');
+						}
+						else
+						{
+							$redirection = Navi::getRedirection($translation, true, "http://".$_SERVER["SERVER_NAME"]."/mail.php?fn=".$user->getFirstName()."&l=".Session::get("Language")."&m=addHousing");
+							$contentMessage = Navi::getContentMail($translation, true, $user->getFirstName(), "addHousing");
+							if (!Mail::sendMail($translation["subjectAddHousing"], $user->getMail(), $redirection, $contentMessage))
+							{
+								$this->render('error.mail');
+							}
+							$redirection = Navi::getRedirection($translation, true, "http://".$_SERVER["SERVER_NAME"]."/mail.php?fn=Cathy&l=".Session::get("Language")."&m=newRequest");
+							$contentMessage = Navi::getContentMail($translation, true, 'Cathy', "newRequest");
+							if (!Mail::sendMail($translation["newRequest"], 'cathy.jentgen@unamur.be', $redirection, $contentMessage))
+							{
+								$this->render('error.mail');
+							}
+							Router::redirect('mail.confirmation', 'addHousing');
+						}
+					}
+					else
+					{
+						$this->myHousing();
+					}
+				}
             }
             if (Session::get('Role') == 3) 
-            {
-                if ($_POST['method'] == "updateHousing") $this->listHousings(12);
-                if ($_POST['method'] == "updateProperty") $this->listProperties(12);
-                if ($_POST['method'] == "addHousing") $this->listProperties(12);
-            }
+			{
+				if ($_POST['method'] == "updateHousing") $this->listHousings(12);
+				if ($_POST['method'] == "updateProperty") $this->listProperties(12);
+				if ($_POST['method'] == "addHousing") $this->listProperties(12);
+			}
         }
     }
     public function getZipCode($return = false)
@@ -475,10 +482,10 @@ class HousingController extends Controller {
             $results = $this->getConnection()->getRepository('Housing')->findByIdProperty($property->getId());
             $pendingHousing[$key]['housing'] = [];
             $validatedHousing[$key]['housing'] = [];
-            $validate = 0;
-            $pending = 0;
+			$validate = 0;
+			$pending = 0;
             foreach ($results as $housing) {
-                $picture =  "web/pictures/iconLarge.png";
+				$picture =  "web/pictures/iconLarge.png";
                 $resuls = $this->getConnection()->getRepository('Picture')->findByIdHousing($housing->getId());
                 if (!empty($resuls[0]))
                 {
@@ -487,17 +494,17 @@ class HousingController extends Controller {
                 }
                 if (($housing->getState() == 0) || ($housing->getState() == 2))
                 {
-                    $pictures['pendingHousing'][$pending] = $picture;
+					$pictures['pendingHousing'][$pending] = $picture;
                     $pendingHousing[$key]['property'] = $property;
                     array_push($pendingHousing[$key]['housing'], $housing);
-                    $pending++;
+					$pending++;
                 }
                 else
                 {
-                    $pictures['validatedHousing'][$validate] = $picture;
+					$pictures['validatedHousing'][$validate] = $picture;
                     $validatedHousing[$key]['property'] = $property;
                     array_push($validatedHousing[$key]['housing'], $housing);
-                    $validate++;
+					$validate++;
                 }
             }
         }  

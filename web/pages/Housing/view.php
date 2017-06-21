@@ -4,14 +4,14 @@
 			<div class="col-md-4 col-sm-4 hidden-xs">
 				<div class="row frameSearch" >
 					<div class="col-sm-12" style="margin-bottom: 15px;">
-						<h4 style="margin:0;margin-bottom: 15px;"><span><i class="fa fa-search" aria-hidden="true"></i></span><?php echo 'Référence';?></h4>
+						<h4 style="margin:0;margin-bottom: 15px;"><span><i class="fa fa-search" aria-hidden="true"></i></span><?php echo $translation['reference'];?></h4>
 						<div class="input-group mb-2 mr-sm-2 mb-sm-0">
 							<div class="input-group-addon">LK</div>
 							<input type="number" class="form-control" id="reference" name="reference">
 						</div>
 					</div>
 					<div class="col-sm-12">
-						<h4 style="margin:0;margin-bottom: 15px;"><span><i class="fa fa-home" aria-hidden="true"></i></span><?php echo 'Type';?></h4>
+						<h4 style="margin:0;margin-bottom: 15px;"><span><i class="fa fa-home" aria-hidden="true"></i></span><?php echo $translation['type'];?></h4>
 						<div class="form-group">
 							<select class="form-control" id="housingType" name="housingType">
 								-		                <?php
@@ -36,12 +36,12 @@
 						</div>
 					</div>
 					<div class="col-sm-12" style="margin-bottom: 15px;">
-						<h4 style="margin:0;margin-bottom: 15px;"><span><i class="fa fa-euro" aria-hidden="true"></i></span><?php echo 'Loyer';?></h4>
+						<h4 style="margin:0;margin-bottom: 15px;"><span><i class="fa fa-euro" aria-hidden="true"></i></span><?php echo $translation['rent'];?></h4>
 						<input type="text" id="amountRent" class="amount" readonly>
 						<div id="slider-range"></div>
 					</div>
 					<div class="col-sm-12" style="margin-bottom: 15px;">
-						<h5 style="margin:0;margin-bottom: 15px;"><span><i class="fa fa-bed" aria-hidden="true"></i></span><?php echo 'Nombre de chambre minimum';?></h5>
+						<h5 style="margin:0;margin-bottom: 15px;"><span><i class="fa fa-bed" aria-hidden="true"></i></span><?php echo $translation['nbrRoom'];?></h5>
 						<input type="text" id="amountBedroom" class="amount" readonly>
 						<div id="slider-range-min"></div>
 					</div>
@@ -174,12 +174,13 @@
 				 <?php
 					$pagination = ceil($size / 10);
 					$active = (isset($_GET['r'])) ? $_GET['r'] / 10 : 1;
+					$params = (isset($_GET['id'])) ? "&id=".$_GET['id'] : ((isset($_GET['t'])) ? "&t=".$_GET['t'] : "");
 					if ($size > 10)
 					{
 				?>
 					    <li class="page-item">
 			    	
-					      <a class="page-link" href="?p=housing.view&r=<?php echo ($active == 1) ? 10 : (($active-1)*10); ?>" aria-label="Previous">
+					      <a class="page-link" href="?p=housing.view&r=<?php echo ($active == 1) ? 10 : (($active-1)*10); echo $params; ?>" aria-label="Previous">
 					        <span aria-hidden="true">&laquo;</span>
 					        <span class="sr-only">Previous</span>
 					      </a>
@@ -189,11 +190,11 @@
 					    	{
 					    		$class = ($active != $i) ? ' ' : ' active';
 					    		$redirection = $i*10;
-					    		echo '<li class="page-item '.$class.'"><a class="page-link" href="?p=housing.view&r='.$redirection.'">'.$i.'</a></li>';
+					    		echo '<li class="page-item '.$class.'"><a class="page-link" href="?p=housing.view&r='.$redirection.$params.'">'.$i.'</a></li>';
 					    	}
 					 	?>
 					    <li class="page-item">
-					      <a class="page-link" href="?p=housing.view&r=<?php echo ($active == $pagination) ? ($active*10) : (($active+1)*10); ?>" aria-label="Next">
+					      <a class="page-link" href="?p=housing.view&r=<?php echo ($active == $pagination) ? ($active*10) : (($active+1)*10); echo $params;?>" aria-label="Next">
 					        <span aria-hidden="true">&raquo;</span>
 					        <span class="sr-only">Next</span>
 					      </a>

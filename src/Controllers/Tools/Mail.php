@@ -28,16 +28,16 @@ class Mail
         $mail = new PHPMailer;
         $mail->isSMTP();                                    // Set mailer to use SMTP
         $mail->SMTPDebug = 0;
-        $mail->SMTPAuth = false;                             // Enable SMTP authentication
+        $mail->SMTPAuth = false;                            // Enable SMTP authentication
         $mail->Host = 'smtp.unamur.be';                     // Specify main and backup SMTP servers
-        $mail->Username = 'logement@unamur.be';             // SMTP username
+        $mail->Username = 'cathy.jentgen@unamur.be';        // SMTP username
         $mail->Password = '';                               // SMTP password
         $mail->SMTPSecure = '';                             // Enable TLS encryption, `ssl` also accepted
         $mail->Port = 25;                                   // TCP port to connect to
 
-        $mail->setFrom('logement@unamur.be', 'Service logement UNamur');
+        $mail->setFrom('cathy.jentgen@unamur.be', 'Service logement UNamur');
         $mail->AddAddress($email);
-        $mail->addReplyTo('logement@unamur.be', 'Service logement UNamur');
+        $mail->addReplyTo('cathy.jentgen@unamur.be', 'Service logement UNamur');
 
         $mail->isHTML(true);                                // Set email format to HTML
         $mail->Subject = utf8_decode($subject);

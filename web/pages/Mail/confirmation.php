@@ -19,13 +19,7 @@ if (!$finalization)
 		}
 		case 'addHousing' :
 		{
-			$title = $translation['confirmationCP'];
-			$message = '<p>'.$translation['textRegisterFirst'].'</p><p>'.$translation['textRegisterSecond'].'</p><p>'.$translation['textRegisterThird'].'</p>';
-			break;
-		}
-		case 'uploadHousing' :
-		{
-			$title = $translation['confirmationCP'];
+			$title = $translation['confirmationAddHousing'];
 			$message = '<p>'.$translation['textRegisterFirst'].'</p><p>'.$translation['textRegisterSecond'].'</p><p>'.$translation['textRegisterThird'].'</p>';
 			break;
 		}

@@ -45,7 +45,7 @@
 				<nav aria-label="Page navigation example">
 				  <ul class="pagination">
 				    <li class="page-item">
-				      <a class="page-link" href="?p=housing.list&r=<?php echo ($active == 1) ? 12 : (($active-1)*12); ?>" aria-label="Previous">
+					<a class="page-link" href="?p=housing.listhousings&r=<?php echo ($active == 1) ? 12 : (($active-1)*12); ?>" aria-label="Previous">
 				        <span aria-hidden="true">&laquo;</span>
 				        <span class="sr-only">Previous</span>
 				      </a>
@@ -55,11 +55,11 @@
 				    	{
 				    		$class = ($active != $i) ? ' ' : ' active';
 				    		$redirection = $i*12;
-				    		echo '<li class="page-item '.$class.'"><a class="page-link" href="?p=housing.list&r='.$redirection.'">'.$i.'</a></li>';
+						echo '<li class="page-item '.$class.'"><a class="page-link" href="?p=housing.listhousings&r='.$redirection.'">'.$i.'</a></li>';
 				    	}
 				 	?>
 				    <li class="page-item">
-				      <a class="page-link" href="?p=housing.list&r=<?php echo ($active == $pagination) ? ($active*12) : (($active+1)*12); ?>" aria-label="Next">
+					<a class="page-link" href="?p=housing.listhousings&r=<?php echo ($active == $pagination) ? ($active*12) : (($active+1)*12); ?>" aria-label="Next">
 				        <span aria-hidden="true">&raquo;</span>
 				        <span class="sr-only">Next</span>
 				      </a>

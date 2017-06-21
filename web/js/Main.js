@@ -107,8 +107,8 @@
                     else
                     {
                         Translator.translation(error).done(function(data){
-                            s.search[0].setCustomValidity(data);
-                        });
+							s.search[0].setCustomValidity(data);
+						});
                     }
                 }
                 else
