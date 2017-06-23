@@ -9,18 +9,18 @@
                 dropdownMenu : $(".dropdownMenu"),
                 subMenu : $(".textSubMenu"),
                 logo : $(".unamur"),
-                search : $("#search"),
                 buttonSearch : $('.button-search'),
+                search : $("#search"),
                 width : $(window).width()
             };
 
             var init = function() {
+                Translator.translation("textEmpty").done(function(data){
+                    s.search[0].setCustomValidity(data);
+                });
                 bindUIActions();
                 activationMenu();
                 if(s.width <= 767) deactivationMenu();
-                Translator.translation('textEmpty').done(function(data){
-                    s.search[0].setCustomValidity(data);
-                });
             };
 
             var bindUIActions = function() {
@@ -35,7 +35,8 @@
                 s.logo.on('mouseout', function(){
                     $(this).attr('src', 'web/pictures/unamur.png');
                 });
-                s.buttonSearch.on('click', search);
+                //s.buttonSearch.on('click', search);
+                s.search.on('change',search);
             };
             var adjustment = function()
             {
@@ -77,45 +78,57 @@
                 s.dropdownMenu = $(".dropdownMenu");
                 s.subMenu = $(".textSubMenu");
                 s.logo = $(".unamur");
+                s.buttonSearch = $('.button-search');
+                s.search = $("#search");
                 init();
             };
             var search = function() 
             {
-                re = "lk";
-                var find = (s.search.val()).toLowerCase().match(re);
-                if (find)
+                if (s.search.val() == "") 
                 {
-                    if (find.index == 0)
+                    Translator.translation("textEmpty").done(function(data){
+                        s.search[0].setCustomValidity(data);
+                    });
+                }
+                else 
+                {
+                    re = "lk";
+                    var find = (s.search.val()).toLowerCase().match(re);
+                    if (find)
                     {
-                        var reference = s.search.val().toLowerCase().split('lk');
-                        var error = "";
-                        if (reference[1] == "") error = "formatRefEmpty";
-                        var number = parseInt(reference[1]);
-                        if (isNaN(number)) error = "refNotInteger";
-                        else if (number < 0) error = "refNotNull";
-                        else if (number > 99999) error = "refTooLong";
-                        else error = "";
-
-                        if (error != "")
+                        if (find.index == 0)
                         {
-                            Translator.translation(error).done(function(data){
+                            var reference = s.search.val().toLowerCase().split('lk');
+                            var error = "";
+                            if (reference[1] == "") error = "formatRefEmpty";
+                            var number = parseInt(reference[1]);
+                            if (isNaN(number)) error = "refNotInteger";
+                            else if (number < 0) error = "refNotNull";
+                            else if (number > 99999) error = "refTooLong";
+                            else error = "";
+
+                            if (error != "")
+                            {
+                                Translator.translation(error).done(function(data){
+                                    s.search[0].setCustomValidity(data);
+                                });
+                            }
+                            else 
+                            {
+                                s.search[0].setCustomValidity("");
+                            }
+                        }
+                        else
+                        {
+                            Translator.translation("formatRefEmpty").done(function(data){
                                 s.search[0].setCustomValidity(data);
                             });
                         }
-                        else s.search[0].setCustomValidity("");
                     }
                     else
                     {
-                        Translator.translation(error).done(function(data){
-							s.search[0].setCustomValidity(data);
-						});
+                        s.search[0].setCustomValidity("");
                     }
-                }
-                else
-                {
-                    Translator.translation("formatRefEmpty").done(function(data){
-                        s.search[0].setCustomValidity(data);
-                    });
                 }
             };
             return {
@@ -269,7 +282,7 @@
                         refreshSearch(tabHtml[2]);
                         refreshMenu(tabHtml[3]);
                         refreshFooter(tabHtml[4]);
-                        refreshContent(tabHtml[0], tabHtml[5], back);
+                        refreshContent(tabHtml[0], tabHtml[5], back, tabHtml[6]);
                         refreshTitle(tabHtml[6]);
                     }
                 });
@@ -316,7 +329,7 @@
                     });
                 }
             };
-            var refreshContent = function(contentHtml, module, back) {
+            var refreshContent = function(contentHtml, module, back, refresh) {
                 s.content.fadeOut('fast', function() {
                     if (!back) 
                     {
@@ -332,7 +345,7 @@
                     s.content.fadeIn('fast');
                     ModuleManager.closeModules();
                     ModuleManager.loadModule(module);
-                    Main.refreshBind();
+                    if (refresh != ' ') Main.refreshBind();
                 });
             };
             var refreshPage = function() {
@@ -341,6 +354,7 @@
             return {
                 init: init,
                 loadPage: loadPage,
+                sendForm : sendForm,
                 refreshPage: refreshPage
             };
         })();

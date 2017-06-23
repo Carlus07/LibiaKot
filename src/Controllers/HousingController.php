@@ -14,6 +14,7 @@ use Controllers\Tools\Navi;
 use Controllers\Tools\Validation;
 use Controllers\Tools\Router;
 use Models\Session;
+use Controllers\UserController;
 
 class HousingController extends Controller {
 
@@ -42,7 +43,7 @@ class HousingController extends Controller {
                 $dql = "SELECT h FROM Housing h WHERE h.state = 1 AND h.visibility = 1 AND ".$param." = ".$request->getId()." ORDER BY h.reference ASC";
                 $query = $this->getConnection()->createQuery($dql)
                                 ->setFirstResult($limit)
-                                ->setMaxResults($offset);
+                                ->setMaxResults(10);
                 $housings = $query->getResult();
             }
             else if (!isset($_GET['id']) && !(isset($_GET['t'])))
@@ -608,7 +609,7 @@ class HousingController extends Controller {
             $dql = "SELECT h FROM Housing h WHERE h.state = 1 AND h.visibility = 1 ORDER BY h.reference ASC";
             $query = $this->getConnection()->createQuery($dql)
                            ->setFirstResult($limit)
-                           ->setMaxResults($offset);
+                           ->setMaxResults(12);
 
             $results = $query->getResult();
             $housings = [];
@@ -684,7 +685,7 @@ class HousingController extends Controller {
             $dql = "SELECT h FROM Housing h WHERE h.state = 0 OR h.state = 2 ORDER BY h.reference ASC";
             $query = $this->getConnection()->createQuery($dql)
                            ->setFirstResult($limit)
-                           ->setMaxResults($offset);
+                           ->setMaxResults(12);
 
             $results = $query->getResult();
             $housings = [];
@@ -778,7 +779,7 @@ class HousingController extends Controller {
                     SELECT h
                     FROM Housing h
                     WHERE h.rent >= '".$_POST['rent'][0]."' AND h.charge <= '".$_POST['rent'][1]."' AND h.capacity >= '".$_POST['bedroom']."'".$typeRequest.$rentDurationRequest
-                )->setFirstResult($limit)->setMaxResults($offset);
+                )->setFirstResult($limit)->setMaxResults(10);
 
         $results = $query->getResult();
 
@@ -834,7 +835,29 @@ class HousingController extends Controller {
             }
             else
             {
-                $this->render('error.search');
+                $search = explode(' ', strtolower($_POST['search']));
+                //Si la recherche porte sur un nom et un prénom
+                if (isset($search[1]))
+                {
+                    $result = $this->getConnection()->getRepository('User')->findBy(array('name' => $search[0], 'firstName' => $search[1]));
+                    if (empty($result)) $result = $this->getConnection()->getRepository('User')->findBy(array('name' => $search[1], 'firstName' => $search[0]));
+                    if (empty($result)) $this->render('error.search');
+                    else
+                    {
+                        $userController = new userController;
+                        $userController->profile($result[0]->getId());
+                    }
+                }
+                else
+                {
+                    $result = $this->getConnection()->getRepository('User')->findByName($search[0]);
+                    if (empty($result)) $this->render('error.search');
+                    else 
+                    {
+                        $userController = new userController;
+                        $userController->profile($result[0]->getId());
+                    }
+                }
             }
         }
         else
@@ -896,7 +919,7 @@ class HousingController extends Controller {
             $dql = "SELECT h FROM Property h ORDER BY h.idProperty DESC";
             $query = $this->getConnection()->createQuery($dql)
                            ->setFirstResult($limit)
-                           ->setMaxResults($offset);
+                           ->setMaxResults(12);
 
             $results = $query->getResult();
             $properties = [];

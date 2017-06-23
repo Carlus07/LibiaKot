@@ -55,6 +55,10 @@
 			   	</div>
 			</div>
 		</div>
+	<?php 
+		if ($_SESSION['Role'] != 1)
+		{
+	?>
 		<div class="col-sm-offset-4 col-sm-8 text-center">
 			<?php if (!isset($_GET['id']))
 			{
@@ -63,5 +67,8 @@
 			?>
 			<button class="btn btn-lg btn-success btn-signin buttonEdition" data-option="edit" type="submit"><?php echo $translation['editAccount']; ?></button>
 		</div>
+	<?php
+		}
+	?>
 	</div>
 </div>

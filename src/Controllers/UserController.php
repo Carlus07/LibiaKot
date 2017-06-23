@@ -118,13 +118,14 @@ class UserController extends Controller {
         $this->render("home.index");
     }
 
-    public function profile()
+    public function profile($id = null)
     {
-        if(isset($_GET['id']))
+        $id = (isset($_GET['id'])) ? $_GET['id'] : $id;
+        if($id != null)
         {
-            $value['id'] =  $_GET['id'];
+            $value['id'] =  $id;
             Session::set('settings', $value);
-            $user = $this->getConnection()->getRepository('User')->find($_GET['id']);
+            $user = $this->getConnection()->getRepository('User')->find($id);
         }
         else $user = $this->getConnection()->getRepository('User')->find(Session::get('idUser'));
         $this->render("user.profile", compact('user'));
@@ -338,7 +339,7 @@ class UserController extends Controller {
             $dql = "SELECT u FROM User u WHERE u.idRole = 2 ORDER BY u.name ASC";
             $query = $this->getConnection()->createQuery($dql)
                            ->setFirstResult($limit)
-                           ->setMaxResults($offset);
+                           ->setMaxResults(12);
 
             $users = $query->getResult();
             $this->render('user.list', compact('users', 'size'));

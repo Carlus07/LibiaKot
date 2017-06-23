@@ -77,7 +77,7 @@ class Validation
         {
             if (strlen($text) > $size) {
                 $this->setErr('textTooLong');
-            } elseif (!preg_match('/^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._\s-]{3,255}$/', $text)) {
+            } elseif (!preg_match("/^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ'._\s-]{3,255}$/", $text)) {
                 $this->setErr('textNotString');
             } elseif (!$empty) {
                 if (!$text) {
